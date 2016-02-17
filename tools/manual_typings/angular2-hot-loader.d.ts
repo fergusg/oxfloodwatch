@@ -1,4 +1,4 @@
-declare module 'angular2-hot-loader' {
+declare module "angular2-hot-loader" {
   export interface Options {
       port?: number;
       path?: string;

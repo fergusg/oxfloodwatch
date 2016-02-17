@@ -1,10 +1,38 @@
-<h1>Howdy!</h1>
+<div class="container-fluid">
+    <div class="row col-md-10 col-md-offset-1">
+        <div class="page-header">
+            <h1>{{title}}</h1>
+        </div>
+        <div *ngIf="loaded">
 
-<h2>
-  Gratz! <smile></smile>
-</h2>
+            <div
+                title="{{height}}cm"
+                [class.glyphicon-thumbs-up]="ok"
+                [class.glyphicon-thumbs-down]="!ok"
+                class="glyphicon center-block" aria-hidden="true"></div>
+            <div class="pull-right"><em>Last reading was {{when}}</em></div>
+            <br>
 
-<p class="note">
-  Your deployment of Angular 2 Seed worked perfectly!
-  Click <em>about (above)</em> to get your reward!
-</p>
+            <h3 *ngIf="ok">If the river were {{-delta()}}cm higher,
+                you would get wet feet between Pigeons Lock
+                and Tackley.</h3>
+            <div *ngIf="!ok">
+                <h3>Look like you might get wet feet between
+                    Pigeons Lock and Tackley.</h3>
+                <h4>Estimated depth {{delta()}}cm</h4>
+            </div>
+            <!--pre>{{data | json}}</pre-->
+        </div>
+        <hr>
+        <div>
+            Data from the
+            <a href="https://map.flood.network/">Oxford Flood Network</a>
+        </div>
+        <br>
+        <div><em>Disclaimer: This is a work in progress.
+            Use at your own risk. Feedback to
+            <a href="mailto:floodwatch@gooses.co.uk">floodwatch@gooses.co.uk</a>
+        </em></div>
+
+    </div>
+</div>

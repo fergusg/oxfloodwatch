@@ -1,24 +1,20 @@
-import {Component, ViewEncapsulation} from 'angular2/core';
+import {Component, ViewEncapsulation} from "angular2/core";
 import {
-  RouteConfig,
-  ROUTER_DIRECTIVES
-} from 'angular2/router';
+RouteConfig,
+ROUTER_DIRECTIVES
+} from "angular2/router";
 
-import {HomeCmp} from '../../home/components/home';
-import {AboutCmp} from '../../about/components/about';
-import {NameList} from '../../shared/services/name_list';
+import {HomeCmp} from "../../home/components/home";
 
 @Component({
-  selector: 'app',
-  viewProviders: [NameList],
-  moduleId: module.id,
-  templateUrl: './app.html',
-  styleUrls: ['./app.css'],
-  encapsulation: ViewEncapsulation.None,
-  directives: [ROUTER_DIRECTIVES]
+    selector: "app",
+    moduleId: module.id,
+    templateUrl: "./app.html",
+    styleUrls: ["./app.css"],
+    encapsulation: ViewEncapsulation.None,
+    directives: [ROUTER_DIRECTIVES]
 })
 @RouteConfig([
-  { path: '/', component: HomeCmp, name: 'Home' },
-  { path: '/about', component: AboutCmp, name: 'About' }
+    { path: "/", component: HomeCmp, name: "Home" },
 ])
-export class AppCmp {}
+export class AppCmp { }

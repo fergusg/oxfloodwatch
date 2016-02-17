@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><%= APP_TITLE %></title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- inject:css -->
-  <!-- endinject -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        <%= APP_TITLE %>
+    </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- inject:css -->
+    <!-- endinject -->
 </head>
+
 <body>
 
-  <app>Loading...</app>
+    <app>Loading...</app>
 
-  <script>
-  // function.name (all IE)
+    <script>
+        // function.name (all IE)
   // Remove once https://github.com/angular/angular/issues/6501 is fixed.
   /*! @source http://stackoverflow.com/questions/6903762/function-name-not-supported-in-ie*/
   if (!Object.hasOwnProperty('name')) {
@@ -29,35 +34,38 @@
       }
     });
   }
-  </script>
-  
-  <script>
-  // Fixes undefined module function in SystemJS bundle
+    </script>
+
+    <script>
+        // Fixes undefined module function in SystemJS bundle
   function module() {}
-  </script>
+    </script>
 
-  <!-- shims:js -->
-  <!-- endinject -->
+    <!-- shims:js -->
+    <!-- endinject -->
 
-  <% if (ENV === 'dev') { %>
-  <script>System.config(<%= JSON.stringify(SYSTEM_CONFIG) %>)</script>
-  <% } %>
+    <% if (ENV === 'dev') { %>
+        <script>
+            System.config(<%= JSON.stringify(SYSTEM_CONFIG) %>)
+        </script>
+        <% } %>
 
-  <!-- libs:js -->
-  <!-- endinject -->
+            <!-- libs:js -->
+            <!-- endinject -->
 
-  <!-- inject:js -->
-  <!-- endinject -->
+            <!-- inject:js -->
+            <!-- endinject -->
 
-  <% if (ENV === 'dev') { %>
-  <script>
-  System.import('<%= BOOTSTRAP_MODULE %>')
+            <% if (ENV === 'dev') { %>
+                <script>
+                    System.import('<%= BOOTSTRAP_MODULE %>')
     .catch(function (e) {
       console.error(e,
         'Report this error at https://github.com/mgechev/angular2-seed/issues');
     });
-  </script>
-  <% } %>
+                </script>
+                <% } %>
 
 </body>
+
 </html>
