@@ -1,5 +1,5 @@
 .app-content {
-    font-family: Verdana;
+        font-family: inherit;
 }
 .app-content h1 {
     color: #999;
@@ -18,7 +18,7 @@
     font-size: 1.2em;
 }
 .app-content li {
-    font-family: Consolas;
+    font-family: inherit;
 }
 .app-content nav a {
     display: inline-block;

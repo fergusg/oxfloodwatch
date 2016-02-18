@@ -8,3 +8,30 @@ smile {
     vertical-align: bottom;
     background: url("./assets/img/smile.png");
 }
+
+.glyphicon-thumbs-up {
+    color: green;
+}
+.glyphicon-thumbs-down {
+    color: red;
+}
+.glyphicon-eye-open {
+    color: lightgrey;
+}
+.glyphicon {
+    font-size: 320px;
+}
+@media(max-width: 768px) {
+    .glyphicon {
+        font-size: 80px;
+    }
+    h1 {
+        font-size: 24px;
+    }
+    h3 {
+        font-size: 18px;
+    }
+    .page-header {
+        margin-top: 10px;
+    }
+}

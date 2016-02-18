@@ -10,7 +10,6 @@ import {HomeCmp} from "../../home/components/home";
     selector: "app",
     moduleId: module.id,
     templateUrl: "./app.html",
-    styleUrls: ["./app.css"],
     encapsulation: ViewEncapsulation.None,
     directives: [ROUTER_DIRECTIVES]
 })
