@@ -52,7 +52,7 @@ export class HomeCmp {
                     }, 500);
                 });
         } else {
-            Observable.timer(0, 10000)
+            Observable.timer(0, 30000)
                 .subscribe(self.load.bind(self));
         }
     }
