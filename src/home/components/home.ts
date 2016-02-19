@@ -1,4 +1,4 @@
-import {Component} from "angular2/core";
+import {Component, ChangeDetectorRef} from "angular2/core";
 import {Http} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/observable/timer";
@@ -12,40 +12,50 @@ declare var moment: any;
     templateUrl: "./home.html"
 })
 export class HomeCmp {
+    public HIGH = false;
+    public LOW = false;
+    public CLOSE = false;
+    public EXTREME = false;
+
     public title: string = "Pigeons Lock Footpath";
     public data: any;
-    protected height: number;
-    protected state = "OK";
+    public delta = 0;
+    protected distance: number;
     protected loaded = false;
-    protected normalHeight = 185;
+    protected normalDistance = 152;
     protected when: any;
+    private debug = false;
+
     private jigger = false;
+
     private url = "https://oxfloodnet.thingzone.uk/latest/eykx-cjw5-u2i3-fesc-53d4-nvg6.o.3";
 
-    constructor(private http: Http) {
+    constructor(private http: Http, private ref: ChangeDetectorRef) {
         this.jigger = location.search.includes("jigger");
-    }
-
-    protected delta(): number {
-        let d = this.height - this.normalHeight;
-        return d;
+        this.debug = location.search.includes("debug");
     }
 
     public ngOnInit() {
+        let self = this;
         if (this.jigger) {
-            Observable.timer(1000, 2000)
-                .subscribe(() => { this.update(this.fakeData()); });
+            let update = this.update.bind(this);
+            update(this.fakeData());
+            Observable.timer(0, 2000)
+                .subscribe(() => {
+                    update(self.fakeData());
+                });
         } else {
             this.load();
-            Observable.timer(60000, 60000)
-                .subscribe(this.load.bind(this));
+            Observable.timer(5000, 60000)
+                .subscribe(self.load.bind(self));
         }
     }
 
     public fakeData() {
         let timestamp = Date.now() - Math.round(1000 * 3600 * Math.random());
-        let value = this.normalHeight +
-            Math.floor((Math.random() - 0.5) * 10);
+        let value = this.normalDistance +
+            Math.floor((Math.random() - 0.5) * 28) - 7;
+
         return {
             payload: { value, timestamp }
         };
@@ -64,21 +74,27 @@ export class HomeCmp {
     private update(data: any) {
         this.loaded = true;
         this.data = data;
-        this.height = parseInt(data.payload.value, 10);
-        if (this.jigger) {
-            this.height = this.normalHeight +
-                Math.floor((Math.random() - 0.5) * 10);
-        }
+
+        // Measured DOWN
+        this.distance = parseInt(data.payload.value, 10);
 
         this.when = moment(data.payload.timestamp).fromNow();
 
-        let d = this.height - this.normalHeight;
-        if (d > 2) {
-            this.state = "HIGH";
-        } else if (d < -2) {
-            this.state = "LOW";
+        this.delta = this.normalDistance - this.distance;
+
+        [this.CLOSE, this.HIGH, this.EXTREME, this.LOW] =
+            [false, false, false, false];
+
+        let d = this.delta;
+        if (d > 14) {
+            this.EXTREME = true;
+        } else if (d > 7) {
+            this.HIGH = true;
+        } else if (d > 0) {
+            this.CLOSE = true;
         } else {
-            this.state = "CLOSE";
+            this.LOW = true;
         }
+        this.ref.detectChanges();
     }
 }

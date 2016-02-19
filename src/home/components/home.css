@@ -13,6 +13,10 @@ smile {
     color: green;
 }
 .glyphicon-thumbs-down {
+    color: #e60000;
+}
+
+.glyphicon-exclamation-sign {
     color: red;
 }
 .glyphicon-eye-open {
@@ -26,10 +30,13 @@ smile {
         font-size: 80px;
     }
     h1 {
-        font-size: 24px;
+        font-size: 20px;
+    }
+    h2 {
+        font-size: 18px;
     }
     h3 {
-        font-size: 18px;
+        font-size: 16px;
     }
     .page-header {
         margin-top: 10px;
