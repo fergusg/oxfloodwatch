@@ -59,5 +59,3 @@ handlers:
   static_files: static/\1
   upload: static/(.*)
   secure: always
-
-

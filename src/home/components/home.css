@@ -22,11 +22,16 @@ smile {
 .glyphicon-eye-open {
     color: lightgrey;
 }
-.glyphicon {
-    font-size: 320px;
+.glyphicon, .fa {
+    font-size: 180px;
 }
+
+.fa-refresh {
+    opacity: 0.4;
+}
+
 @media(max-width: 768px) {
-    .glyphicon {
+    .glyphicon, .fa {
         font-size: 80px;
     }
     h1 {

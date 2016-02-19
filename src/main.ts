@@ -1,6 +1,9 @@
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/observable/fromArray"; // gives us .of()
+import "rxjs/add/observable/timer";
+import "rxjs/add/operator/delay";
+import "rxjs/add/operator/do";
 
 import {provide, enableProdMode} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";

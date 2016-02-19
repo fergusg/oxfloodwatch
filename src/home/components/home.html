@@ -6,13 +6,25 @@
     </div>
 
     <div class="row col-md-6 col-md-offset-3">
+        <div *ngIf="!loaded" class="text-center">
+            <span
+                class="fa fa-refresh fa-spin"
+                aria-hidden="true"></span>
+        </div>
+
         <div *ngIf="loaded" class="text-center">
-            <div title="{{height}}cm"
-            [class.glyphicon-thumbs-up]="LOW"
-            [class.glyphicon-thumbs-down]="HIGH"
-            [class.glyphicon-exclamation-sign]="EXTREME"
-            [class.glyphicon-eye-open]="CLOSE"
-            class="glyphicon center-block" aria-hidden="true"></div>
+            <div>
+                <span *ngIf="VERY_HIGH"
+                    class="glyphicon glyphicon-thumbs-down"
+                    aria-hidden="true"></span>
+
+                <span title="{{height}}cm"
+                [class.glyphicon-thumbs-up]="LOW"
+                [class.glyphicon-thumbs-down]="HIGH || VERY_HIGH"
+                [class.glyphicon-exclamation-sign]="EXTREME"
+                [class.glyphicon-eye-open]="CLOSE"
+                class="glyphicon" aria-hidden="true"></span>
+            </div>
             <div class="pull-right"><em>Last reading was {{when}}</em></div>
         </div>
     </div>
@@ -23,17 +35,22 @@
             you might get wet feet.
             </h3>
         </div>
+        <div *ngIf="CLOSE">
+            <h3>It's a close call. You might get a wee bit soggy but
+                you probably can get around the edge with care</h3>
+            <h4>Estimated depth {{delta}}cm</h4>
+        </div>
         <div *ngIf="HIGH">
-            <h3>Looks like you might get damp.</h3>
+            <h3>Looks like you might get damp. But if you
+                have suitable footwear you still might get through OK.</h3>
+            <h4>Estimated depth {{delta}}cm</h4>
+        </div>
+        <div *ngIf="VERY_HIGH">
+            <h3>Pretty damned deep.  Wellies only</h3>
             <h4>Estimated depth {{delta}}cm</h4>
         </div>
         <div *ngIf="EXTREME">
             <h3>Call Jacques Cousteau</h3>
-            <h4>Estimated depth {{delta}}cm</h4>
-        </div>
-        <div *ngIf="CLOSE">
-            <h3>It's a close call. You might get a wee bit soggy but
-                you probably can get around the edge with care</h3>
             <h4>Estimated depth {{delta}}cm</h4>
         </div>
         <pre *ngIf="debug">{{data | json}}</pre>

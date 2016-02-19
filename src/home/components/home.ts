@@ -1,7 +1,6 @@
 import {Component, ChangeDetectorRef} from "angular2/core";
 import {Http} from "angular2/http";
 import {Observable} from "rxjs/Observable";
-import "rxjs/add/observable/timer";
 
 declare var moment: any;
 
@@ -12,10 +11,12 @@ declare var moment: any;
     templateUrl: "./home.html"
 })
 export class HomeCmp {
-    public HIGH = false;
     public LOW = false;
     public CLOSE = false;
+    public HIGH = false;
+    public VERY_HIGH = false;
     public EXTREME = false;
+
 
     public title: string = "Pigeons Lock Footpath";
     public data: any;
@@ -42,19 +43,27 @@ export class HomeCmp {
             update(this.fakeData());
             Observable.timer(0, 2000)
                 .subscribe(() => {
-                    update(self.fakeData());
+                    self.loaded = false;
+                    this.ref.detectChanges();
+                    setTimeout(() => {
+                        self.loaded = true;
+                        update(self.fakeData());
+                        this.ref.detectChanges();
+                    }, 500);
                 });
         } else {
-            this.load();
-            Observable.timer(5000, 60000)
+            Observable.timer(0, 10000)
                 .subscribe(self.load.bind(self));
         }
     }
 
     public fakeData() {
-        let timestamp = Date.now() - Math.round(1000 * 3600 * Math.random());
-        let value = this.normalDistance +
-            Math.floor((Math.random() - 0.5) * 28) - 7;
+        let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
+        let r = Math.floor((Math.random() - 0.5) * 28) - 7;
+        if (Math.random() > 0.9) {
+            r = -1000;
+        }
+        let value = this.normalDistance + r;
 
         return {
             payload: { value, timestamp }
@@ -63,11 +72,18 @@ export class HomeCmp {
 
     private load() {
         let self = this;
+        self.loaded = false;
+        this.ref.detectChanges();
         this.http.get(this.url)
+            .delay(250)
             .map((res: any) => res.json())
             .subscribe(
             this.update.bind(self),
-            (err: any) => console.error(err)
+            (err: any) => {
+                self.loaded = true;
+                this.ref.detectChanges();
+                console.error(err);
+            }
             );
     }
 
@@ -82,13 +98,15 @@ export class HomeCmp {
 
         this.delta = this.normalDistance - this.distance;
 
-        [this.CLOSE, this.HIGH, this.EXTREME, this.LOW] =
-            [false, false, false, false];
+        [this.CLOSE, this.HIGH, this.VERY_HIGH, this.EXTREME, this.LOW] =
+            [false, false, false, false, false];
 
         let d = this.delta;
-        if (d > 14) {
+        if (d >= 30) {
             this.EXTREME = true;
-        } else if (d > 7) {
+        } else if (d >= 14) {
+            this.VERY_HIGH = true;
+        } else if (d >= 7) {
             this.HIGH = true;
         } else if (d > 0) {
             this.CLOSE = true;
