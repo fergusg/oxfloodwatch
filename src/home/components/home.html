@@ -1,61 +1,50 @@
 <div class="container-fluid">
     <div class="row col-md-6 col-md-offset-3">
         <div class="page-header">
-            <h1>Travelling between Tackley and Pigeons Lock?</h1>
+            <h1>Travelling between Tackley and Kirtlington?</h1>
         </div>
     </div>
 
-    <div class="row col-md-6 col-md-offset-3">
-        <div *ngIf="!loaded" class="text-center">
+    <div class="row col-md-6 col-md-offset-3 text-center">
+        <div *ngIf="!loaded">
             <span
                 class="fa fa-refresh fa-spin"
                 aria-hidden="true"></span>
         </div>
-
-        <div *ngIf="loaded" class="text-center">
-            <div>
-                <span *ngIf="VERY_HIGH"
-                    class="glyphicon glyphicon-thumbs-down"
-                    aria-hidden="true"></span>
-
-                <span title="{{height}}cm"
-                [class.glyphicon-thumbs-up]="LOW"
-                [class.glyphicon-thumbs-down]="HIGH || VERY_HIGH"
-                [class.glyphicon-exclamation-sign]="EXTREME"
-                [class.glyphicon-eye-open]="CLOSE"
-                class="glyphicon" aria-hidden="true"></span>
+        <div *ngIf="loaded">
+            <div *ngIf="LOW">
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                <h3>If the river were {{-delta}}cm higher,
+                you might get wet feet.</h3>
             </div>
-            <div class="pull-right"><em>Last reading was {{when}}</em></div>
+            <div *ngIf="CLOSE">
+                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                <h3>It's a close call. You might get a wee bit soggy but
+                    you probably can get around the edge with care</h3>
+            </div>
+            <div *ngIf="HIGH">
+                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                <h3>Looks like you might get damp. But if you
+                    have suitable footwear you still might get through OK.</h3>
+            </div>
+            <div *ngIf="VERY_HIGH">
+                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                <h3>Pretty damned deep.  Wellies only</h3>
+            </div>
+            <div *ngIf="EXTREME">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <h3>Call Jacques Cousteau</h3>
+            </div>
+            <div *ngIf="!(LOW || CLOSE)">
+                <h4>Approximate depth {{delta}}cm</h4>
+            </div>
         </div>
+
+        <hr>
+        <div class="pull-right"><em>Last reading was {{when}}</em></div>
     </div>
 
-    <div class="row col-md-6 col-md-offset-3">
-        <div *ngIf="LOW">
-            <h3>If the river were {{-delta}}cm higher,
-            you might get wet feet.
-            </h3>
-        </div>
-        <div *ngIf="CLOSE">
-            <h3>It's a close call. You might get a wee bit soggy but
-                you probably can get around the edge with care</h3>
-            <h4>Estimated depth {{delta}}cm</h4>
-        </div>
-        <div *ngIf="HIGH">
-            <h3>Looks like you might get damp. But if you
-                have suitable footwear you still might get through OK.</h3>
-            <h4>Estimated depth {{delta}}cm</h4>
-        </div>
-        <div *ngIf="VERY_HIGH">
-            <h3>Pretty damned deep.  Wellies only</h3>
-            <h4>Estimated depth {{delta}}cm</h4>
-        </div>
-        <div *ngIf="EXTREME">
-            <h3>Call Jacques Cousteau</h3>
-            <h4>Estimated depth {{delta}}cm</h4>
-        </div>
-        <pre *ngIf="debug">{{data | json}}</pre>
-        <hr>
-    </div>
 
     <div class="row col-md-6 col-md-offset-3">
         <div>
@@ -69,5 +58,8 @@
                 Use at your own risk. Feedback to
                 <a href="mailto:floodwatch@gooses.co.uk">floodwatch@gooses.co.uk</a></em>
         </div>
+    </div>
+    <div class="row col-md-6 col-md-offset-3" *ngIf="debug">
+        <pre >{{data | json}}</pre>
     </div>
 </div>

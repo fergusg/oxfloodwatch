@@ -24,6 +24,7 @@ smile {
 }
 .glyphicon, .fa {
     font-size: 180px;
+    height: 180px;
 }
 
 .fa-refresh {
@@ -33,6 +34,7 @@ smile {
 @media(max-width: 768px) {
     .glyphicon, .fa {
         font-size: 80px;
+        height: 80px;
     }
     h1 {
         font-size: 20px;
