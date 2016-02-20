@@ -69,7 +69,10 @@ export const DEV_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencie
     { src: 'angular2/bundles/angular2.js', inject: 'libs', dest: JS_DEST },
     { src: 'angular2/bundles/router.js', inject: 'libs', dest: JS_DEST },
     { src: 'angular2/bundles/http.js', inject: 'libs', dest: JS_DEST },
-    { src: 'moment/min/moment.min.js', inject: 'libs', dest: JS_DEST }
+    { src: 'jquery/dist/jquery.min.js', inject: 'libs', dest: JS_DEST },
+    { src: 'moment/min/moment.min.js', inject: 'libs', dest: JS_DEST },
+    { src: 'highcharts/highcharts.js', inject: 'libs', dest: JS_DEST },
+    { src: 'highcharts/highcharts-more.js', inject: 'libs', dest: JS_DEST }
 ]);
 
 export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencies([
@@ -78,7 +81,10 @@ export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependenci
     { src: 'es6-shim/es6-shim.min.js', inject: 'shims' },
     { src: 'systemjs/dist/system.js', inject: 'shims' },
     { src: 'angular2/bundles/angular2-polyfills.min.js', inject: 'libs' },
-    { src: 'moment/min/moment.min.js', inject: 'libs', dest: JS_DEST }
+    { src: 'jquery/dist/jquery.min.js', inject: 'libs' },
+    { src: 'highcharts/highcharts.js', inject: 'libs' },
+    { src: 'highcharts/highcharts-more.js', inject: 'libs' },
+    { src: 'moment/min/moment.min.js', inject: 'libs' }
 ]);
 
 // Declare local files that needs to be injected

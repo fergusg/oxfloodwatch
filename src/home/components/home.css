@@ -23,8 +23,8 @@ smile {
     color: lightgrey;
 }
 .glyphicon, .fa {
-    font-size: 180px;
-    height: 180px;
+    font-size: 80px;
+    height: 80px;
 }
 
 .fa-refresh {
@@ -33,8 +33,8 @@ smile {
 
 @media(max-width: 768px) {
     .glyphicon, .fa {
-        font-size: 80px;
-        height: 80px;
+        font-size: 40px;
+        height: 40px;
     }
     h1 {
         font-size: 20px;
@@ -43,7 +43,7 @@ smile {
         font-size: 18px;
     }
     h3 {
-        font-size: 16px;
+        font-size: 12px;
     }
     .page-header {
         margin-top: 10px;

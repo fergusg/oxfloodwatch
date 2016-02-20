@@ -1,8 +1,14 @@
 <div class="container-fluid">
     <div class="row col-md-6 col-md-offset-3">
         <div class="page-header">
-            <h1>Travelling between Tackley and Kirtlington?</h1>
+            <h1>Footpath between Tackley and Kirtlington</h1>
+            <h2>Near Pigeons Lock</h2>
         </div>
+    </div>
+
+    <div class="row col-md-6 col-md-offset-3 text-center"
+        [style.display]="firstLoaded? 'block' : 'none'">
+        <div id="container"></div>
     </div>
 
     <div class="row col-md-6 col-md-offset-3 text-center">
@@ -13,36 +19,26 @@
         </div>
         <div *ngIf="loaded">
             <div *ngIf="LOW">
-                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                 <h3>If the river were {{-delta}}cm higher,
                 you might get wet feet.</h3>
             </div>
             <div *ngIf="CLOSE">
-                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                 <h3>It's a close call. You might get a wee bit soggy but
                     you probably can get around the edge with care</h3>
             </div>
             <div *ngIf="HIGH">
-                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
                 <h3>Looks like you might get damp. But if you
                     have suitable footwear you still might get through OK.</h3>
             </div>
             <div *ngIf="VERY_HIGH">
-                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
-                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
                 <h3>Pretty damned deep.  Wellies only</h3>
             </div>
             <div *ngIf="EXTREME">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <h3>Call Jacques Cousteau</h3>
             </div>
-            <div *ngIf="!(LOW || CLOSE)">
-                <h4>Approximate depth {{delta}}cm</h4>
-            </div>
+            <div class="pull-right"><em>Last reading was {{when | moment}}</em></div>
+            <hr>
         </div>
-
-        <hr>
-        <div class="pull-right"><em>Last reading was {{when}}</em></div>
     </div>
 
 
