@@ -23,6 +23,7 @@ export class HomeCmp {
     public VERY_HIGH = false;
     public EXTREME = false;
     public delta = 0;
+    public data: any;
 
     private loaded = false;
     private firstLoaded = false;
@@ -30,6 +31,9 @@ export class HomeCmp {
     private chart: any;
     private debug = false;
     private jigger = false;
+
+    private GAUGE_MIN = -10;
+    private GAUGE_MAX = 40;
 
     private normalDistance = 149;
     private id = "eykx-cjw5-u2i3-fesc-53d4-nvg6.o.3";
@@ -97,6 +101,7 @@ export class HomeCmp {
     private update(data: any) {
         this.loaded = true;
         this.firstLoaded = true;
+        this.data = data;
         this.when = data.payload.timestamp;
 
         // Measured DOWN
@@ -121,7 +126,8 @@ export class HomeCmp {
             this.LOW = true;
         }
 
-        this.chart.series[0].points[0].update(d);
+        let [h] = this.limit(d);
+        this.chart.series[0].points[0].update(h);
         this.ref.detectChanges();
     }
 
@@ -141,10 +147,27 @@ export class HomeCmp {
             Observable
                 .timer(2000, 1000)
                 .subscribe(() => {
-                    point.update(self.delta + self.normal(2.5));
+                    let [h, limited] = this.limit(self.delta);
+                    if (!limited) {
+                        h = + self.normal(2.5);
+                    }
+                    point.update(h);
                 });
         }
     };
+
+    private limit(h: number): [number, boolean, boolean, boolean] {
+        let [high, low] = [false, false];
+
+        if (h < this.GAUGE_MIN) {
+            h = this.GAUGE_MIN - 1 ;
+            low = true;
+        } else if (h > this.GAUGE_MAX) {
+            h = this.GAUGE_MAX + 1;
+            high = true;
+        }
+        return [h, high || low, low, high];
+    }
 
     private normal(sigma = 1, mu = 0, n = 6) {
         var tot = 0;

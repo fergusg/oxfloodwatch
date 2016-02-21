@@ -85,14 +85,14 @@ export default class Gauge {
                 },
                 plotBands: [
                     {
-                        from: -50,
+                        from: -10,
                         to: -5,
-                        color: '#00e600' // green
+                        color: '#55BF3B' // green55BF3B
                     },
                     {
                         from: -5,
                         to: 0,
-                        color: '#55BF3B' // green
+                        color: '#00e600' // green
                     },
                     {
                         from: 0,
@@ -118,7 +118,7 @@ export default class Gauge {
             },
             series: [{
                 name: 'Depth',
-                data: [-30],
+                data: [-10],
                 dataLabels: {
                     enabled: true,
                     formatter: function() {

@@ -13,13 +13,11 @@
 
     <div class="row col-md-6 col-md-offset-3 text-center">
         <div *ngIf="!loaded">
-            <span
-                class="fa fa-refresh fa-spin"
-                aria-hidden="true"></span>
+            <img src="assets/img/loader.gif" alt="loading">
         </div>
         <div *ngIf="loaded">
             <div *ngIf="VERY_LOW">
-                <h3>Bring on the camels.</h3>
+                <h3>It's so dry, you might as well bring camels.</h3>
             </div>
             <div *ngIf="LOW">
                 <h3>If the river were {{-delta}}cm higher,
@@ -45,7 +43,6 @@
             <hr>
         </div>
     </div>
-
 
     <div class="row col-md-6 col-md-offset-3">
         <div>
