@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Pigeons Lock Flood Watch",
   "scripts": {
+    "x": "gulp x",
     "build.dev": "gulp build.dev",
     "build.dev.watch": "gulp build.dev.watch",
     "build.prod": "gulp build.prod",
@@ -43,6 +44,7 @@
     "gulp-inject": "^1.3.1",
     "gulp-inline-ng2-template": "^0.0.11",
     "gulp-load-plugins": "^0.10.0",
+    "gulp-manifest": "^0.1.1",
     "gulp-plumber": "~1.0.1",
     "gulp-shell": "~0.4.3",
     "gulp-sourcemaps": "~1.5.2",

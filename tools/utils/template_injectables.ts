@@ -21,7 +21,7 @@ export function registerInjectableAssetsRef(paths: string[], target: string = ''
 export function transformPath(plugins, env) {
   return function (filepath) {
     filepath = ENV === 'prod' ? filepath.replace(`/${APP_DEST}`, '') : filepath;
-    arguments[0] = join(APP_BASE, filepath) + `?${Date.now()}`;
+    arguments[0] = join(APP_BASE, filepath) + (ENV === 'prod' ? "" : `?q${Date.now()}`);
     return slash(plugins.inject.transform.apply(plugins.inject.transform, arguments));
   };
 }

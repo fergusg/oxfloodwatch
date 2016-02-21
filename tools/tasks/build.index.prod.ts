@@ -7,7 +7,8 @@ import {
   JS_DEST,
   CSS_PROD_BUNDLE,
   JS_PROD_APP_BUNDLE,
-  JS_PROD_SHIMS_BUNDLE
+  JS_PROD_SHIMS_BUNDLE,
+  ENV
 } from '../config';
 
 export = function buildIndexProd(gulp, plugins) {
@@ -26,7 +27,8 @@ export = function buildIndexProd(gulp, plugins) {
       }), {
         transform: function (filepath) {
           let path = normalize(filepath).split(sep);
-          arguments[0] = path.slice(3, path.length).join(sep) + `?${Date.now()}`;
+          arguments[0] = path.slice(3, path.length).join(sep) +
+            (ENV === 'prod' ? "" : `?q${Date.now()}`);
           return plugins.inject.transform.apply(plugins.inject.transform, arguments);
         }
       });

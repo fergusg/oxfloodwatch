@@ -23,6 +23,10 @@ gulp.task('build.dev', done =>
               'build.index.dev',
               done));
 
+
+gulp.task('x', done =>
+  runSequence('build.manifest.prod', done));
+
 // --------------
 // Build prod.
 gulp.task('build.prod', done =>
@@ -35,6 +39,7 @@ gulp.task('build.prod', done =>
               'build.bundles',
               'build.bundles.app',
               'build.index.prod',
+              "build.manifest.prod",
               done));
 
 // --------------
