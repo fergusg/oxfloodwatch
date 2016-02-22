@@ -34,6 +34,7 @@ export class HomeCmp {
     private chart: any;
     private debug = false;
     private jigger = false;
+    private timeout = false;
 
     private GAUGE_MIN = -10;
     private GAUGE_MAX = 40;
@@ -46,17 +47,17 @@ export class HomeCmp {
         private ref: ChangeDetectorRef, private elem: ElementRef) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
+        this.timeout  = location.search.includes("debug");
     }
 
     public ngOnInit() {
         this.initGauge(!this.jigger);
-        let self = this;
         if (this.jigger) {
             this.doJigger();
         } else {
             Observable
                 .timer(0, 30000)
-                .subscribe(self.load.bind(self));
+                .subscribe(this.load.bind(this));
         }
     }
 
@@ -86,13 +87,12 @@ export class HomeCmp {
     }
 
     private load() {
-        let self = this;
         this.loaded = false;
         this.loadError = false;
 
-        let timeout = location.search.includes("timeout")
+        let timeout = this.timeout
             ? Math.floor(Math.random() * 150) + 50
-            : 2000;
+            : 5000;
 
         this.ref.detectChanges();
         this.http
@@ -100,11 +100,11 @@ export class HomeCmp {
             .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())
-            .subscribe(this.update.bind(self), onError);
+            .subscribe(this.update.bind(this), onError.bind(this));
         function onError(err) {
-            self.loadError = true;
-            self.ref.detectChanges();
-            console.error("xxx", self.loadError, err);
+            this.loadError = true;
+            this.ref.detectChanges();
+            console.error(err);
         }
     }
 
@@ -131,10 +131,10 @@ export class HomeCmp {
             this.HIGH = true;
         } else if (d >= 0) {
             this.CLOSE = true;
-        } else if (d <= -10) {
-            this.VERY_LOW = true;
-        } else {
+        } else if (d >= -10) {
             this.LOW = true;
+        } else {
+            this.VERY_LOW = true;
         }
 
         let [h] = this.limit(d);
@@ -144,7 +144,6 @@ export class HomeCmp {
 
     private initGauge(autoJigger: boolean = true) {
         var height = $(document).innerWidth() < 800 ? 240 : 400;
-        var self = this;
         var chartElem = $(this.elem.nativeElement).find(".chart");
         let def = new Gauge(height, () => this.delta).getDefinition();
 
@@ -156,12 +155,10 @@ export class HomeCmp {
         if (autoJigger) {
             let point = this.chart.series[0].points[0];
             Observable
-                .timer(2000, 1000)
+                .timer(1000, 1000)
                 .subscribe(() => {
-                    let [h, limited] = this.limit(self.delta);
-                    if (!limited) {
-                        h = + self.normal(2.5);
-                    }
+                    let [h, limited] = this.limit(this.delta);
+                    h += this.normal(limited ? 1.0 : 2.5);
                     point.update(h);
                 });
         }

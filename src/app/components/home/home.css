@@ -1,41 +1,4 @@
-.note {
-    color: #a8a8a8;
-}
-smile {
-    width: 32px;
-    height: 32px;
-    display: inline-block;
-    vertical-align: bottom;
-    background: url("./assets/img/smile.png");
-}
-
-.glyphicon-thumbs-up {
-    color: green;
-}
-.glyphicon-thumbs-down {
-    color: #e60000;
-}
-
-.glyphicon-exclamation-sign {
-    color: red;
-}
-.glyphicon-eye-open {
-    color: lightgrey;
-}
-.glyphicon, .fa {
-    font-size: 80px;
-    height: 80px;
-}
-
-.fa-refresh {
-    opacity: 0.4;
-}
-
 @media(max-width: 768px) {
-    .glyphicon, .fa {
-        font-size: 40px;
-        height: 40px;
-    }
     h1 {
         font-size: 20px;
     }
@@ -48,4 +11,8 @@ smile {
     .page-header {
         margin-top: 10px;
     }
+    .last-reading {
+        font-size: 12px;
+    }
+
 }

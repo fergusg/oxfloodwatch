@@ -4,6 +4,9 @@
             <h1>Kirtlington to Tackley Footpath</h1>
             <h2>Is it flooded near Pigeons Lock?</h2>
         </div>
+        <div class="pull-right last-reading">
+            <em>Last reading {{when | moment}}</em>
+        </div>
     </div>
 
     <div class="row col-md-6 col-md-offset-3 text-center"
@@ -24,7 +27,7 @@
         <div *ngIf="loaded">
             <div *ngIf="VERY_LOW">
                 <div class="alert alert-success" role="alert">
-                    It's so low that even the camels are nervous.
+                    So low, even the camels are nervous.
                 </div>
             </div>
             <div *ngIf="LOW">
@@ -51,12 +54,10 @@
                 </div>
             </div>
             <div *ngIf="EXTREME">
-                <div class="alert alert-danger" role="alert">Call Jacques Cousteau</div>
+                <div class="alert alert-danger" role="alert">
+                    Call Jacques Cousteau
+                </div>
             </div>
-            <div class="pull-right">
-                <em>Last reading was {{when | moment}}</em>
-            </div>
-            <hr>
         </div>
     </div>
 
