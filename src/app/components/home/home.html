@@ -13,29 +13,45 @@
 
     <div class="row col-md-6 col-md-offset-3 text-center">
         <div *ngIf="!loaded">
-            <img src="assets/img/loader.gif" alt="loading">
+            <div *ngIf="loadError" class="alert alert-danger" role="alert">
+                <div>
+                    Oh dear. There was a problem with the sensor reading.  Will retry shortly.
+                </div>
+                <div *ngIf="when">The last good reading was {{delta}}cm, {{when | moment}} </div>
+            </div>
+            <img *ngIf="!loadError" src="assets/img/loader.gif" alt="loading">
         </div>
         <div *ngIf="loaded">
             <div *ngIf="VERY_LOW">
-                <h3>It's so dry, you might as well bring camels.</h3>
+                <div class="alert alert-success" role="alert">
+                    It's so low that even the camels are nervous.
+                </div>
             </div>
             <div *ngIf="LOW">
-                <h3>If the river were {{-delta}}cm higher,
-                you might get wet feet.</h3>
+                <div class="alert alert-success" role="alert">
+                    If the river were {{-delta}}cm higher,
+                    you might get wet feet.
+                </div>
             </div>
             <div *ngIf="CLOSE">
-                <h3>It's a close call. You might get a wee bit soggy but
-                    you probably can get around the edge with care</h3>
+                <div class="alert alert-info" role="alert">
+                    It's a close call. You might get a wee bit soggy but
+                    you probably can get around the edge with care.
+                </div>
             </div>
             <div *ngIf="HIGH">
-                <h3>Looks like you might get damp. But if you
-                    have suitable footwear you still might get through OK.</h3>
+                <div class="alert alert-danger" role="alert">
+                    Looks like you might get damp. But if you
+                    have suitable footwear you still might get through OK.
+                </div>
             </div>
             <div *ngIf="VERY_HIGH">
-                <h3>Pretty damned deep.  Wellies only</h3>
+                <div class="alert alert-danger" role="alert">
+                    Pretty damned deep.  Wellies only
+                </div>
             </div>
             <div *ngIf="EXTREME">
-                <h3>Call Jacques Cousteau</h3>
+                <div class="alert alert-danger" role="alert">Call Jacques Cousteau</div>
             </div>
             <div class="pull-right">
                 <em>Last reading was {{when | moment}}</em>

@@ -7,6 +7,7 @@ import Gauge from "./gauge";
 
 declare var moment: any;
 declare var $: any;
+declare var System: any;
 
 @Component({
     selector: "home",
@@ -22,10 +23,12 @@ export class HomeCmp {
     public HIGH = false;
     public VERY_HIGH = false;
     public EXTREME = false;
+
     public delta = 0;
     public data: any;
+    public loadError = false;
+    public loaded = false;
 
-    private loaded = false;
     private firstLoaded = false;
     private when: any;
     private chart: any;
@@ -67,17 +70,16 @@ export class HomeCmp {
     }
 
     private doJigger() {
-        let self = this;
         let update = this.update.bind(this);
         Observable
             .timer(0, 2000)
             .subscribe(() => {
-                self.loaded = false;
+                this.loaded = false;
                 this.ref.detectChanges();
                 // fake a 500ms load delay
                 setTimeout(() => {
-                    self.loaded = true;
-                    update(self.fakeData());
+                    this.loaded = true;
+                    update(this.fakeData());
                     this.ref.detectChanges();
                 }, 500);
             });
@@ -85,16 +87,24 @@ export class HomeCmp {
 
     private load() {
         let self = this;
-        self.loaded = false;
+        this.loaded = false;
+        this.loadError = false;
+
+        let timeout = location.search.includes("timeout")
+            ? Math.floor(Math.random() * 150) + 50
+            : 2000;
+
         this.ref.detectChanges();
         this.http
             .get(this.url)
+            .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())
             .subscribe(this.update.bind(self), onError);
         function onError(err) {
+            self.loadError = true;
             self.ref.detectChanges();
-            console.error(err);
+            console.error("xxx", self.loadError, err);
         }
     }
 
@@ -106,6 +116,7 @@ export class HomeCmp {
 
         // Measured DOWN
         const distance = parseInt(data.payload.value, 10);
+
         this.delta = this.normalDistance - distance;
 
         [this.CLOSE, this.HIGH, this.VERY_HIGH, this.EXTREME, this.LOW, this.VERY_LOW] =

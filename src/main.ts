@@ -2,6 +2,7 @@ import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/observable/fromArray"; // gives us .of()
 import "rxjs/add/observable/timer";
+import "rxjs/add/operator/timeout";
 import "rxjs/add/operator/delay";
 import "rxjs/add/operator/do";
 
