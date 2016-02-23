@@ -100,22 +100,24 @@ export class HomeCmp {
 
         this.delta = this.normalDistance - distance;
 
-        let d = this.delta;
-        if (d >= this.config.levels.EXTREME) {
-            this.States.EXTREME = true;
-        } else if (d >= this.config.levels.VERY_HIGH) {
-            this.States.VERY_HIGH = true;
-        } else if (d >= this.config.levels.HIGH) {
-            this.States.HIGH = true;
-        } else if (d >= this.config.levels.CLOSE) {
-            this.States.CLOSE = true;
-        } else if (d >= this.config.levels.LOW) {
-            this.States.LOW = true;
+        const d = this.delta;
+        const levels = this.config.levels;
+        const s = this.States;
+        if (d >= levels.EXTREME) {
+            s.EXTREME = true;
+        } else if (d >= levels.VERY_HIGH) {
+            s.VERY_HIGH = true;
+        } else if (d >= levels.HIGH) {
+            s.HIGH = true;
+        } else if (d >= levels.CLOSE) {
+            s.CLOSE = true;
+        } else if (d >= levels.LOW) {
+            s.LOW = true;
         } else {
-            this.States.VERY_LOW = true;
+            s.VERY_LOW = true;
         }
 
-        let [h] = this.limit(d);
+        const [h] = this.limit(d);
         this.chart.series[0].points[0].update(h);
         this.ref.detectChanges();
         this.loaded = true;
@@ -123,8 +125,8 @@ export class HomeCmp {
     }
 
     private initGauge(twitch: boolean = true) {
-        var height = $(document).innerWidth() < 800 ? 240 : 400;
-        var chartElem = $(this.elem.nativeElement).find(".chart");
+        let height = $(document).innerWidth() < 800 ? 240 : 400;
+        let chartElem = $(this.elem.nativeElement).find(".chart");
         let def = new Gauge(height, () => this.delta).getDefinition();
 
         chartElem.highcharts(def);
