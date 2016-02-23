@@ -5,11 +5,7 @@ import {Observable} from "rxjs/Observable";
 import MomentPipe from "../../util/moment";
 import Gauge from "./gauge";
 import Loader from "../loader/loader";
-import {
-    url as floodWatchUrl,
-    title as mainTitle,
-    subtitle as mainSubtitle
-} from "../../../config";
+import Config from "../../../config";
 
 declare var $: any;
 
@@ -19,7 +15,8 @@ declare var $: any;
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
     pipes: [MomentPipe],
-    directives: [Loader]
+    directives: [Loader],
+    providers: [Config]
 })
 export class HomeCmp {
     public States = {
@@ -35,9 +32,6 @@ export class HomeCmp {
     public loadError = false;
     public loaded = false;
 
-    public title = mainTitle;
-    public subtitle = mainSubtitle;
-
     private firstLoaded = false;
     private when: any;
     private chart: any;
@@ -50,8 +44,12 @@ export class HomeCmp {
 
     private normalDistance = 149;
 
-    constructor(private http: Http,
-        private ref: ChangeDetectorRef, private elem: ElementRef) {
+    constructor(
+        private http: Http,
+        private ref: ChangeDetectorRef,
+        private elem: ElementRef,
+        public config: Config
+    ) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
         this.timeout  = location.search.includes("timeout");
@@ -79,7 +77,7 @@ export class HomeCmp {
 
         this.ref.detectChanges();
         this.http
-            .get(floodWatchUrl)
+            .get(this.config.url)
             .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())
@@ -104,15 +102,15 @@ export class HomeCmp {
         this.delta = this.normalDistance - distance;
 
         let d = this.delta;
-        if (d >= 30) {
+        if (d >= this.config.levels.EXTREME) {
             this.States.EXTREME = true;
-        } else if (d >= 14) {
+        } else if (d >= this.config.levels.VERY_HIGH) {
             this.States.VERY_HIGH = true;
-        } else if (d >= 7) {
+        } else if (d >= this.config.levels.HIGH) {
             this.States.HIGH = true;
-        } else if (d >= 0) {
+        } else if (d >= this.config.levels.CLOSE) {
             this.States.CLOSE = true;
-        } else if (d >= -10) {
+        } else if (d >= this.config.levels.LOW) {
             this.States.LOW = true;
         } else {
             this.States.VERY_LOW = true;

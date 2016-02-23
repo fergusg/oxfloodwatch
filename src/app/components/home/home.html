@@ -1,8 +1,8 @@
 <div class="container-fluid">
     <div class="row col-md-6 col-md-offset-3">
         <div class="page-header">
-            <h1>{{title}}</h1>
-            <h2>{{subtitle}}</h2>
+            <h1>{{config.title}}</h1>
+            <h2>{{config.subtitle}}</h2>
         </div>
         <div *ngIf="when" class="pull-right last-reading">
             <em>Last reading {{when | moment}}</em>
@@ -69,7 +69,7 @@
         <div>
             <em>Disclaimer: This is a work in progress.
                 Use at your own risk. Feedback to
-                <a href="mailto:floodwatch@gooses.co.uk">floodwatch@gooses.co.uk</a></em>
+                <a href="mailto:{{config.feedback}}">{{config.feedback}}</a></em>
         </div>
     </div>
     <div class="row col-md-6 col-md-offset-3" *ngIf="debug">
