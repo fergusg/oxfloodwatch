@@ -4,17 +4,18 @@ import {Observable} from "rxjs/Observable";
 
 import MomentPipe from "./moment";
 import Gauge from "./gauge";
+import Loader from "../loader/loader";
 
 declare var moment: any;
 declare var $: any;
-declare var System: any;
 
 @Component({
     selector: "home",
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
-    pipes: [MomentPipe]
+    pipes: [MomentPipe],
+    directives: [Loader]
 })
 export class HomeCmp {
     public VERY_LOW = false;
@@ -47,43 +48,19 @@ export class HomeCmp {
         private ref: ChangeDetectorRef, private elem: ElementRef) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
-        this.timeout  = location.search.includes("debug");
+        this.timeout  = location.search.includes("timeout");
     }
 
     public ngOnInit() {
-        this.initGauge(!this.jigger);
         if (this.jigger) {
+            this.initGauge(false);
             this.doJigger();
         } else {
+            this.initGauge();
             Observable
-                .timer(0, 30000)
+                .timer(1000, 30000)
                 .subscribe(this.load.bind(this));
         }
-    }
-
-    public fakeData() {
-        let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
-        let value = this.normalDistance + this.normal(30);
-
-        return {
-            payload: { value, timestamp }
-        };
-    }
-
-    private doJigger() {
-        let update = this.update.bind(this);
-        Observable
-            .timer(0, 2000)
-            .subscribe(() => {
-                this.loaded = false;
-                this.ref.detectChanges();
-                // fake a 500ms load delay
-                setTimeout(() => {
-                    this.loaded = true;
-                    update(this.fakeData());
-                    this.ref.detectChanges();
-                }, 500);
-            });
     }
 
     private load() {
@@ -92,7 +69,7 @@ export class HomeCmp {
 
         let timeout = this.timeout
             ? Math.floor(Math.random() * 150) + 50
-            : 5000;
+            : 10000;
 
         this.ref.detectChanges();
         this.http
@@ -103,14 +80,13 @@ export class HomeCmp {
             .subscribe(this.update.bind(this), onError.bind(this));
         function onError(err) {
             this.loadError = true;
+            this.when = null;
             this.ref.detectChanges();
             console.error(err);
         }
     }
 
     private update(data: any) {
-        this.loaded = true;
-        this.firstLoaded = true;
         this.data = data;
         this.when = data.payload.timestamp;
 
@@ -140,9 +116,11 @@ export class HomeCmp {
         let [h] = this.limit(d);
         this.chart.series[0].points[0].update(h);
         this.ref.detectChanges();
+        this.loaded = true;
+        this.firstLoaded = true;
     }
 
-    private initGauge(autoJigger: boolean = true) {
+    private initGauge(twitch: boolean = true) {
         var height = $(document).innerWidth() < 800 ? 240 : 400;
         var chartElem = $(this.elem.nativeElement).find(".chart");
         let def = new Gauge(height, () => this.delta).getDefinition();
@@ -150,9 +128,9 @@ export class HomeCmp {
         chartElem.highcharts(def);
         this.chart = chartElem.highcharts();
 
-        // Jigger needle to +/- 1 inch
-        // disable in test mode, which does it's own jigger
-        if (autoJigger) {
+        // Twitch needle to +/- 1 inch
+        // disable in test mode, which does it's own movement
+        if (twitch) {
             let point = this.chart.series[0].points[0];
             Observable
                 .timer(1000, 1000)
@@ -184,4 +162,29 @@ export class HomeCmp {
         }
         return sigma * (tot - n / 2) / (n / 2) + mu;
     }
+    private doJigger() {
+        let update = this.update.bind(this);
+        Observable
+            .timer(0, 2000)
+            .subscribe(() => {
+                this.loaded = false;
+                this.ref.detectChanges();
+                // fake a 500ms load delay
+                setTimeout(() => {
+                    this.loaded = true;
+                    update(this.fakeData());
+                    this.ref.detectChanges();
+                }, 500);
+            });
+    }
+
+    private fakeData() {
+        let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
+        let value = this.normalDistance + this.normal(30);
+
+        return {
+            payload: { value, timestamp }
+        };
+    }
+
 }
