@@ -2,9 +2,8 @@ import {Component, ChangeDetectorRef, ElementRef} from "angular2/core";
 import {Http} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
-import MomentPipe from "../../util/moment";
 import Gauge from "./gauge";
-import Loader from "../loader/loader";
+import {LoaderAnim, MomentPipe} from "../../util";
 import Config from "../../../config";
 
 declare var $: any;
@@ -15,7 +14,7 @@ declare var $: any;
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
     pipes: [MomentPipe],
-    directives: [Loader],
+    directives: [LoaderAnim],
     providers: [Config]
 })
 export class HomeCmp {

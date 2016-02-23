@@ -6,4 +6,7 @@ import {Component} from "angular2/core";
     templateUrl: "./loader.html",
     styleUrls: ["./loader.css"]
 })
-export default class LoaderAnim {}
+class LoaderAnim {}
+
+export {LoaderAnim};
+

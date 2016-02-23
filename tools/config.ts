@@ -6,6 +6,8 @@ import * as chalk from 'chalk';
 // --------------
 // Configuration.
 
+export const APP_TITLE = 'Pigeons Lock Footpath';
+
 const ENVIRONMENTS = {
     DEVELOPMENT: 'dev',
     PRODUCTION: 'prod'
@@ -22,8 +24,6 @@ export const ENABLE_HOT_LOADING = !!argv['hot-loader'];
 export const HOT_LOADER_PORT = 5578;
 
 export const BOOTSTRAP_MODULE = ENABLE_HOT_LOADING ? 'hot_loader_main' : 'main';
-
-export const APP_TITLE = 'Pigeons Lock Footpath';
 
 export const APP_SRC = 'src';
 export const TEST_SRC = 'src';
