@@ -81,7 +81,7 @@ export class HomeCmp {
             .delay(250)
             .map((res: any) => res.json())
             .subscribe(this.update.bind(this), onError.bind(this));
-        function onError(err) {
+        function onError(err: any) {
             this.loadError = true;
             this.when = null;
             this.ref.detectChanges();
@@ -90,7 +90,6 @@ export class HomeCmp {
     }
 
     private update(data: any) {
-        this.resetStates();
 
         this.data = data;
         this.when = data.payload.timestamp;
@@ -102,6 +101,7 @@ export class HomeCmp {
 
         const d = this.delta;
         const levels = this.config.levels;
+        this.States = this.resetStates(this.States);
         const s = this.States;
         if (d >= levels.EXTREME) {
             s.EXTREME = true;
@@ -191,9 +191,11 @@ export class HomeCmp {
         };
     }
 
-    private resetStates() {
-        for (let k of Object.keys(this.States)) {
-            this.States[k] = false;
+    private resetStates(states: Object): any {
+        let s: any = {};
+        for (let k of Object.keys(states)) {
+            s[k] = false;
         }
+        return s;
     }
 }
