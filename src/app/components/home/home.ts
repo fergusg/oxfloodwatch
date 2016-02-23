@@ -7,7 +7,6 @@ import Gauge from "./gauge";
 import Loader from "../loader/loader";
 import {url as floodWatchUrl} from "../../../config";
 
-declare var moment: any;
 declare var $: any;
 
 @Component({
@@ -19,13 +18,14 @@ declare var $: any;
     directives: [Loader]
 })
 export class HomeCmp {
-    public VERY_LOW = false;
-    public LOW = false;
-    public CLOSE = false;
-    public HIGH = false;
-    public VERY_HIGH = false;
-    public EXTREME = false;
-
+    public States = {
+        VERY_LOW: false,
+        LOW: false,
+        CLOSE: false,
+        HIGH: false,
+        VERY_HIGH: false,
+        EXTREME: false
+    };
     public delta = 0;
     public data: any;
     public loadError = false;
@@ -86,6 +86,8 @@ export class HomeCmp {
     }
 
     private update(data: any) {
+        this.resetStates();
+
         this.data = data;
         this.when = data.payload.timestamp;
 
@@ -94,22 +96,19 @@ export class HomeCmp {
 
         this.delta = this.normalDistance - distance;
 
-        [this.CLOSE, this.HIGH, this.VERY_HIGH, this.EXTREME, this.LOW, this.VERY_LOW] =
-            [false, false, false, false, false, false];
-
         let d = this.delta;
         if (d >= 30) {
-            this.EXTREME = true;
+            this.States.EXTREME = true;
         } else if (d >= 14) {
-            this.VERY_HIGH = true;
+            this.States.VERY_HIGH = true;
         } else if (d >= 7) {
-            this.HIGH = true;
+            this.States.HIGH = true;
         } else if (d >= 0) {
-            this.CLOSE = true;
+            this.States.CLOSE = true;
         } else if (d >= -10) {
-            this.LOW = true;
+            this.States.LOW = true;
         } else {
-            this.VERY_LOW = true;
+            this.States.VERY_LOW = true;
         }
 
         let [h] = this.limit(d);
@@ -184,5 +183,11 @@ export class HomeCmp {
         return {
             payload: { value, timestamp }
         };
+    }
+
+    private resetStates() {
+        for (let k of Object.keys(this.States)) {
+            this.States[k] = false;
+        }
     }
 }

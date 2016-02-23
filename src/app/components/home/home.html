@@ -26,32 +26,32 @@
             </div>
         </div>
         <div *ngIf="loaded">
-            <div *ngIf="VERY_LOW">
+            <div *ngIf="States.VERY_LOW">
                 <div class="alert alert-success" role="alert">
                     So low, even the camels are nervous.
                 </div>
             </div>
-            <div *ngIf="LOW">
+            <div *ngIf="States.LOW">
                 <div class="alert alert-success" role="alert">
                     If the river were {{-delta}}cm higher, you might get wet feet.
                 </div>
             </div>
-            <div *ngIf="CLOSE">
+            <div *ngIf="States.CLOSE">
                 <div class="alert alert-info" role="alert">
                     It's a close call. You might get a wee bit soggy but you probably can get around the edge with care.
                 </div>
             </div>
-            <div *ngIf="HIGH">
+            <div *ngIf="States.HIGH">
                 <div class="alert alert-danger" role="alert">
                     Looks like you might get damp. But if you have suitable footwear you still might get through OK.
                 </div>
             </div>
-            <div *ngIf="VERY_HIGH">
+            <div *ngIf="States.VERY_HIGH">
                 <div class="alert alert-danger" role="alert">
                     Pretty damned deep. Wellies only
                 </div>
             </div>
-            <div *ngIf="EXTREME">
+            <div *ngIf="States.EXTREME">
                 <div class="alert alert-info" role="alert">
                     Call Jacques Cousteau
                 </div>
