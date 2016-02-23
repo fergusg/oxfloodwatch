@@ -8,8 +8,8 @@ export default class Gauge {
         return {
             chart: {
                 type: 'gauge',
-                plotBackgroundColor: null,
-                plotBackgroundImage: null,
+                plotBackgroundColor: <string>null,
+                plotBackgroundImage: <string>null,
                 plotBorderWidth: 0,
                 plotShadow: false,
                 marginTop: 0,
@@ -20,7 +20,7 @@ export default class Gauge {
                 enabled: false
             },
             title: {
-                text: null
+                text: <string>null
             },
             pane: {
                 startAngle: -150,
@@ -126,7 +126,7 @@ export default class Gauge {
                     }
                 },
                 tooltip: {
-                    pointFormatter: null
+                    pointFormatter: <any>null
                 }
             }],
             tooltip: {
