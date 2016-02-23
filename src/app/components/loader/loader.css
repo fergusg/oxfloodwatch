@@ -9,7 +9,7 @@
 .ballsWaveG{
 	position:absolute;
 	top:0;
-	background-color:rgb(0,0,0);
+	background-color:rgb(255, 153, 153);
 	width:20px;
 	height:20px;
 	animation-name:ballsWaveG;
@@ -116,7 +116,7 @@
 		background-color:rgb(217,237,247);
 	}
 	100%{
-		background-color:rgb(0,0,0);
+		background-color:rgb(255, 153, 153);
 	}
 }
 
@@ -125,7 +125,7 @@
 		background-color:rgb(217,237,247);
 	}
 	100%{
-		background-color:rgb(0,0,0);
+		background-color:rgb(255, 153, 153);
 	}
 }
 
@@ -134,7 +134,7 @@
 		background-color:rgb(217,237,247);
 	}
 	100%{
-		background-color:rgb(0,0,0);
+		background-color:rgb(255, 153, 153);
 	}
 }
 
@@ -143,7 +143,7 @@
 		background-color:rgb(217,237,247);
 	}
 	100%{
-		background-color:rgb(0,0,0);
+		background-color:rgb(255, 153, 153);
 	}
 }
 
@@ -152,6 +152,6 @@
 		background-color:rgb(217,237,247);
 	}
 	100%{
-		background-color:rgb(0,0,0);
+		background-color:rgb(255, 153, 153);
 	}
 }
