@@ -5,6 +5,7 @@ import {Observable} from "rxjs/Observable";
 import MomentPipe from "./moment";
 import Gauge from "./gauge";
 import Loader from "../loader/loader";
+import {url as floodWatchUrl} from "../../../config";
 
 declare var moment: any;
 declare var $: any;
@@ -41,8 +42,6 @@ export class HomeCmp {
     private GAUGE_MAX = 40;
 
     private normalDistance = 149;
-    private id = "eykx-cjw5-u2i3-fesc-53d4-nvg6.o.3";
-    private url = `https://oxfloodnet.thingzone.uk/latest/${this.id}`;
 
     constructor(private http: Http,
         private ref: ChangeDetectorRef, private elem: ElementRef) {
@@ -73,7 +72,7 @@ export class HomeCmp {
 
         this.ref.detectChanges();
         this.http
-            .get(this.url)
+            .get(floodWatchUrl)
             .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())
@@ -186,5 +185,4 @@ export class HomeCmp {
             payload: { value, timestamp }
         };
     }
-
 }
