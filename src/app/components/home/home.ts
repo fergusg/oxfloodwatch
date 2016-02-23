@@ -2,7 +2,7 @@ import {Component, ChangeDetectorRef, ElementRef} from "angular2/core";
 import {Http} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
-import MomentPipe from "./moment";
+import MomentPipe from "../../util/moment";
 import Gauge from "./gauge";
 import Loader from "../loader/loader";
 import {url as floodWatchUrl} from "../../../config";
