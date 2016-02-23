@@ -5,7 +5,11 @@ import {Observable} from "rxjs/Observable";
 import MomentPipe from "../../util/moment";
 import Gauge from "./gauge";
 import Loader from "../loader/loader";
-import {url as floodWatchUrl} from "../../../config";
+import {
+    url as floodWatchUrl,
+    title as mainTitle,
+    subtitle as mainSubtitle
+} from "../../../config";
 
 declare var $: any;
 
@@ -30,6 +34,9 @@ export class HomeCmp {
     public data: any;
     public loadError = false;
     public loaded = false;
+
+    public title = mainTitle;
+    public subtitle = mainSubtitle;
 
     private firstLoaded = false;
     private when: any;
