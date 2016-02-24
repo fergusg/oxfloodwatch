@@ -4,7 +4,7 @@ RouteConfig,
 ROUTER_DIRECTIVES
 } from "angular2/router";
 
-import {HomeCmp} from "./components/home";
+import {HomeCmp} from "./components";
 
 @Component({
     selector: "app",
