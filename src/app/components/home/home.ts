@@ -5,6 +5,7 @@ import {Observable} from "rxjs/Observable";
 import Gauge from "./gauge";
 import {LoaderAnim, MomentPipe} from "../../util";
 import Config from "../../../config";
+import {DepthPipe} from "./depth-pipe";
 
 declare var $: any;
 
@@ -13,23 +14,17 @@ declare var $: any;
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
-    pipes: [MomentPipe],
+    pipes: [MomentPipe, DepthPipe],
     directives: [LoaderAnim],
     providers: [Config]
 })
 export class HomeCmp {
-    public States = {
-        VERY_LOW: false,
-        LOW: false,
-        CLOSE: false,
-        HIGH: false,
-        VERY_HIGH: false,
-        EXTREME: false
-    };
     public delta = 0;
     public data: any;
     public loadError = false;
     public loaded = false;
+    public messages = this.config.messages;
+    public state: string;
 
     private firstLoaded = false;
     private when: any;
@@ -101,20 +96,18 @@ export class HomeCmp {
 
         const d = this.delta;
         const levels = this.config.levels;
-        this.States = this.resetStates(this.States);
-        const s = this.States;
         if (d >= levels.EXTREME) {
-            s.EXTREME = true;
+            this.state = "EXTREME";
         } else if (d >= levels.VERY_HIGH) {
-            s.VERY_HIGH = true;
+            this.state = "VERY_HIGH";
         } else if (d >= levels.HIGH) {
-            s.HIGH = true;
+            this.state = "HIGH";
         } else if (d >= levels.CLOSE) {
-            s.CLOSE = true;
+            this.state = "CLOSE";
         } else if (d >= levels.LOW) {
-            s.LOW = true;
+            this.state = "LOW";
         } else {
-            s.VERY_LOW = true;
+            this.state = "VERY_LOW";
         }
 
         const [h] = this.limit(d);
@@ -191,11 +184,4 @@ export class HomeCmp {
         };
     }
 
-    private resetStates(states: Object): any {
-        let s: any = {};
-        for (let k of Object.keys(states)) {
-            s[k] = false;
-        }
-        return s;
-    }
 }

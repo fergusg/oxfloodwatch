@@ -26,34 +26,36 @@
             </div>
         </div>
         <div *ngIf="loaded">
-            <div *ngIf="States.VERY_LOW">
+            <div *ngIf="state === 'VERY_LOW'">
+                <div class="alert"
+                [class.alert-success]="state === 'VERY_LOW'"
+                 role="alert">
+                    {{messages[state] | depth:-delta}}
+                </div>
+            </div>
+            <div *ngIf="state === 'LOW'">
                 <div class="alert alert-success" role="alert">
-                    So low, even the camels are nervous.
+                    {{messages[state] | depth:-delta}}
                 </div>
             </div>
-            <div *ngIf="States.LOW">
-                <div class="alert alert-success" role="alert">
-                    If the river were {{-delta}}cm higher, you might get wet feet.
-                </div>
-            </div>
-            <div *ngIf="States.CLOSE">
+            <div *ngIf="state === 'CLOSE'">
                 <div class="alert alert-info" role="alert">
-                    It's a close call. You might get a wee bit soggy but you probably can get around the edge with care.
+                    {{messages[state] | depth:-delta}}
                 </div>
             </div>
-            <div *ngIf="States.HIGH">
+            <div *ngIf="state === 'HIGH'">
                 <div class="alert alert-danger" role="alert">
-                    Looks like you might get damp. But if you have suitable footwear you still might get through OK.
+                    {{messages[state] | depth:-delta}}
                 </div>
             </div>
-            <div *ngIf="States.VERY_HIGH">
+            <div *ngIf="state === 'VERY_HIGH'">
                 <div class="alert alert-danger" role="alert">
-                    Pretty damned deep. Wellies only
+                    {{messages[state] | depth:-delta}}
                 </div>
             </div>
-            <div *ngIf="States.EXTREME">
+            <div *ngIf="state === 'EXTREME'">
                 <div class="alert alert-info" role="alert">
-                    Call Jacques Cousteau
+                    {{messages[state] | depth:-delta}}
                 </div>
             </div>
         </div>
