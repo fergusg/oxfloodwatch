@@ -7,6 +7,11 @@ export default class Config {
         LOW: -10
     };
 
+    public GAUGE_MIN = -10;
+    public GAUGE_MAX = 40;
+
+    public normalDistance = 149;
+
     public id = "eykx-cjw5-u2i3-fesc-53d4-nvg6.o.3";
     public title = "Kirtlington to Tackley Footpath";
     public subtitle = "Is it flooded near Pigeons Lock?";

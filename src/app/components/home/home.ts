@@ -38,10 +38,10 @@ export class HomeCmp {
     private jigger = false;
     private timeout = false;
 
-    private GAUGE_MIN = -10;
-    private GAUGE_MAX = 40;
+    private GAUGE_MIN = this.config.GAUGE_MIN;
+    private GAUGE_MAX = this.config.GAUGE_MAX;
 
-    private normalDistance = 149;
+    private normalDistance = this.config.normalDistance;
 
     constructor(
         private http: Http,
