@@ -4,7 +4,8 @@ import {Pipe, PipeTransform} from 'angular2/core';
 class DepthPipe implements PipeTransform {
     transform(value: string, args: string[]): string {
         console.log("DepthPipe", value, args);
-        return value.replace("[depth]", args[0]);
+        let depth = -1 * parseInt(args[0]);
+        return value.replace("[depth]", `${depth}`);
     }
 }
 

@@ -21,8 +21,8 @@ export default class Config {
     public messages = {
         VERY_LOW: "So low, even the camels are nervous.",
         LOW: "If the river were [depth]cm higher, you might get wet feet.",
-        CLOSE: "It's a close call. You might get a wee bit soggy but you probably can get around the edge with care.",
-        HIGH: "Looks like you might get damp. But if you have suitable footwear you still might get through OK.",
+        CLOSE: "It's a close call. You probably can get around the edge with care.",
+        HIGH: "Looks like you might get damp.",
         VERY_HIGH: "Pretty damned deep. Wellies only",
         EXTREME: "Call Jacques Cousteau"
     };

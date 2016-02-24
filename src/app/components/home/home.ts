@@ -162,22 +162,21 @@ export class HomeCmp {
     private doJigger() {
         let update = this.update.bind(this);
         Observable
-            .timer(0, 2000)
+            .timer(0, 1000)
             .subscribe(() => {
                 this.loaded = false;
                 this.ref.detectChanges();
-                // fake a 500ms load delay
                 setTimeout(() => {
                     this.loaded = true;
                     update(this.fakeData());
                     this.ref.detectChanges();
-                }, 500);
+                }, 250);
             });
     }
 
     private fakeData() {
         let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
-        let value = this.normalDistance + this.normal(30);
+        let value = this.normalDistance + this.normal(60);
 
         return {
             payload: { value, timestamp }

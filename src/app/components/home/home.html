@@ -26,37 +26,12 @@
             </div>
         </div>
         <div *ngIf="loaded">
-            <div *ngIf="state === 'VERY_LOW'">
-                <div class="alert"
-                [class.alert-success]="state === 'VERY_LOW'"
-                 role="alert">
-                    {{messages[state] | depth:-delta}}
-                </div>
-            </div>
-            <div *ngIf="state === 'LOW'">
-                <div class="alert alert-success" role="alert">
-                    {{messages[state] | depth:-delta}}
-                </div>
-            </div>
-            <div *ngIf="state === 'CLOSE'">
-                <div class="alert alert-info" role="alert">
-                    {{messages[state] | depth:-delta}}
-                </div>
-            </div>
-            <div *ngIf="state === 'HIGH'">
-                <div class="alert alert-danger" role="alert">
-                    {{messages[state] | depth:-delta}}
-                </div>
-            </div>
-            <div *ngIf="state === 'VERY_HIGH'">
-                <div class="alert alert-danger" role="alert">
-                    {{messages[state] | depth:-delta}}
-                </div>
-            </div>
-            <div *ngIf="state === 'EXTREME'">
-                <div class="alert alert-info" role="alert">
-                    {{messages[state] | depth:-delta}}
-                </div>
+            <div class="alert" role="alert"
+                [class.alert-success]="state === 'VERY_LOW' || state === 'LOW'"
+                [class.alert-info]="state === 'CLOSE'"
+                [class.alert-warning]="state === 'HIGH'"
+                [class.alert-danger]="state === 'VERY_HIGH' || state === 'EXTREME'">
+                {{messages[state] | depth:delta}}
             </div>
         </div>
     </div>
