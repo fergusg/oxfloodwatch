@@ -6,6 +6,7 @@ import Gauge from "./gauge";
 import {LoaderAnim, MomentPipe} from "../../util";
 import Config from "../../../config";
 import {DepthPipe} from "./depth-pipe";
+import {normal, limit} from "./utils";
 
 declare var $: any;
 
@@ -46,7 +47,7 @@ export class HomeCmp {
     ) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
-        this.timeout  = location.search.includes("timeout");
+        this.timeout = location.search.includes("timeout");
     }
 
     public ngOnInit() {
@@ -110,7 +111,7 @@ export class HomeCmp {
             this.state = "VERY_LOW";
         }
 
-        const [h] = this.limit(d);
+        const [h] = limit(d, this.GAUGE_MIN, this.GAUGE_MAX);
         this.chart.series[0].points[0].update(h);
         this.ref.detectChanges();
         this.loaded = true;
@@ -128,37 +129,21 @@ export class HomeCmp {
         // Twitch needle to +/- 1 inch
         // disable in test mode, which does it's own movement
         if (twitch) {
-            let point = this.chart.series[0].points[0];
-            Observable
-                .timer(1000, 1000)
-                .subscribe(() => {
-                    let [h, limited] = this.limit(this.delta);
-                    h += this.normal(limited ? 1.0 : 2.5);
-                    point.update(h);
-                });
+            this.twitch();
         }
     };
 
-    private limit(h: number): [number, boolean, boolean, boolean] {
-        let [high, low] = [false, false];
-
-        if (h < this.GAUGE_MIN) {
-            h = this.GAUGE_MIN - 1 ;
-            low = true;
-        } else if (h > this.GAUGE_MAX) {
-            h = this.GAUGE_MAX + 1;
-            high = true;
-        }
-        return [h, high || low, low, high];
+    private twitch() {
+        let point = this.chart.series[0].points[0];
+        Observable
+            .timer(1000, 1000)
+            .subscribe(() => {
+                let [h, limited] = limit(this.delta, this.GAUGE_MIN, this.GAUGE_MAX);
+                h += normal(limited ? 1.0 : 2.5);
+                point.update(h);
+            });
     }
 
-    private normal(sigma = 1, mu = 0, n = 6) {
-        var tot = 0;
-        for (var i = 0; i < n; i++) {
-            tot += Math.random();
-        }
-        return sigma * (tot - n / 2) / (n / 2) + mu;
-    }
     private doJigger() {
         let update = this.update.bind(this);
         Observable
@@ -176,7 +161,7 @@ export class HomeCmp {
 
     private fakeData() {
         let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
-        let value = this.normalDistance + this.normal(60);
+        let value = this.normalDistance + normal(60);
 
         return {
             payload: { value, timestamp }
