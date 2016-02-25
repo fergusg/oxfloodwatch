@@ -83,38 +83,7 @@ export default class Gauge {
                     text: 'Estimated<br>Height',
                     y: 20
                 },
-                plotBands: [
-                    {
-                        from: -10,
-                        to: -5,
-                        color: '#55BF3B' // green55BF3B
-                    },
-                    {
-                        from: -5,
-                        to: 0,
-                        color: '#00e600' // green
-                    },
-                    {
-                        from: 0,
-                        to: 7,
-                        color: '#DDDF0D' // yellow
-                    },
-                    {
-                        from: 7,
-                        to: 15,
-                        color: '#ffa366' // orange
-                    },
-                    {
-                        from: 15,
-                        to: 30,
-                        color: '#ff6600' // orange
-                    },
-                    {
-                        from: 30,
-                        to: 1000,
-                        color: '#cc0000' // red
-                    }
-                ]
+                plotBands: null
             },
             series: [{
                 name: 'Depth',

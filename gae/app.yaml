@@ -55,6 +55,12 @@ handlers:
   upload: static/index.html
   secure: always
 
+- url: /chacks
+  static_files: static/index.html
+  upload: static/index.html
+  secure: always
+
+
 - url: /(.*)
   static_files: static/\1
   upload: static/(.*)

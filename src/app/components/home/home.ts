@@ -4,7 +4,7 @@ import {Observable} from "rxjs/Observable";
 
 import Gauge from "./gauge";
 import {LoaderAnim, MomentPipe} from "../../util";
-import Config from "../../../config";
+import {defaultConfig} from "../../../config";
 import {DepthPipe} from "./depth-pipe";
 import {normal, limit} from "./utils";
 
@@ -16,16 +16,16 @@ declare var $: any;
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
     pipes: [MomentPipe, DepthPipe],
-    directives: [LoaderAnim],
-    providers: [Config]
+    directives: [LoaderAnim]
 })
 export class HomeCmp {
     public delta = 0;
     public data: any;
     public loadError = false;
     public loaded = false;
-    public messages = this.config.messages;
+    public messages: any;
     public state: string;
+    private config: any;
 
     private firstLoaded = false;
     private when: any;
@@ -34,20 +34,29 @@ export class HomeCmp {
     private jigger = false;
     private timeout = false;
 
-    private GAUGE_MIN = this.config.GAUGE_MIN;
-    private GAUGE_MAX = this.config.GAUGE_MAX;
-
-    private normalDistance = this.config.normalDistance;
+    private GAUGE_MIN: number;
+    private GAUGE_MAX: number;
+    private normalDistance: number;
 
     constructor(
         private http: Http,
         private ref: ChangeDetectorRef,
-        private elem: ElementRef,
-        public config: Config
+        private elem: ElementRef
     ) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
         this.timeout = location.search.includes("timeout");
+        this.config = this.getConfig();
+        this.messages = this.config.messages;
+        this.GAUGE_MIN = this.config.GAUGE_MIN;
+        this.GAUGE_MAX = this.config.GAUGE_MAX;
+
+        this.normalDistance = this.config.normalDistance;
+
+    }
+
+    public getConfig() {
+        return defaultConfig;
     }
 
     public ngOnInit() {
@@ -122,6 +131,10 @@ export class HomeCmp {
         let height = $(document).innerWidth() < 800 ? 240 : 400;
         let chartElem = $(this.elem.nativeElement).find(".chart");
         let def = new Gauge(height, () => this.delta).getDefinition();
+
+        def.yAxis = Object.assign({}, def.yAxis, this.config.yAxis);
+
+        console.log("def", def);
 
         chartElem.highcharts(def);
         this.chart = chartElem.highcharts();
