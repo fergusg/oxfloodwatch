@@ -1,4 +1,4 @@
-import {HomeCmp} from "./components/home/home";
+import {Default} from "./components/home/default";
 import {Chacks} from "./components/home/chacks";
 
-export {HomeCmp, Chacks};
+export {Default, Chacks};

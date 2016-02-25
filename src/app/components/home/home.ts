@@ -4,9 +4,9 @@ import {Observable} from "rxjs/Observable";
 
 import Gauge from "./gauge";
 import {LoaderAnim, MomentPipe} from "../../util";
-import {defaultConfig} from "../../../config";
 import {DepthPipe} from "./depth-pipe";
 import {normal, limit} from "./utils";
+import {defaultConfig} from "../../../config";
 
 declare var $: any;
 
@@ -18,7 +18,7 @@ declare var $: any;
     pipes: [MomentPipe, DepthPipe],
     directives: [LoaderAnim]
 })
-export class HomeCmp {
+export abstract class HomeCmp {
     public delta = 0;
     public data: any;
     public loadError = false;
@@ -55,9 +55,12 @@ export class HomeCmp {
 
     }
 
+    public abstract getLocalConfig();
+
     public getConfig() {
-        return defaultConfig;
+        return Object.assign({}, defaultConfig, this.getLocalConfig());
     }
+
 
     public ngOnInit() {
         if (this.jigger) {

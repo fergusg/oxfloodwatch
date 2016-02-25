@@ -4,7 +4,7 @@ RouteConfig,
 ROUTER_DIRECTIVES
 } from "angular2/router";
 
-import {HomeCmp, Chacks} from "./components";
+import {Default, Chacks} from "./components";
 
 @Component({
     selector: "app",
@@ -14,7 +14,7 @@ import {HomeCmp, Chacks} from "./components";
     directives: [ROUTER_DIRECTIVES]
 })
 @RouteConfig([
-    { path: "/", component: HomeCmp, name: "Home" },
+    { path: "/", component: Default, name: "Home" },
     { path: "/chacks", component: Chacks, name: "Chacks" },
 ])
 export class AppCmp { }
