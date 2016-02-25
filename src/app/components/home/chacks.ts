@@ -6,34 +6,45 @@ import {defaultConfig} from "../../../config";
 
 const [min, max]  = [-50, 100];
 
+const levels = {
+    min,
+    very_low: -25,
+    low: -10,
+    close: 0,
+    high: 20,
+    very_high: 40,
+    extreme: 60,
+    max
+};
+
 const plotBands = [
     {
         from: -1000,
-        to: -25,
+        to: levels.low,
         color: '#55BF3B' // green
     },
     {
-        from: -25,
-        to: 0,
+        from: levels.low,
+        to: levels.close,
         color: '#00e600' // green
     },
     {
-        from: 0,
-        to: 20,
+        from: levels.close,
+        to: levels.high,
         color: '#DDDF0D' // yellow
     },
     {
-        from: 20,
-        to: 40,
+        from: levels.high,
+        to: levels.very_high,
         color: '#ffa366' // orange
     },
     {
-        from: 40,
-        to: 60,
+        from: levels.very_high,
+        to: levels.extreme,
         color: '#ff6600' // orange
     },
     {
-        from: 60,
+        from: levels.extreme,
         to: 1000,
         color: '#cc0000' // red
     }
@@ -76,6 +87,4 @@ export class Chacks extends HomeCmp {
     public getConfig() {
         return Object.assign(defaultConfig, config);
     }
-
-
 }
