@@ -31,7 +31,7 @@
                 [class.alert-info]="state === 'CLOSE'"
                 [class.alert-warning]="state === 'HIGH'"
                 [class.alert-danger]="state === 'VERY_HIGH' || state === 'EXTREME'">
-                {{messages[state] | depth:delta}}
+                {{messages[state] | depth:above}}
             </div>
         </div>
     </div>

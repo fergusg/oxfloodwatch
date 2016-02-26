@@ -20,6 +20,7 @@ declare var $: any;
 })
 export abstract class HomeCmp {
     public delta = 0;
+    public above = 0;
     public data: any;
     public loadError = false;
     public loaded = false;
@@ -151,18 +152,24 @@ export abstract class HomeCmp {
 
         const d = this.delta;
         const levels = this.config.levels;
-        if (d >= levels.EXTREME) {
+        if (d >= levels.extreme) {
             this.state = "EXTREME";
-        } else if (d >= levels.VERY_HIGH) {
+            this.above = d - levels.extreme;
+        } else if (d >= levels.very_high) {
             this.state = "VERY_HIGH";
-        } else if (d >= levels.HIGH) {
+            this.above = d - levels.very_high;
+        } else if (d >= levels.high) {
             this.state = "HIGH";
-        } else if (d >= levels.CLOSE) {
+            this.above = d - levels.high;
+        } else if (d >= levels.close) {
             this.state = "CLOSE";
-        } else if (d >= levels.LOW) {
+            this.above = d - levels.close;
+        } else if (d >= levels.low) {
             this.state = "LOW";
+            this.above = d - levels.low;
         } else {
             this.state = "VERY_LOW";
+            this.above = null;
         }
 
         const [h] = limit(d, this.GAUGE_MIN, this.GAUGE_MAX);
@@ -205,7 +212,7 @@ export abstract class HomeCmp {
     private doJigger() {
         let update = this.update.bind(this);
         Observable
-            .timer(0, 1000)
+            .timer(0, 5000)
             .subscribe(() => {
                 this.loaded = false;
                 this.ref.detectChanges();

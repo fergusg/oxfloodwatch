@@ -3,15 +3,15 @@ import {Http} from "angular2/http";
 
 import {HomeCmp} from "./home";
 
-const [min, max] = [-50, 100];
+const [min, max] = [-20, 50];
 
 const messages = {
-    VERY_LOW: "At top step.",
-    LOW: "At bottom of bridge",
-    CLOSE: "Encroaching front lawn",
-    HIGH: "At gravel",
-    VERY_HIGH: "At front door",
-    EXTREME: "Top of entrance floor well"
+    VERY_LOW: "OK",
+    LOW: "[depth]cm above bottom of bridge",
+    CLOSE: "[depth]cm above encroaching front lawn",
+    HIGH: "[depth]cm above gravel",
+    VERY_HIGH: "[depth]cm above front door",
+    EXTREME: "[depth]cm above entrance floor well"
 };
 
 export class Chacks extends HomeCmp {
@@ -30,8 +30,8 @@ export class Chacks extends HomeCmp {
             low: -10,
             close: 0,
             high: 20,
-            very_high: 40,
-            extreme: 60,
+            very_high: 30,
+            extreme: 36,
             max
         };
     }
@@ -40,7 +40,6 @@ export class Chacks extends HomeCmp {
         return {
             normalDistance: 80,
             title: "Trouble at t'Mill",
-            subtitle: null,
             yAxis: {
                 plotBands: this.getPlotBands(),
                 max,
