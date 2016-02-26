@@ -34,9 +34,8 @@ export abstract class HomeCmp {
     private debug = false;
     private jigger = false;
     private timeout = false;
+    private levels: any;
 
-    private GAUGE_MIN: number;
-    private GAUGE_MAX: number;
     private normalDistance: number;
 
     constructor(
@@ -49,9 +48,7 @@ export abstract class HomeCmp {
         this.timeout = location.search.includes("timeout");
         this.config = this.getConfig();
         this.messages = this.config.messages;
-        let levels = this.getLevels();
-        this.GAUGE_MIN = levels.min;
-        this.GAUGE_MAX = levels.max;
+        this.levels = this.getLevels();
 
         this.normalDistance = this.config.normalDistance;
     }
@@ -172,7 +169,7 @@ export abstract class HomeCmp {
             this.above = null;
         }
 
-        const [h] = limit(d, this.GAUGE_MIN, this.GAUGE_MAX);
+        const [h] = limit(d, this.levels.min, this.levels.max);
         this.chart.series[0].points[0].update(h);
         this.ref.detectChanges();
         this.loaded = true;
@@ -203,7 +200,7 @@ export abstract class HomeCmp {
         Observable
             .timer(1000, 1000)
             .subscribe(() => {
-                let [h, limited] = limit(this.delta, this.GAUGE_MIN, this.GAUGE_MAX);
+                let [h, limited] = limit(this.delta, this.levels.min, this.levels.max);
                 h += normal(limited ? 1.0 : 2.5);
                 point.update(h);
             });
