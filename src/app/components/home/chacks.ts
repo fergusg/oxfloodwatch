@@ -62,9 +62,6 @@ const config = {
         LOW: -10
     },
 
-    GAUGE_MIN: min,
-    GAUGE_MAX: max,
-
     normalDistance: 80,
 
     title: "Trouble at t'Mill",
