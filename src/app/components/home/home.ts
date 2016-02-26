@@ -48,19 +48,61 @@ export abstract class HomeCmp {
         this.timeout = location.search.includes("timeout");
         this.config = this.getConfig();
         this.messages = this.config.messages;
-        this.GAUGE_MIN = this.config.GAUGE_MIN;
-        this.GAUGE_MAX = this.config.GAUGE_MAX;
+        let levels = this.getLevels();
+        this.GAUGE_MIN = levels.min;
+        this.GAUGE_MAX = levels.max;
 
         this.normalDistance = this.config.normalDistance;
-
     }
 
     public abstract getLocalConfig();
+    protected abstract getLevels();
 
     public getConfig() {
-        return Object.assign({}, defaultConfig, this.getLocalConfig());
+        return Object.assign(
+            {},
+            defaultConfig,
+            {
+                levels: this.getLevels()
+            },
+            this.getLocalConfig());
     }
 
+    public getPlotBands() {
+        let levels = this.getLevels();
+        return [
+            {
+                from: -1000,
+                to: levels.low,
+                color: '#55BF3B' // green
+            },
+            {
+                from: levels.low,
+                to: levels.close,
+                color: '#00e600' // green
+            },
+            {
+                from: levels.close,
+                to: levels.high,
+                color: '#DDDF0D' // yellow
+            },
+            {
+                from: levels.high,
+                to: levels.very_high,
+                color: '#ffa366' // orange
+            },
+            {
+                from: levels.very_high,
+                to: levels.extreme,
+                color: '#ff6600' // orange
+            },
+            {
+                from: levels.extreme,
+                to: 1000,
+                color: '#cc0000' // red
+            }
+        ];
+    }
 
     public ngOnInit() {
         if (this.jigger) {
