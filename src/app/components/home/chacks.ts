@@ -14,62 +14,6 @@ const messages = {
     EXTREME: "Top of entrance floor well"
 };
 
-const plotBands = [
-    {
-        from: -1000,
-        to: -25,
-        color: '#55BF3B' // green
-    },
-    {
-        from: -25,
-        to: 0,
-        color: '#00e600' // green
-    },
-    {
-        from: 0,
-        to: 20,
-        color: '#DDDF0D' // yellow
-    },
-    {
-        from: 20,
-        to: 40,
-        color: '#ffa366' // orange
-    },
-    {
-        from: 40,
-        to: 60,
-        color: '#ff6600' // orange
-    },
-    {
-        from: 60,
-        to: 1000,
-        color: '#cc0000' // red
-    }
-];
-
-const yAxis = {
-    plotBands,
-    max,
-    min
-};
-
-const config = {
-    levels: {
-        EXTREME: 30,
-        VERY_HIGH: 14,
-        HIGH: 7,
-        CLOSE: 0,
-        LOW: -10
-    },
-
-    normalDistance: 80,
-
-    title: "Trouble at t'Mill",
-    subtitle: null,
-    yAxis,
-    messages
-};
-
 export class Chacks extends HomeCmp {
     constructor(
         http: Http,
@@ -93,6 +37,16 @@ export class Chacks extends HomeCmp {
     }
 
     public getLocalConfig() {
-        return config;
+        return {
+            normalDistance: 80,
+            title: "Trouble at t'Mill",
+            subtitle: null,
+            yAxis: {
+                plotBands: this.getPlotBands(),
+                max,
+                min
+            },
+            messages
+        };
     };
 }
