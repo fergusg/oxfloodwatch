@@ -3,10 +3,7 @@ import {Http} from "angular2/http";
 
 import {HomeCmp} from "./home";
 
-<<<<<<< HEAD
 const [min, max] = [-50, 100];
-=======
-const [min, max]  = [-50, 100];
 
 const messages = {
     VERY_LOW: "At top step.",
@@ -75,7 +72,6 @@ const config = {
     yAxis,
     messages
 };
->>>>>>> ae16ac1a9526f77e4aeac13588dd00bee1986139
 
 export class Chacks extends HomeCmp {
     constructor(
@@ -100,18 +96,6 @@ export class Chacks extends HomeCmp {
     }
 
     public getLocalConfig() {
-        return {
-            normalDistance: 80,
-            title: "Flights Mill",
-            subtitle: "Water by weir",
-            yAxis: {
-                plotBands: this.getPlotBands(),
-                max,
-                min
-            }
-        };
+        return config;
     };
-
-
-
 }
