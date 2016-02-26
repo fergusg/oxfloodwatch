@@ -6,6 +6,15 @@ import {defaultConfig} from "../../../config";
 
 const [min, max]  = [-50, 100];
 
+const messages = {
+    VERY_LOW: "At top step.",
+    LOW: "At bottom of bridge",
+    CLOSE: "Encroaching front lawn",
+    HIGH: "At gravel",
+    VERY_HIGH: "At front door",
+    EXTREME: "Top of entrance floor well"
+};
+
 const plotBands = [
     {
         from: -1000,
@@ -59,9 +68,10 @@ const config = {
 
     normalDistance: 80,
 
-    title: "Flights Mill",
-    subtitle: "Water by weir",
-    yAxis
+    title: "Trouble at t'Mill",
+    subtitle: null,
+    yAxis,
+    messages
 };
 
 export class Chacks extends HomeCmp {

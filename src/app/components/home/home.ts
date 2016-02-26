@@ -174,7 +174,7 @@ export class HomeCmp {
 
     private fakeData() {
         let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
-        let value = this.normalDistance + normal(60);
+        let value = this.normalDistance + normal(200);
 
         return {
             payload: { value, timestamp }
