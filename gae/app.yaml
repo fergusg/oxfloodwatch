@@ -1,4 +1,6 @@
-application: oxfloodwatch
+#application: brookes-polls-dev1
+#application: brookes-polls-live1
+application: undef
 runtime: python27
 version: 1
 api_version: 1
@@ -29,25 +31,16 @@ handlers:
   static_files: static/\1
   upload: static/(.*\.txt)
 
-- url: /(.*\.xml)
-  mime_type: application/xml
-  static_files: static/\1
-  upload: static/(.*\.xml)
-
-# image files
 - url: /(.*\.(bmp|gif|ico|jpeg|jpg|png))
   static_files: static/\1
   upload: static/(.*\.(bmp|gif|ico|jpeg|jpg|png))
 
-# font files
 - url: /(.*\.(woff|woff2|ttf|svg|eot))
   static_files: static/\1
   upload: static/(.*\.(woff|woff2|ttf|svg|eot))
 
-- url: /(.*.js.map)
-  static_files: static/\1
-  mime_type: application/json
-  upload: static/(.*)
+- url: /backend(.*)
+  script: main.app
   secure: always
 
 - url: /
@@ -55,13 +48,11 @@ handlers:
   upload: static/index.html
   secure: always
 
-- url: /chacks
-  static_files: static/index.html
-  upload: static/index.html
-  secure: always
+- url: /manifest\.(.*)
+  static_files: static/manifest.\1
+  upload: static/manifest.(.*)
 
+- url: /favicon\.(.*)
+  static_files: static/favicon.\1
+  upload: static/favicon\.(.*)
 
-- url: /(.*)
-  static_files: static/\1
-  upload: static/(.*)
-  secure: always

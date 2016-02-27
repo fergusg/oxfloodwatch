@@ -1,5 +1,9 @@
 localsettings.py
 
+*.pyc
+httplib2
+twilio
+
 # Logs
 logs
 *.log
