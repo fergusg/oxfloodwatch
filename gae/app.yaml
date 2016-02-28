@@ -1,6 +1,4 @@
-#application: brookes-polls-dev1
-#application: brookes-polls-live1
-application: undef
+application: oxfloodwatch
 runtime: python27
 version: 1
 api_version: 1
@@ -39,11 +37,21 @@ handlers:
   static_files: static/\1
   upload: static/(.*\.(woff|woff2|ttf|svg|eot))
 
-- url: /backend(.*)
+- url: /api(.*)
   script: main.app
   secure: always
 
+- url: /admin(.*)
+  script: main.app
+  secure: always
+  login: admin
+
 - url: /
+  static_files: static/index.html
+  upload: static/index.html
+  secure: always
+
+- url: /chacks
   static_files: static/index.html
   upload: static/index.html
   secure: always
