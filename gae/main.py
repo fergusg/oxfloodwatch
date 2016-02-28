@@ -5,7 +5,7 @@ from flask import Flask, g, redirect, request, session, url_for, Response
 from twilio.rest import TwilioRestClient
 from flask.ext.restful import Resource, Api as RestApi
 
-from localsettings import ACCOUNT_SID, AUTH_TOKEN, TWILIO_FROM, TEST_MOBILE, FLOODWATCH_URL
+from localsettings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM, TEST_MOBILE, FLOODWATCH_URL
 from models import Setting, Person
 import footpath
 
@@ -15,7 +15,7 @@ ADMIN = "/admin"
 app = Flask(__name__)
 api = RestApi(app)
 
-client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 def sendMessage(number, message):
     client.messages.create(
@@ -27,19 +27,19 @@ def sendMessage(number, message):
 @api.resource(ADMIN + '/create')
 class CreateDataStore(Resource):
     def get(self):
-        Person(
-            name = "Test User",
-            setting_id = "default",
-            trigger_level = "low",
-            mobile = TEST_MOBILE,
-            last_level = "very_low"
-        ).put()
-
         Setting(
             id = footpath.id,
             name = footpath.name,
             normal = footpath.normal,
             levels = json.dumps(footpath.levels)
+        ).put()
+
+        Person(
+            name = "Test User",
+            setting_id = footpath.id,
+            trigger_level = "close",
+            mobile = TEST_MOBILE,
+            last_level = "very_low"
         ).put()
 
         return {}
@@ -79,7 +79,6 @@ class ListAll(Resource):
             s = Setting.query(Setting.id == p.setting_id).get()
             levels = json.loads(s.levels)
             (level, delta) = self.getLevel(s, levels, current_level)
-
 #            (level, delta) = ("extreme", 40)
 
             level_names = [f["name"] for f in levels]
@@ -103,7 +102,7 @@ class ListAll(Resource):
             if alert:
                 p.last_level = level
                 p.put()
-                m = "Dear {pname}, the level at {sname} is currently {level} ({delta}cm)".format(
+                m = "Dear {pname}, the level at {sname} is now {level} ({delta}cm)".format(
                     pname=p.name,
                     sname=s.name,
                     level=levels[level_idx]["desc"],

@@ -1,5 +1,5 @@
-ACCOUNT_SID = "...."
-AUTH_TOKEN = "..."
+TWILIO_ACCOUNT_SID = "...."
+TWILIO_AUTH_TOKEN = "..."
 TWILIO_FROM = "..."
 TEST_MOBILE = "+44...."
 FLOODWATCH_ID = "....";
