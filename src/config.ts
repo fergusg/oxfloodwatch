@@ -1,9 +1,16 @@
 const feedback = "floodwatch@gooses.co.uk";
-const id = `eykx-cjw5-u2i3-fesc-53d4-nvg6.o.3`;
-const url = `https://oxfloodnet.thingzone.uk/latest/${id}`;
+let url: string;
+let jsonp: boolean = true;
+if (location.hostname === 'localhost') {
+    url = "//localhost:8080/api/latest?callback=JSONP_CALLBACK";
+} else {
+    // const id = `eykx-cjw5-u2i3-fesc-53d4-nvg6.o.3`;
+    // url = `https://oxfloodnet.thingzone.uk/latest/${id}`;
+    // jsonp = false;
+    url = "/api/latest?callback=JSONP_CALLBACK";
+}
 
 const yAxis = {
-
     minorTickColor: '#bbbbbb00',
 
     tickPixelInterval: 30,
@@ -24,6 +31,7 @@ const yAxis = {
 const defaultConfig = {
     feedback,
     url,
+    jsonp,
     yAxis
 };
 

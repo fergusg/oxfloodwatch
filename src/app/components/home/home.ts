@@ -1,5 +1,5 @@
 import {Component, ChangeDetectorRef, ElementRef} from "angular2/core";
-import {Http} from "angular2/http";
+import {Http,JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
 import Gauge from "./gauge";
@@ -12,6 +12,7 @@ declare var $: any;
 
 @Component({
     selector: "home",
+    providers: [JSONP_PROVIDERS],
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
@@ -41,7 +42,8 @@ export abstract class HomeCmp {
     constructor(
         private http: Http,
         private ref: ChangeDetectorRef,
-        private elem: ElementRef
+        private elem: ElementRef,
+        private jsonp: Jsonp
     ) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
@@ -123,8 +125,11 @@ export abstract class HomeCmp {
             : 10000;
 
         this.ref.detectChanges();
-        this.http
-            .get(this.config.url)
+        let getter = this.config.jsonp
+            ? this.jsonp.request(this.config.url)
+            : this.http.get(this.config.url);
+
+        getter
             .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())

@@ -1,19 +1,26 @@
-import logging, json
+import logging, json, random
+from dateutil import parser
+from datetime import datetime, timedelta
 
-from google.appengine.api import urlfetch
-from flask import Flask, g, redirect, request, session, url_for, Response
-from twilio.rest import TwilioRestClient
+from google.appengine.api import urlfetch, memcache
+from google.appengine.ext import ndb
+
+from flask import Flask, g, redirect, request, session, url_for, Response, current_app
 from flask.ext.restful import Resource, Api as RestApi
+from functools import wraps
+from twilio.rest import TwilioRestClient
 
 from localsettings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM, TEST_MOBILE, FLOODWATCH_URL
-from models import Setting, Person
+from models import Setting, Person, Data
 import footpath
+from extend_jsonp import support_jsonp
 
 API = "/api"
 ADMIN = "/admin"
 
 app = Flask(__name__)
 api = RestApi(app)
+support_jsonp(api)
 
 client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
@@ -24,25 +31,15 @@ def sendMessage(number, message):
         body = message
     )
 
-@api.resource(ADMIN + '/create')
-class CreateDataStore(Resource):
-    def get(self):
-        Setting(
-            id = footpath.id,
-            name = footpath.name,
-            normal = footpath.normal,
-            levels = json.dumps(footpath.levels)
-        ).put()
+def get_current_level():
+    url = FLOODWATCH_URL
+    result = urlfetch.fetch(url)
+    if result.status_code != 200:
+        return (None, result.status_code)
 
-        Person(
-            name = "Test User",
-            setting_id = footpath.id,
-            trigger_level = "close",
-            mobile = TEST_MOBILE,
-            last_level = "very_low"
-        ).put()
+    ret = json.loads(result.content)
+    return (int(ret["payload"]["value"]), ret["payload"]["timestamp"], None)
 
-        return {}
 
 @api.resource(ADMIN + '/list')
 class ListAll(Resource):
@@ -58,20 +55,11 @@ class ListAll(Resource):
 
         return (level, delta)
 
-    def get_current_level(self):
-        url = FLOODWATCH_URL
-        result = urlfetch.fetch(url)
-        if result.status_code != 200:
-            return (None, result.status_code)
-
-        ret = json.loads(result.content)
-        return (int(ret["payload"]["value"]), None)
-
     def get(self):
-        (current_level, err_code) = self.get_current_level()
-
-        if err_code is not None:
-            raise {"error": err_code}
+        d = Data.query().order(-Data.time).get()
+        if not d:
+            return []
+        current_level = d.value
 
         ret = []
 
@@ -115,6 +103,85 @@ class ListAll(Resource):
                     logging.error(e)
 
         return ret
+
+@api.resource(ADMIN + '/latest')
+class AdminLatest(Resource):
+    def get(self):
+        (current_level, timestamp, err_code) = get_current_level()
+
+        if err_code is not None:
+            raise {"error": err_code}
+
+        Data(time=parser.parse(timestamp).replace(tzinfo=None), value=current_level, time_str=timestamp).put()
+
+        return [current_level, timestamp]
+
+###################################################
+### API ###########################################
+###################################################
+
+@api.resource(API + '/latest')
+class Latest(Resource):
+    def get(self):
+        d = Data.query().order(-Data.time).get()
+        return {"payload":{"value":d.value,"timestamp":d.time_str}}
+
+@api.resource(API + '/timeseries')
+class TimeSeries(Resource):
+    def get(self):
+        ts = memcache.get(key="timeseries")
+        if ts:
+            return ts
+
+        now = datetime.now()
+        delta = timedelta(days=1)
+        then = now - delta
+        q = Data.query(Data.time > then).order(-Data.time)
+        ret = []
+        for d in q:
+            ret.append([d.time_str, d.value])
+
+        memcache.set(key="timeseries", value=ret, time=5*60) # 5 mins
+        return ret
+
+##### This stuff dev only
+
+@api.resource(ADMIN + '/create')
+class CreateDataStore(Resource):
+    def get(self):
+        Setting(
+            id = footpath.id,
+            name = footpath.name,
+            normal = footpath.normal,
+            levels = json.dumps(footpath.levels)
+        ).put()
+
+        Person(
+            name = "Test User",
+            setting_id = footpath.id,
+            trigger_level = "close",
+            mobile = TEST_MOBILE,
+            last_level = "very_low"
+        ).put()
+
+        return {}
+
+@api.resource(ADMIN + '/makedata')
+class MakeData(Resource):
+    def get(self):
+        ndb.delete_multi(
+            Data.query().fetch(keys_only=True)
+        )
+        now = datetime.now()
+        for i in xrange(24*4):
+            t = now - timedelta(seconds=i*15*60)
+            v = 179 + random.randint(-20, 20)
+            # "2016-02-29T19:04:25.596Z"
+            Data(time=t.replace(tzinfo=None), value=v,
+                time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
+            ).put()
+
+        return {}
 
 @api.resource(ADMIN + '/ping')
 class Ping(Resource):

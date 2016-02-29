@@ -13,3 +13,8 @@ class Setting(ndb.Model):
     name = ndb.StringProperty(required=True)
     normal = ndb.IntegerProperty(required=True)
     levels = ndb.StringProperty(required=True)
+
+class Data(ndb.Model):
+    time = ndb.DateTimeProperty(required=True)
+    time_str = ndb.StringProperty(required=True)
+    value = ndb.IntegerProperty(required=True)

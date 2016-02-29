@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, ElementRef} from "angular2/core";
-import {Http} from "angular2/http";
+import {Http, Jsonp} from "angular2/http";
+
 
 import {HomeCmp} from "./home";
 
@@ -18,9 +19,10 @@ export class Chacks extends HomeCmp {
     constructor(
         http: Http,
         ref: ChangeDetectorRef,
-        elem: ElementRef
+        elem: ElementRef,
+        jsonp: Jsonp
     ) {
-        super(http, ref, elem);
+        super(http, ref, elem, jsonp);
     }
 
     protected getLevels() {
