@@ -5,5 +5,5 @@ cron:
   schedule: every 15 minutes
 
 - description: latest flood level
-  url: /admin/level
+  url: /admin/latest
   schedule: every 15 minutes

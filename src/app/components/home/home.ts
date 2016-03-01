@@ -1,8 +1,9 @@
 import {Component, ChangeDetectorRef, ElementRef} from "angular2/core";
-import {Http,JSONP_PROVIDERS, Jsonp} from "angular2/http";
+import {Http, JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
 import Gauge from "./gauge";
+import TimeSeries from "./timeseries";
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./depth-pipe";
 import {normal, limit} from "./utils";
@@ -32,6 +33,7 @@ export abstract class HomeCmp {
     private firstLoaded = false;
     private when: any;
     private chart: any;
+    private timeSeriesChart: any;
     private debug = false;
     private jigger = false;
     private timeout = false;
@@ -105,6 +107,7 @@ export abstract class HomeCmp {
     }
 
     public ngOnInit() {
+        this.initTimeSeries();
         if (this.jigger) {
             this.initGauge(false);
             this.doJigger();
@@ -134,11 +137,51 @@ export abstract class HomeCmp {
             .delay(250)
             .map((res: any) => res.json())
             .subscribe(this.update.bind(this), onError.bind(this));
+
+        this.jsonp.request(this.config.timeSeriesUrl)
+            .timeout(timeout, new Error("Timed out"))
+            .delay(250)
+            .map((res: any) => res.json())
+            .subscribe(this.updateTimeSeries.bind(this), onTSError.bind(this));
+
+
         function onError(err: any) {
             this.loadError = true;
             this.when = null;
             this.ref.detectChanges();
             console.error(err);
+        }
+
+        function onTSError(err: any) {
+            console.error(err);
+        }
+    }
+
+    private updateTimeSeries(odata: any, retry = true) {
+        let data = odata;
+        let conf = this.getLocalConfig();
+        data = data.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
+        data.sort((a, b) => a[0] - b[0] );
+
+        let min = +Infinity;
+        let max = -Infinity;
+        for (let d of data) {
+            if (d[1] > max) {
+                max = d[1];
+            }
+            if (d[1] < min) {
+                min = d[1];
+            }
+        }
+
+        this.timeSeriesChart.series[0].setData(data, false, false);
+        this.timeSeriesChart.yAxis[0].setExtremes(min, max, false, false);
+        this.timeSeriesChart.redraw();
+
+        // Strange HighCharts "bug".  Chart doesn't scale properly the 1st time around
+        // so we call it again.
+        if (retry) {
+            setTimeout(() => this.updateTimeSeries(odata, false), 0);
         }
     }
 
@@ -188,8 +231,6 @@ export abstract class HomeCmp {
 
         def.yAxis = Object.assign({}, def.yAxis, this.config.yAxis);
 
-        console.log("def", def);
-
         chartElem.highcharts(def);
         this.chart = chartElem.highcharts();
 
@@ -199,6 +240,24 @@ export abstract class HomeCmp {
             this.twitch();
         }
     };
+
+    private initTimeSeries() {
+        let chartElem = $(this.elem.nativeElement).find(".timeseries");
+        let height = $(document).innerWidth() < 800 ? 80 : 150;
+        let def = new TimeSeries(height, () => this.delta).getDefinition();
+
+        var bands = this.getPlotBands();
+
+        let zones = bands.map(v => { return { color: v.color, value: v.to }; });
+
+        def = Object.assign({}, def, {
+            series: [{ zones, data: [] }]
+        });
+
+        chartElem.highcharts(def);
+        this.timeSeriesChart = chartElem.highcharts();
+
+    }
 
     private twitch() {
         let point = this.chart.series[0].points[0];

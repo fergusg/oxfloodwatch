@@ -29,6 +29,16 @@ handlers:
   static_files: static/\1
   upload: static/(.*\.txt)
 
+- url: /(.*\.json)
+  mime_type: application/json
+  static_files: static/\1
+  upload: static/(.*\.json)
+
+- url: /(.*\.xml)
+  mime_type: text/xml
+  static_files: static/\1
+  upload: static/(.*\.xml)
+
 - url: /(.*\.(bmp|gif|ico|jpeg|jpg|png))
   static_files: static/\1
   upload: static/(.*\.(bmp|gif|ico|jpeg|jpg|png))
@@ -45,6 +55,12 @@ handlers:
   script: main.app
   secure: always
   login: admin
+
+- url: /app.manifest
+  mime_type: application/json
+  static_files: static/app.manifest
+  upload: static/app.manifest
+  secure: always
 
 - url: /
   static_files: static/index.html

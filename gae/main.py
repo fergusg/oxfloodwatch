@@ -130,8 +130,8 @@ class Latest(Resource):
 class TimeSeries(Resource):
     def get(self):
         ts = memcache.get(key="timeseries")
-        if ts:
-            return ts
+        # if ts:
+        #     return ts
 
         now = datetime.now()
         delta = timedelta(days=1)
@@ -175,7 +175,7 @@ class MakeData(Resource):
         now = datetime.now()
         for i in xrange(24*4):
             t = now - timedelta(seconds=i*15*60)
-            v = 179 + random.randint(-20, 20)
+            v = 149 + random.randint(-30, 40)
             # "2016-02-29T19:04:25.596Z"
             Data(time=t.replace(tzinfo=None), value=v,
                 time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
