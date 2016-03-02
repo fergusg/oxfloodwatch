@@ -144,7 +144,6 @@ export abstract class HomeCmp {
             .map((res: any) => res.json())
             .subscribe(this.updateTimeSeries.bind(this), onTSError.bind(this));
 
-
         function onError(err: any) {
             this.loadError = true;
             this.when = null;
@@ -161,7 +160,7 @@ export abstract class HomeCmp {
         let data = odata;
         let conf = this.getLocalConfig();
         data = data.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
-        data.sort((a, b) => a[0] - b[0] );
+        data.sort((a, b) => a[0] - b[0]);
 
         let min = +Infinity;
         let max = -Infinity;

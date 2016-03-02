@@ -1,9 +1,13 @@
 cron:
 
-- description: flood level
-  url: /admin/list
+- description: Send SMS
+  url: /admin/sendalerts
+  schedule: every 1 hours
+
+- description: Latest flood level
+  url: /admin/update
   schedule: every 15 minutes
 
-- description: latest flood level
-  url: /admin/latest
-  schedule: every 15 minutes
+- description: delete old data
+  url: /admin/purge
+  schedule: every 24 hours

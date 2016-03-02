@@ -1,4 +1,4 @@
-import logging, json, random
+import logging, json, random, os
 from dateutil import parser
 from datetime import datetime, timedelta
 
@@ -17,6 +17,8 @@ from extend_jsonp import support_jsonp
 
 API = "/api"
 ADMIN = "/admin"
+
+LOCALHOST = os.environ["SERVER_NAME"] in ("localhost")
 
 app = Flask(__name__)
 api = RestApi(app)
@@ -40,8 +42,45 @@ def get_current_level():
     ret = json.loads(result.content)
     return (int(ret["payload"]["value"]), ret["payload"]["timestamp"], None)
 
+def refresh():
+    then = datetime.now() - timedelta(days=1)
+    q = Data.query(Data.time > then).order(-Data.time)
+    ret = []
+    for d in q:
+        ret.append([d.time_str, d.value])
 
-@api.resource(ADMIN + '/list')
+    memcache.set(key="timeseries", value=ret, time=3600)
+    return ret
+
+def makedata():
+    ndb.delete_multi(
+        Data.query().fetch(keys_only=True)
+    )
+    now = datetime.now()
+    for i in xrange(24*4):
+        t = now - timedelta(seconds=i*15*60)
+        v = 149 + random.randint(-30, 40)
+        # "2016-02-29T19:04:25.596Z"
+        Data(time=t.replace(tzinfo=None), value=v,
+            time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
+        ).put()
+
+def getTimeseries():
+    if LOCALHOST:
+        return refresh()
+
+    return memcache.get(key="timeseries")
+
+refresh()
+
+if LOCALHOST:
+    makedata()
+
+#######################################################
+# ADMIN API ###########################################
+#######################################################
+
+@api.resource(ADMIN + '/sendalerts')
 class ListAll(Resource):
     def getLevel(self, s, levels, current_level):
         delta = s.normal - current_level
@@ -56,10 +95,10 @@ class ListAll(Resource):
         return (level, delta)
 
     def get(self):
-        d = Data.query().order(-Data.time).get()
-        if not d:
+        ts = getTimeseries()
+        if not ts:
             return []
-        current_level = d.value
+        (time_str, current_level) = ts[0]
 
         ret = []
 
@@ -104,7 +143,7 @@ class ListAll(Resource):
 
         return ret
 
-@api.resource(ADMIN + '/latest')
+@api.resource(ADMIN + '/update')
 class AdminLatest(Resource):
     def get(self):
         (current_level, timestamp, err_code) = get_current_level()
@@ -114,35 +153,49 @@ class AdminLatest(Resource):
 
         Data(time=parser.parse(timestamp).replace(tzinfo=None), value=current_level, time_str=timestamp).put()
 
+        refresh()
+
         return [current_level, timestamp]
 
+@api.resource(ADMIN + '/purge')
+class Purge(Resource):
+    def get(self):
+        now = datetime.now()
+        delta = timedelta(days=1)
+        then = now - delta
+        ndb.delete_multi(
+            Data.query(Data.time < then).fetch(keys_only=True)
+        )
+        return {}
+
+
 ###################################################
-### API ###########################################
+### PUBLIC API ####################################
 ###################################################
+
 
 @api.resource(API + '/latest')
 class Latest(Resource):
     def get(self):
-        d = Data.query().order(-Data.time).get()
-        return {"payload":{"value":d.value,"timestamp":d.time_str}}
+        ts = getTimeseries()
+        (time_str_0, value_0) = ts[0]
+        time_0 = parser.parse(time_str_0)
+        (time_str_1, value_1) = ts[1]
+        time_1 = parser.parse(time_str_1)
+
+        value = value_0
+        time_str = time_str_0
+        # Bad reading?
+        if value_0 - value_1 > 10:
+            value = value_1
+            time_str = time_str_1
+
+        return {"payload":{"value":value,"timestamp":time_str}}
 
 @api.resource(API + '/timeseries')
 class TimeSeries(Resource):
     def get(self):
-        ts = memcache.get(key="timeseries")
-        # if ts:
-        #     return ts
-
-        now = datetime.now()
-        delta = timedelta(days=1)
-        then = now - delta
-        q = Data.query(Data.time > then).order(-Data.time)
-        ret = []
-        for d in q:
-            ret.append([d.time_str, d.value])
-
-        memcache.set(key="timeseries", value=ret, time=5*60) # 5 mins
-        return ret
+        return getTimeseries()
 
 ##### This stuff dev only
 
@@ -166,22 +219,7 @@ class CreateDataStore(Resource):
 
         return {}
 
-@api.resource(ADMIN + '/makedata')
-class MakeData(Resource):
-    def get(self):
-        ndb.delete_multi(
-            Data.query().fetch(keys_only=True)
-        )
-        now = datetime.now()
-        for i in xrange(24*4):
-            t = now - timedelta(seconds=i*15*60)
-            v = 149 + random.randint(-30, 40)
-            # "2016-02-29T19:04:25.596Z"
-            Data(time=t.replace(tzinfo=None), value=v,
-                time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
-            ).put()
 
-        return {}
 
 @api.resource(ADMIN + '/ping')
 class Ping(Resource):
