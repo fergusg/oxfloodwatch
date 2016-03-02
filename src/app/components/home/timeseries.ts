@@ -1,18 +1,14 @@
 export default class TimeSeries {
-
-    constructor(private height: number, private deltaFunc: any) {
-    }
-
     public getDefinition() {
         return {
             chart: {
                 type: 'area',
-                height: this.height
+                height: document.body.clientWidth < 800 ? 80 : 150
             },
             credits: {
                 enabled: false
             },
-            title: "xxxxxx",
+            title: "",
             subtitle: false,
             xAxis: {
                 type: 'datetime'

@@ -32,8 +32,8 @@ export abstract class HomeCmp {
 
     private firstLoaded = false;
     private when: any;
-    private chart: any;
-    private timeSeriesChart: any;
+    private gaugeChart: any;
+    private tsChart: any;
     private debug = false;
     private jigger = false;
     private timeout = false;
@@ -133,7 +133,7 @@ export abstract class HomeCmp {
             .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())
-            .subscribe(this.updateTimeSeries.bind(this), onError.bind(this));
+            .subscribe(this.update.bind(this), onError.bind(this));
 
         function onError(err: any) {
             this.loadError = true;
@@ -143,7 +143,7 @@ export abstract class HomeCmp {
         }
     }
 
-    private updateTimeSeries(ts: any, retry = true) {
+    private update(ts: any, retry = true) {
         let conf = this.getLocalConfig();
         let data = ts.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
         data.sort((a, b) => a[0] - b[0]);
@@ -156,69 +156,63 @@ export abstract class HomeCmp {
             _ = !!_; // hack to fool linters which don't like unused vars
         }
 
-        this.timeSeriesChart.series[0].setData(data, false, false);
-        this.timeSeriesChart.yAxis[0].setExtremes(min, max, false, false);
-        this.timeSeriesChart.redraw();
+        this.tsChart.series[0].setData(data, false, false);
+        this.tsChart.yAxis[0].setExtremes(min, max, false, false);
+        this.tsChart.redraw();
 
-        // Strange HighCharts "bug".  Chart doesn't scale properly the 1st time around
+        // Strange HighCharts behaviour.  Chart doesn't scale properly the 1st time around
         // so we call it again.
         if (retry) {
-            setTimeout(() => this.updateTimeSeries(ts, false), 0);
+            setTimeout(() => this.tsChart.redraw(), 100);
         }
 
-        let [lastTime, lastValue] = data[data.length-1];
-        this.updateGauge({"payload":{lastValue, lastTime}});
+        let [timestamp, value] = data[data.length - 1];
+        this.updateGauge({ "payload": { value, timestamp } });
 
     }
 
-    private updateGauge(data: any) {
+    private calcLevels(d) {
+        const levels = this.config.levels;
+        if (d >= levels.extreme) {
+            return { state: "EXTREME", above: d - levels.extreme };
+        } else if (d >= levels.very_high) {
+            return { state: "VERY_HIGH", above: d - levels.very_high };
+        } else if (d >= levels.high) {
+            return { state: "HIGH", above: d - levels.high };
+        } else if (d >= levels.close) {
+            return { state: "CLOSE", above: d - levels.close };
+        } else if (d >= levels.low) {
+            return { state: "LOW", above: d - levels.low };
+        } else {
+            return { state: "VERY_LOW", above: null };
+        }
+    }
 
+    private updateGauge(data: any) {
         this.data = data;
         this.when = data.payload.timestamp;
 
-        // Measured DOWN
-        const distance = parseInt(data.payload.value, 10);
+        this.delta = parseInt(data.payload.value, 10);
 
-        this.delta = this.normalDistance - distance;
+        let {state, above} = this.calcLevels(this.delta);
+        this.state = state;
+        this.above = above;
 
-        const d = this.delta;
-        const levels = this.config.levels;
-        if (d >= levels.extreme) {
-            this.state = "EXTREME";
-            this.above = d - levels.extreme;
-        } else if (d >= levels.very_high) {
-            this.state = "VERY_HIGH";
-            this.above = d - levels.very_high;
-        } else if (d >= levels.high) {
-            this.state = "HIGH";
-            this.above = d - levels.high;
-        } else if (d >= levels.close) {
-            this.state = "CLOSE";
-            this.above = d - levels.close;
-        } else if (d >= levels.low) {
-            this.state = "LOW";
-            this.above = d - levels.low;
-        } else {
-            this.state = "VERY_LOW";
-            this.above = null;
-        }
-
-        const [h] = limit(d, this.levels.min, this.levels.max);
-        this.chart.series[0].points[0].update(h);
+        const [h] = limit(this.delta, this.levels.min, this.levels.max);
+        this.gaugeChart.series[0].points[0].update(h);
         this.ref.detectChanges();
         this.loaded = true;
         this.firstLoaded = true;
     }
 
     private initGauge(twitch: boolean = true) {
-        let height = $(document).innerWidth() < 800 ? 240 : 400;
         let chartElem = $(this.elem.nativeElement).find(".chart");
-        let def = new Gauge(height, () => this.delta).getDefinition();
+        let def = new Gauge(() => this.delta).getDefinition();
 
         def.yAxis = Object.assign({}, def.yAxis, this.config.yAxis);
 
         chartElem.highcharts(def);
-        this.chart = chartElem.highcharts();
+        this.gaugeChart = chartElem.highcharts();
 
         // Twitch needle to +/- 1 inch
         // disable in test mode, which does it's own movement
@@ -229,8 +223,7 @@ export abstract class HomeCmp {
 
     private initTimeSeries() {
         let chartElem = $(this.elem.nativeElement).find(".timeseries");
-        let height = $(document).innerWidth() < 800 ? 80 : 150;
-        let def = new TimeSeries(height, () => this.delta).getDefinition();
+        let def = new TimeSeries().getDefinition();
 
         var bands = this.getPlotBands();
 
@@ -241,12 +234,12 @@ export abstract class HomeCmp {
         });
 
         chartElem.highcharts(def);
-        this.timeSeriesChart = chartElem.highcharts();
+        this.tsChart = chartElem.highcharts();
 
     }
 
     private twitch() {
-        let point = this.chart.series[0].points[0];
+        let point = this.gaugeChart.series[0].points[0];
         Observable
             .timer(1000, 1000)
             .subscribe(() => {

@@ -60,7 +60,7 @@ def makedata():
     for i in xrange(24*4):
         t = now - timedelta(seconds=i*15*60)
         v = 149 + random.randint(-30, 40)
-        # "2016-02-29T19:04:25.596Z"
+        # GAE barfs if tzinfo defined
         Data(time=t.replace(tzinfo=None), value=v,
             time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
         ).put()
@@ -71,10 +71,35 @@ def getTimeseries():
 
     return memcache.get(key="timeseries")
 
+def init():
+    ndb.delete_multi(
+        Setting.query().fetch(keys_only=True)
+    )
+    ndb.delete_multi(
+        Person.query().fetch(keys_only=True)
+    )
+
+    Setting(
+        id = footpath.id,
+        name = footpath.name,
+        normal = footpath.normal,
+        levels = json.dumps(footpath.levels)
+    ).put()
+
+    Person(
+        name = "Test User",
+        setting_id = footpath.id,
+        trigger_level = "close",
+        mobile = TEST_MOBILE,
+        last_level = "very_low"
+    ).put()
+
+    makedata()
+
 refresh()
 
 if LOCALHOST:
-    makedata()
+    init()
 
 #######################################################
 # ADMIN API ###########################################

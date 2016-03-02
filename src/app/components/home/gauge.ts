@@ -1,6 +1,6 @@
 export default class Gauge {
 
-    constructor(private height: number, private deltaFunc: any) {
+    constructor(private deltaFunc: any) {
     }
 
     public getDefinition() {
@@ -14,7 +14,7 @@ export default class Gauge {
                 plotShadow: false,
                 marginTop: 0,
                 spacingTop: 0,
-                height: this.height
+                height: document.body.clientWidth < 800 ? 240 : 400
             },
             credits: {
                 enabled: false
