@@ -6,7 +6,7 @@ import Gauge from "./gauge";
 import TimeSeries from "./timeseries";
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./depth-pipe";
-import {normal, limit} from "./utils";
+import {normalDist, limit} from "./utils";
 import {defaultConfig} from "../../../config";
 
 declare var $: any;
@@ -251,7 +251,7 @@ export abstract class HomeCmp {
             .timer(1000, 1000)
             .subscribe(() => {
                 let [h, limited] = limit(this.delta, this.levels.min, this.levels.max);
-                h += normal(limited ? 1.0 : 2.5);
+                h += normalDist(limited ? 1.0 : 2.5);
                 point.update(h);
             });
     }
@@ -273,7 +273,7 @@ export abstract class HomeCmp {
 
     private fakeData() {
         let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
-        let value = this.normalDistance + normal(200);
+        let value = this.normalDistance + normalDist(200);
 
         return {
             payload: { value, timestamp }
