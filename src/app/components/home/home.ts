@@ -128,21 +128,12 @@ export abstract class HomeCmp {
             : 10000;
 
         this.ref.detectChanges();
-        let getter = this.config.jsonp
-            ? this.jsonp.request(this.config.url)
-            : this.http.get(this.config.url);
-
-        getter
-            .timeout(timeout, new Error("Timed out"))
-            .delay(250)
-            .map((res: any) => res.json())
-            .subscribe(this.update.bind(this), onError.bind(this));
 
         this.jsonp.request(this.config.timeSeriesUrl)
             .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())
-            .subscribe(this.updateTimeSeries.bind(this), onTSError.bind(this));
+            .subscribe(this.updateTimeSeries.bind(this), onError.bind(this));
 
         function onError(err: any) {
             this.loadError = true;
@@ -150,27 +141,19 @@ export abstract class HomeCmp {
             this.ref.detectChanges();
             console.error(err);
         }
-
-        function onTSError(err: any) {
-            console.error(err);
-        }
     }
 
-    private updateTimeSeries(odata: any, retry = true) {
-        let data = odata;
+    private updateTimeSeries(ts: any, retry = true) {
         let conf = this.getLocalConfig();
-        data = data.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
+        let data = ts.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
         data.sort((a, b) => a[0] - b[0]);
 
         let min = +Infinity;
         let max = -Infinity;
-        for (let d of data) {
-            if (d[1] > max) {
-                max = d[1];
-            }
-            if (d[1] < min) {
-                min = d[1];
-            }
+        for (let [_, value] of data) {
+            max = Math.max(max, value);
+            min = Math.min(min, value);
+            _ = !!_; // hack to fool linters which don't like unused vars
         }
 
         this.timeSeriesChart.series[0].setData(data, false, false);
@@ -180,11 +163,15 @@ export abstract class HomeCmp {
         // Strange HighCharts "bug".  Chart doesn't scale properly the 1st time around
         // so we call it again.
         if (retry) {
-            setTimeout(() => this.updateTimeSeries(odata, false), 0);
+            setTimeout(() => this.updateTimeSeries(ts, false), 0);
         }
+
+        let [lastTime, lastValue] = data[data.length-1];
+        this.updateGauge({"payload":{lastValue, lastTime}});
+
     }
 
-    private update(data: any) {
+    private updateGauge(data: any) {
 
         this.data = data;
         this.when = data.payload.timestamp;
@@ -270,7 +257,7 @@ export abstract class HomeCmp {
     }
 
     private doJigger() {
-        let update = this.update.bind(this);
+        let update = this.updateGauge.bind(this);
         Observable
             .timer(0, 5000)
             .subscribe(() => {

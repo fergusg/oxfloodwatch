@@ -1,7 +1,6 @@
 const feedback = "floodwatch@gooses.co.uk";
 let url = "/api/latest?callback=JSONP_CALLBACK";
 let timeSeriesUrl= "/api/timeseries?callback=JSONP_CALLBACK";
-let jsonp: boolean = true;
 if (location.hostname === 'localhost') {
     url = "//localhost:8080" + url;
     timeSeriesUrl = "//localhost:8080" + timeSeriesUrl;
@@ -29,7 +28,6 @@ const defaultConfig = {
     feedback,
     url,
     timeSeriesUrl,
-    jsonp,
     yAxis
 };
 
