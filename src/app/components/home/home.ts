@@ -4,6 +4,7 @@ import {Observable} from "rxjs/Observable";
 
 import Gauge from "./gauge";
 import TimeSeries from "./timeseries";
+import TimeSeriesComponent from "./timeseries_component";
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./depth-pipe";
 import {normalDist, limit} from "./utils";
@@ -18,12 +19,13 @@ declare var $: any;
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
     pipes: [MomentPipe, DepthPipe],
-    directives: [LoaderAnim]
+    directives: [LoaderAnim, TimeSeriesComponent]
 })
 export abstract class HomeCmp {
     public delta = 0;
     public above = 0;
     public data: any;
+    public timeseries: any;
     public loadError = false;
     public loaded = false;
     public messages: any;
@@ -156,6 +158,7 @@ export abstract class HomeCmp {
             _ = !!_; // hack to fool linters which don't like unused vars
         }
 
+        this.timeseries = data;
         this.tsChart.series[0].setData(data, false, false);
         this.tsChart.yAxis[0].setExtremes(min, max, false, false);
         this.tsChart.redraw();
