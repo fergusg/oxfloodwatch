@@ -3,7 +3,6 @@ import {Http, JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
 import Gauge from "./gauge";
-import TimeSeries from "./timeseries";
 import TimeSeriesComponent from "./timeseries_component";
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./depth-pipe";
@@ -35,7 +34,6 @@ export abstract class HomeCmp {
     private firstLoaded = false;
     private when: any;
     private gaugeChart: any;
-    private tsChart: any;
     private debug = false;
     private jigger = false;
     private timeout = false;
@@ -109,7 +107,6 @@ export abstract class HomeCmp {
     }
 
     public ngOnInit() {
-        this.initTimeSeries();
         if (this.jigger) {
             this.initGauge(false);
             this.doJigger();
@@ -159,15 +156,6 @@ export abstract class HomeCmp {
         }
 
         this.timeseries = data;
-        this.tsChart.series[0].setData(data, false, false);
-        this.tsChart.yAxis[0].setExtremes(min, max, false, false);
-        this.tsChart.redraw();
-
-        // Strange HighCharts behaviour.  Chart doesn't scale properly the 1st time around
-        // so we call it again.
-        if (retry) {
-            setTimeout(() => this.tsChart.redraw(), 100);
-        }
 
         let [timestamp, value] = data[data.length - 1];
         this.updateGauge({ "payload": { value, timestamp } });
@@ -223,23 +211,6 @@ export abstract class HomeCmp {
             this.twitch();
         }
     };
-
-    private initTimeSeries() {
-        let chartElem = $(this.elem.nativeElement).find(".timeseries");
-        let def = new TimeSeries().getDefinition();
-
-        var bands = this.getPlotBands();
-
-        let zones = bands.map(v => { return { color: v.color, value: v.to }; });
-
-        def = Object.assign({}, def, {
-            series: [{ zones, data: [] }]
-        });
-
-        chartElem.highcharts(def);
-        this.tsChart = chartElem.highcharts();
-
-    }
 
     private twitch() {
         let point = this.gaugeChart.series[0].points[0];

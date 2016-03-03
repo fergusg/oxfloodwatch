@@ -11,15 +11,7 @@
 
     <div class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'">
         <div class="chart"></div>
-
     </div>
-    <div class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'">
-        <div class="timeseries"></div>
-    </div>
-    <!--<timeseries
-        [data]="timeseries" [plotbands]="getPlotBands()"
-        class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'"
-    ></timeseries>-->
     <div class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'">
         <timeseries [data]="timeseries" [plotbands]="getPlotBands()"></timeseries>
     </div>
