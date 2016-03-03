@@ -59,7 +59,7 @@ def makedata():
     now = datetime.now()
     for i in xrange(24*4):
         t = now - timedelta(seconds=i*15*60)
-        v = 149 + random.randint(-30, 40)
+        v = 149 + random.randint(28, 29)
         # GAE barfs if tzinfo defined
         Data(time=t.replace(tzinfo=None), value=v,
             time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")

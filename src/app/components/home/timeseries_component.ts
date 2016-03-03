@@ -44,12 +44,11 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         }
 
         // when min/max are super close, expand them
-        if (Math.abs(max-min) < 10) {
-            let avg = Math.floor((max-min)/2);
+        if (Math.abs(max-min) < 5) {
+            let avg = Math.floor((max+min)/2);
             max = avg + 5;
             min = avg - 5;
         }
-
 
         this.chart.series[0].setData(data, false, false);
         this.chart.yAxis[0].setExtremes(min, max, false, false);
