@@ -43,6 +43,14 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
             _ = !!_; // hack to fool linters which don't like unused vars
         }
 
+        // when min/max are super close, expand them
+        if (Math.abs(max-min) < 10) {
+            let avg = Math.floor((max-min)/2);
+            max = avg + 5;
+            min = avg - 5;
+        }
+
+
         this.chart.series[0].setData(data, false, false);
         this.chart.yAxis[0].setExtremes(min, max, false, false);
         setTimeout(this.resizeChart.bind(this), 0);

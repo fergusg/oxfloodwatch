@@ -147,14 +147,6 @@ export abstract class HomeCmp {
         let data = ts.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
         data.sort((a, b) => a[0] - b[0]);
 
-        let min = +Infinity;
-        let max = -Infinity;
-        for (let [_, value] of data) {
-            max = Math.max(max, value);
-            min = Math.min(min, value);
-            _ = !!_; // hack to fool linters which don't like unused vars
-        }
-
         this.timeseries = data;
 
         let [timestamp, value] = data[data.length - 1];
