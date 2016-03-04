@@ -20,7 +20,7 @@ declare var _: any;
     pipes: [MomentPipe, DepthPipe],
     directives: [LoaderAnim, TimeSeriesComponent, GaugeComponent]
 })
-export abstract class HomeCmp {
+export abstract class BaseComponent {
     public delta = 0;
     public above = 0;
     public data: any;

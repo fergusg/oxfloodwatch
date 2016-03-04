@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, ElementRef} from "angular2/core";
 import {Http, Jsonp} from "angular2/http";
 
-import {HomeCmp} from "./home";
+import {BaseComponent} from "./base";
 
 const [min, max] = [-10, 40];
 
@@ -14,7 +14,7 @@ const messages = {
     EXTREME: "Call Jacques Cousteau"
 };
 
-export class Default extends HomeCmp {
+export class Default extends BaseComponent {
     constructor(
         http: Http,
         ref: ChangeDetectorRef,

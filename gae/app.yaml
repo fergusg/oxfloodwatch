@@ -72,6 +72,11 @@ handlers:
   upload: static/index.html
   secure: always
 
+- url: /sites/(.*)
+  static_files: static/index.html
+  upload: static/index.html
+  secure: always
+
 - url: /manifest\.(.*)
   static_files: static/manifest.\1
   upload: static/manifest.(.*)

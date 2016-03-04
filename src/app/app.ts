@@ -14,7 +14,9 @@ import {Default, Chacks} from "./components";
     directives: [ROUTER_DIRECTIVES]
 })
 @RouteConfig([
-    { path: "/", component: Default, name: "Home" },
-    { path: "/chacks", component: Chacks, name: "Chacks" },
+    { path: "/chacks", component: Chacks, name: "ChacksRedirect" },
+    { path: "/sites/pigeonslock", component: Default, name: "Default", useAsDefault: true },
+    { path: "/sites/chacks", component: Chacks, name: "Chacks" }
 ])
 export class AppCmp { }
+

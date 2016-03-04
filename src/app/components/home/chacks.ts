@@ -1,8 +1,7 @@
 import {ChangeDetectorRef, ElementRef} from "angular2/core";
 import {Http, Jsonp} from "angular2/http";
 
-
-import {HomeCmp} from "./home";
+import {BaseComponent} from "./base";
 
 const [min, max] = [-20, 50];
 
@@ -15,7 +14,7 @@ const messages = {
     EXTREME: "[depth]cm above entrance floor well"
 };
 
-export class Chacks extends HomeCmp {
+export class Chacks extends BaseComponent {
     constructor(
         http: Http,
         ref: ChangeDetectorRef,
