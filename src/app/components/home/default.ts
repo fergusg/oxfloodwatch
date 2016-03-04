@@ -43,7 +43,6 @@ export class Default extends HomeCmp {
             title: "Kirtlington to Tackley Footpath",
             subtitle: "Is it flooded near Pigeons Lock?",
             yAxis: {
-                plotBands: this.getPlotBands(),
                 max,
                 min
             },

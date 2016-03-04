@@ -1,6 +1,61 @@
-export default class Gauge {
+import {Component, ElementRef, OnInit, OnChanges, SimpleChange} from "angular2/core";
+import {Observable} from "rxjs/Observable";
 
-    constructor(private deltaFunc: any) {
+import {limit, normalDist} from "./utils";
+
+declare var $: any;
+
+@Component({
+    selector: "gauge",
+    template: '',
+    moduleId: module.id,
+    inputs: ["config", "delta"]
+})
+export default class GaugeComponent implements OnInit, OnChanges {
+
+    private chart: any;
+    private chartElem: any;
+    private delta: number;
+    private config: any;
+
+    constructor(private elem: ElementRef) { }
+
+    public ngOnInit() {
+        this.chartElem = $(this.elem.nativeElement);
+        let def = this.getDefinition();
+
+        def.yAxis = Object.assign({}, def.yAxis, this.config.yAxis);
+
+        this.chartElem.highcharts(def);
+        this.chart = this.chartElem.highcharts();
+        this.twitch();
+    }
+
+    public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+        if (changes["delta"] && changes["delta"].currentValue) {
+            this.delta = changes["delta"].currentValue;
+            const [h] = limit(this.delta, this.config.levels.min, this.config.levels.max);
+            this.chart.series[0].points[0].update(h);
+            setTimeout(this.resizeChart.bind(this), 0);
+        }
+    }
+
+    public resizeChart() {
+        let height = document.body.clientWidth < 800 ? 240 : 400;
+        let width = $(this.elem.nativeElement).parent().innerWidth();
+        this.chart.setSize(width, height);
+        this.chart.redraw(false);
+    }
+
+    public twitch() {
+        let point = this.chart.series[0].points[0];
+        Observable
+            .timer(1000, 1000)
+            .subscribe(() => {
+                let [h, limited] = limit(this.delta, this.config.levels.min, this.config.levels.max);
+                h += normalDist(limited ? 1.0 : 2.5);
+                point.update(h);
+            });
     }
 
     public getDefinition() {
@@ -59,14 +114,8 @@ export default class Gauge {
                     }
                 ]
             },
-            yAxis: {
-                min: -10,
-                max: 40,
 
-                // minorTickInterval: 'auto',
-                // minorTickWidth: 1,
-                // minorTickLength: 10,
-                // minorTickPosition: 'inside',
+            yAxis: {
                 minorTickColor: '#bbbbbb00',
 
                 tickPixelInterval: 30,
@@ -77,13 +126,11 @@ export default class Gauge {
                 tickInterval: 5,
                 labels: {
                     step: 1
-                    // rotation: 'auto'
                 },
                 title: {
                     text: 'Estimated<br>Height',
                     y: 20
-                },
-                plotBands: null
+                }
             },
             series: [{
                 name: 'Depth',
@@ -91,7 +138,7 @@ export default class Gauge {
                 dataLabels: {
                     enabled: true,
                     formatter: function() {
-                        return Math.floor(self.deltaFunc()) + " cm";
+                        return Math.floor(self.delta) + " cm";
                     }
                 },
                 tooltip: {

@@ -43,7 +43,6 @@ export class Chacks extends HomeCmp {
             normalDistance: 80,
             title: "Trouble at t'Mill",
             yAxis: {
-                plotBands: this.getPlotBands(),
                 max,
                 min
             },

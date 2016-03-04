@@ -10,7 +10,7 @@
     </div>
 
     <div class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'">
-        <div class="chart"></div>
+        <gauge [delta]="delta" [config]="getConfig()"></gauge>
     </div>
     <div class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'">
         <timeseries [data]="timeseries" [plotbands]="getPlotBands()"></timeseries>

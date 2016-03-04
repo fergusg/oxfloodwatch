@@ -2,14 +2,14 @@ import {Component, ChangeDetectorRef, ElementRef} from "angular2/core";
 import {Http, JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
-import Gauge from "./gauge";
 import TimeSeriesComponent from "./timeseries_component";
+import GaugeComponent from "./gauge_component";
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./depth-pipe";
-import {normalDist, limit} from "./utils";
 import {defaultConfig} from "../../../config";
 
 declare var $: any;
+declare var _: any;
 
 @Component({
     selector: "home",
@@ -18,7 +18,7 @@ declare var $: any;
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
     pipes: [MomentPipe, DepthPipe],
-    directives: [LoaderAnim, TimeSeriesComponent]
+    directives: [LoaderAnim, TimeSeriesComponent, GaugeComponent]
 })
 export abstract class HomeCmp {
     public delta = 0;
@@ -33,7 +33,6 @@ export abstract class HomeCmp {
 
     private firstLoaded = false;
     private when: any;
-    private gaugeChart: any;
     private debug = false;
     private jigger = false;
     private timeout = false;
@@ -61,13 +60,16 @@ export abstract class HomeCmp {
     protected abstract getLevels();
 
     public getConfig() {
-        return Object.assign(
+        let c =  Object.assign(
             {},
             defaultConfig,
             {
                 levels: this.getLevels()
             },
-            this.getLocalConfig());
+            this.getLocalConfig()
+        );
+        c.yAxis.plotBands = this.getPlotBands();
+        return c;
     }
 
     public getPlotBands() {
@@ -108,10 +110,8 @@ export abstract class HomeCmp {
 
     public ngOnInit() {
         if (this.jigger) {
-            this.initGauge(false);
-            this.doJigger();
+            // this.doJigger();
         } else {
-            this.initGauge();
             Observable
                 .timer(1000, 30000)
                 .subscribe(this.load.bind(this));
@@ -128,7 +128,7 @@ export abstract class HomeCmp {
 
         this.ref.detectChanges();
 
-        this.jsonp.request(this.config.timeSeriesUrl)
+        this.jsonp.request(this.config.url)
             .timeout(timeout, new Error("Timed out"))
             .delay(250)
             .map((res: any) => res.json())
@@ -150,8 +150,18 @@ export abstract class HomeCmp {
         this.timeseries = data;
 
         let [timestamp, value] = data[data.length - 1];
-        this.updateGauge({ "payload": { value, timestamp } });
 
+        this.when = timestamp;
+
+        this.delta = parseInt(value, 10);
+
+        let levels = this.calcLevels(this.delta);
+        this.state = levels.state;
+        this.above = levels.above;
+
+        this.ref.detectChanges();
+        this.loaded = true;
+        this.firstLoaded = true;
     }
 
     private calcLevels(d) {
@@ -171,72 +181,28 @@ export abstract class HomeCmp {
         }
     }
 
-    private updateGauge(data: any) {
-        this.data = data;
-        this.when = data.payload.timestamp;
+    // private doJigger() {
+    //     let update = this.updateGauge.bind(this);
+    //     Observable
+    //         .timer(0, 5000)
+    //         .subscribe(() => {
+    //             this.loaded = false;
+    //             this.ref.detectChanges();
+    //             setTimeout(() => {
+    //                 this.loaded = true;
+    //                 update(this.fakeData());
+    //                 this.ref.detectChanges();
+    //             }, 250);
+    //         });
+    // }
 
-        this.delta = parseInt(data.payload.value, 10);
+    // private fakeData() {
+    //     let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
+    //     let value = this.normalDistance + normalDist(200);
 
-        let {state, above} = this.calcLevels(this.delta);
-        this.state = state;
-        this.above = above;
-
-        const [h] = limit(this.delta, this.levels.min, this.levels.max);
-        this.gaugeChart.series[0].points[0].update(h);
-        this.ref.detectChanges();
-        this.loaded = true;
-        this.firstLoaded = true;
-    }
-
-    private initGauge(twitch: boolean = true) {
-        let chartElem = $(this.elem.nativeElement).find(".chart");
-        let def = new Gauge(() => this.delta).getDefinition();
-
-        def.yAxis = Object.assign({}, def.yAxis, this.config.yAxis);
-
-        chartElem.highcharts(def);
-        this.gaugeChart = chartElem.highcharts();
-
-        // Twitch needle to +/- 1 inch
-        // disable in test mode, which does it's own movement
-        if (twitch) {
-            this.twitch();
-        }
-    };
-
-    private twitch() {
-        let point = this.gaugeChart.series[0].points[0];
-        Observable
-            .timer(1000, 1000)
-            .subscribe(() => {
-                let [h, limited] = limit(this.delta, this.levels.min, this.levels.max);
-                h += normalDist(limited ? 1.0 : 2.5);
-                point.update(h);
-            });
-    }
-
-    private doJigger() {
-        let update = this.updateGauge.bind(this);
-        Observable
-            .timer(0, 5000)
-            .subscribe(() => {
-                this.loaded = false;
-                this.ref.detectChanges();
-                setTimeout(() => {
-                    this.loaded = true;
-                    update(this.fakeData());
-                    this.ref.detectChanges();
-                }, 250);
-            });
-    }
-
-    private fakeData() {
-        let timestamp = Date.now() - Math.round(1000 * 900 * Math.random());
-        let value = this.normalDistance + normalDist(200);
-
-        return {
-            payload: { value, timestamp }
-        };
-    }
+    //     return {
+    //         payload: { value, timestamp }
+    //     };
+    // }
 
 }
