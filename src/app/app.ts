@@ -1,8 +1,5 @@
 import {Component, ViewEncapsulation} from "angular2/core";
-import {
-RouteConfig,
-ROUTER_DIRECTIVES
-} from "angular2/router";
+import {RouteConfig, Redirect, ROUTER_DIRECTIVES} from "angular2/router";
 
 import {Default, Chacks} from "./components";
 
@@ -14,9 +11,8 @@ import {Default, Chacks} from "./components";
     directives: [ROUTER_DIRECTIVES]
 })
 @RouteConfig([
-    { path: "/chacks", component: Chacks, name: "ChacksRedirect" },
+    new Redirect({ path: "/chacks", redirectTo: ['/Chacks'] }),
     { path: "/sites/pigeonslock", component: Default, name: "Default", useAsDefault: true },
     { path: "/sites/chacks", component: Chacks, name: "Chacks" }
 ])
 export class AppCmp { }
-
