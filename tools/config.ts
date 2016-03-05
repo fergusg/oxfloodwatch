@@ -71,6 +71,7 @@ export const DEV_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencie
     { src: 'angular2/bundles/http.js', inject: 'libs', dest: JS_DEST },
     { src: 'jquery/dist/jquery.min.js', inject: 'libs', dest: JS_DEST },
     { src: 'moment/min/moment.min.js', inject: 'libs', dest: JS_DEST },
+    { src: 'lodash/index.js', inject: 'libs', dest: JS_DEST },
     { src: 'highcharts/highcharts.js', inject: 'libs', dest: JS_DEST },
     { src: 'highcharts/highcharts-more.js', inject: 'libs', dest: JS_DEST }
 ]);
@@ -84,7 +85,8 @@ export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependenci
     { src: 'jquery/dist/jquery.min.js', inject: 'libs' },
     { src: 'highcharts/highcharts.js', inject: 'libs' },
     { src: 'highcharts/highcharts-more.js', inject: 'libs' },
-    { src: 'moment/min/moment.min.js', inject: 'libs' }
+    { src: 'moment/min/moment.min.js', inject: 'libs' },
+    { src: 'lodash/index.js', inject: 'libs', dest: JS_DEST }
 ]);
 
 // Declare local files that needs to be injected

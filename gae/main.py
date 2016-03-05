@@ -43,13 +43,13 @@ def get_current_level():
     return (int(ret["payload"]["value"]), ret["payload"]["timestamp"], None)
 
 def refresh():
-    then = datetime.now() - timedelta(days=1)
+    then = datetime.now() - timedelta(days=7)
     q = Data.query(Data.time > then).order(-Data.time)
     ret = []
     for d in q:
         ret.append([d.time_str, d.value])
 
-    memcache.set(key="timeseries", value=ret, time=3600)
+    memcache.set(key="timeseries", value=ret)
     return ret
 
 def makedata():
@@ -186,7 +186,7 @@ class AdminLatest(Resource):
 class Purge(Resource):
     def get(self):
         now = datetime.now()
-        delta = timedelta(days=1)
+        delta = timedelta(days=7)
         then = now - delta
         ndb.delete_multi(
             Data.query(Data.time < then).fetch(keys_only=True)

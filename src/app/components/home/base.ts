@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef, ElementRef} from "angular2/core";
+import {Component, ChangeDetectorRef, ElementRef, OnDestroy, OnInit} from "angular2/core";
 import {Http, JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
@@ -20,10 +20,9 @@ declare var _: any;
     pipes: [MomentPipe, DepthPipe],
     directives: [LoaderAnim, TimeSeriesComponent, GaugeComponent]
 })
-export abstract class BaseComponent {
+export abstract class BaseComponent implements OnInit, OnDestroy {
     public delta = 0;
     public above = 0;
-    public data: any;
     public timeseries: any;
     public loadError = false;
     public loaded = false;
@@ -60,7 +59,7 @@ export abstract class BaseComponent {
     protected abstract getLevels();
 
     public getConfig() {
-        let c =  Object.assign(
+        let c = Object.assign(
             {},
             defaultConfig,
             {
@@ -108,6 +107,10 @@ export abstract class BaseComponent {
         ];
     }
 
+    public ngOnDestroy() {
+        console.log("destroy");
+    }
+
     public ngOnInit() {
         if (this.jigger) {
             // this.doJigger();
@@ -142,6 +145,7 @@ export abstract class BaseComponent {
         }
     }
 
+
     private update(ts: any, retry = true) {
         let conf = this.getLocalConfig();
         let data = ts.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
@@ -150,10 +154,9 @@ export abstract class BaseComponent {
         this.timeseries = data;
 
         let [timestamp, value] = data[data.length - 1];
+        this.delta = parseInt(value, 10);
 
         this.when = timestamp;
-
-        this.delta = parseInt(value, 10);
 
         let levels = this.calcLevels(this.delta);
         this.state = levels.state;
