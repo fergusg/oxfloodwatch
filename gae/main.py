@@ -33,14 +33,14 @@ def sendMessage(number, message):
         body = message
     )
 
-def get_current_level():
-    url = FLOODWATCH_URL
-    result = urlfetch.fetch(url)
-    if result.status_code != 200:
-        return (None, result.status_code)
-
-    ret = json.loads(result.content)
-    return (int(ret["payload"]["value"]), ret["payload"]["timestamp"], None)
+def remove_duplicates(values):
+    output = []
+    seen = set()
+    for value in values:
+        if value[0] not in seen:
+            output.append(value)
+            seen.add(value[0])
+    return output
 
 def refresh():
     then = datetime.now() - timedelta(days=7)
@@ -48,6 +48,8 @@ def refresh():
     ret = []
     for d in q:
         ret.append([d.time_str, d.value])
+
+    ret = remove_duplicates(ret)
 
     memcache.set(key="timeseries", value=ret)
     return ret
@@ -61,6 +63,9 @@ def makedata():
         t = now - timedelta(seconds=i*15*60)
         v = 149 + random.randint(28, 29)
         # GAE barfs if tzinfo defined
+        Data(time=t.replace(tzinfo=None), value=v,
+            time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
+        ).put()
         Data(time=t.replace(tzinfo=None), value=v,
             time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
         ).put()
@@ -243,8 +248,6 @@ class CreateDataStore(Resource):
         ).put()
 
         return {}
-
-
 
 @api.resource(ADMIN + '/ping')
 class Ping(Resource):
