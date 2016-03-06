@@ -1,11 +1,12 @@
 import {Component, ChangeDetectorRef, ElementRef, OnDestroy, OnInit} from "angular2/core";
-import {Http, JSONP_PROVIDERS, Jsonp} from "angular2/http";
+import {JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
-import TimeSeriesComponent from "./timeseries_component";
-import GaugeComponent from "./gauge_component";
+import TimeSeriesComponent from "./timeseries";
+import GaugeComponent from "./gauge";
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./depth-pipe";
+import LastReading from "./lastreading";
 import {defaultConfig} from "../../../config";
 
 declare var $: any;
@@ -18,7 +19,7 @@ declare var _: any;
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
     pipes: [MomentPipe, DepthPipe],
-    directives: [LoaderAnim, TimeSeriesComponent, GaugeComponent]
+    directives: [LoaderAnim, TimeSeriesComponent, GaugeComponent, LastReading]
 })
 export abstract class BaseComponent implements OnInit, OnDestroy {
     public delta = 0;
@@ -40,7 +41,6 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
     private normalDistance: number;
 
     constructor(
-        private http: Http,
         private ref: ChangeDetectorRef,
         private elem: ElementRef,
         private jsonp: Jsonp
@@ -82,7 +82,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
             {
                 from: levels.low,
                 to: levels.close,
-                color: '#00e600' // green
+                color: '#00e600' // light green
             },
             {
                 from: levels.close,
@@ -92,7 +92,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
             {
                 from: levels.high,
                 to: levels.very_high,
-                color: '#ffa366' // orange
+                color: '#ffa366' // light orange
             },
             {
                 from: levels.very_high,
@@ -145,10 +145,19 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
         }
     }
 
+    private getHeight(v: number[], normalDistance: number) {
+        let [value, temp] = v.slice(1);
+        if (_.isFinite(temp)) {
+            let newVal = ((value * 58) * (331.3 + 0.606 * temp)) / 20000;
+            // console.log(`Height ${value} -> ${newVal} (T=${temp}C)`);
+            value = newVal;
+        }
+        return Math.round(normalDistance - value);
+    }
 
     private update(ts: any, retry = true) {
         let conf = this.getLocalConfig();
-        let data = ts.map((v) => [new Date(v[0]).getTime(), conf.normalDistance - v[1]]);
+        let data = ts.map((v) => [new Date(v[0]).getTime(), this.getHeight(v, conf.normalDistance)]);
         data.sort((a, b) => a[0] - b[0]);
 
         this.timeseries = data;

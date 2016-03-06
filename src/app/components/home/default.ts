@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, ElementRef} from "angular2/core";
-import {Http, Jsonp} from "angular2/http";
+import {Jsonp} from "angular2/http";
 
 import {BaseComponent} from "./base";
 
@@ -16,12 +16,11 @@ const messages = {
 
 export class Default extends BaseComponent {
     constructor(
-        http: Http,
         ref: ChangeDetectorRef,
         elem: ElementRef,
         jsonp: Jsonp
     ) {
-        super(http, ref, elem, jsonp);
+        super(ref, elem, jsonp);
     }
 
     protected getLevels() {

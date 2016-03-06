@@ -6,7 +6,7 @@ enum FilterState {
     FULL,
 }
 
-export default class Filter {
+export default class DataFilter {
     public filter(data: number[], filtering: FilterState = FilterState.FULL) {
 
         if (filtering === FilterState.NONE) {

@@ -1,4 +1,4 @@
-import logging, json, random, os
+import logging, json, random, os, time
 from dateutil import parser
 from datetime import datetime, timedelta
 
@@ -10,7 +10,8 @@ from flask.ext.restful import Resource, Api as RestApi
 from functools import wraps
 from twilio.rest import TwilioRestClient
 
-from localsettings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM, TEST_MOBILE, FLOODWATCH_URL
+from localsettings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
+from localsettings import TEST_MOBILE, FLOODWATCH_URL, OPENWEATHER_URL, MET_OFFICE_URL
 from models import Setting, Person, Data
 import footpath
 from extend_jsonp import support_jsonp
@@ -25,6 +26,72 @@ api = RestApi(app)
 support_jsonp(api)
 
 client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+def get_current_temp_ow(nocache=False):
+    data = memcache.get("temperature")
+
+    if not data or nocache:
+        result = urlfetch.fetch(OPENWEATHER_URL)
+        if result.status_code != 200:
+            return (None, result.status_code)
+
+        ret = json.loads(result.content)
+
+        # temp in K
+        temp = int(100*(ret["main"]["temp"] - 273.15))/100.0
+        now = int(time.time() * 1000)
+        data = {"temperature" : temp, "timestamp" : now}
+        memcache.set("temperature", json.dumps(data), time=3600)
+    else:
+        data = json.loads(data)
+
+    return (data, None)
+
+def safeget(dct, *keys):
+    for key in keys:
+        try:
+            dct = dct[key]
+        except KeyError:
+            return None
+    return dct
+
+def get_current_temp(nocache=False):
+    data = memcache.get("temperature")
+
+    if not data or nocache:
+        result = urlfetch.fetch(MET_OFFICE_URL)
+        if result.status_code != 200:
+            return (None, result.status_code)
+
+        ret = json.loads(result.content)
+
+        # temp in C
+#        temp = ret["SiteRep"]["DV"]["Location"]["Period"][-1]["Rep"][-1]["T"]
+        temp = safeget(ret, "SiteRep", "DV", "Location", "Period", -1, "Rep", -1, "T")
+
+        if temp is not None:
+            temp = float(temp)
+
+        now = int(time.time() * 1000)
+        data = {"temperature" : temp, "timestamp" : now}
+        memcache.set("temperature", json.dumps(data), time=3600)
+    else:
+        data = json.loads(data)
+
+    return (data, None)
+
+
+
+def get_current_level():
+
+    url = FLOODWATCH_URL
+    result = urlfetch.fetch(url)
+    if result.status_code != 200:
+        return (None, result.status_code)
+
+    ret = json.loads(result.content)
+    return (int(ret["payload"]["value"]), ret["payload"]["timestamp"], None)
+
 
 def sendMessage(number, message):
     client.messages.create(
@@ -47,7 +114,7 @@ def refresh():
     q = Data.query(Data.time > then).order(-Data.time)
     ret = []
     for d in q:
-        ret.append([d.time_str, d.value])
+        ret.append([d.time_str, d.value, d.temperature])
 
     ret = remove_duplicates(ret)
 
@@ -128,7 +195,7 @@ class ListAll(Resource):
         ts = getTimeseries()
         if not ts:
             return []
-        (time_str, current_level) = ts[0]
+        (time_str, current_level, temperature) = ts[0]
 
         ret = []
 
@@ -181,11 +248,21 @@ class AdminLatest(Resource):
         if err_code is not None:
             raise {"error": err_code}
 
-        Data(time=parser.parse(timestamp).replace(tzinfo=None), value=current_level, time_str=timestamp).put()
+        (t_data, err) = get_current_temp()
+        if err:
+            temp = None
+        else:
+            temp = t_data["temperature"]
+
+        Data(time=parser.parse(timestamp).replace(tzinfo=None),
+            value=current_level,
+            time_str=timestamp,
+            temperature=temp
+        ).put()
 
         refresh()
 
-        return [current_level, timestamp]
+        return [current_level, timestamp, temp]
 
 @api.resource(ADMIN + '/purge')
 class Purge(Resource):
@@ -208,9 +285,9 @@ class Purge(Resource):
 class Latest(Resource):
     def get(self):
         ts = getTimeseries()
-        (time_str_0, value_0) = ts[0]
+        (time_str_0, value_0, temp_0) = ts[0]
         time_0 = parser.parse(time_str_0)
-        (time_str_1, value_1) = ts[1]
+        (time_str_1, value_1, temp_0) = ts[1]
         time_1 = parser.parse(time_str_1)
 
         value = value_0
@@ -254,6 +331,13 @@ class Ping(Resource):
     def get(self):
         sendMessage(TEST_MOBILE, "Hello to you too" )
         return {"hello": "to you too"}
+
+@api.resource(ADMIN + '/temp')
+class Temp(Resource):
+    def get(self):
+        (t_data1, err) = get_current_temp(nocache=True)
+        (t_data2, err) = get_current_temp_ow(nocache=True)
+        return [t_data1, t_data2]
 
 if __name__ == "__main__":
     app.run()

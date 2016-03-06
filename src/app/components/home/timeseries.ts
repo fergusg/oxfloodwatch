@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, OnChanges, SimpleChange} from "angular2/core";
 import {Observable} from "rxjs/Observable";
-import Filter, {FilterState} from "./filter";
+import DataFilter, {FilterState} from "./data-filter";
 
 declare var $: any;
 declare var _: any;
@@ -10,18 +10,18 @@ declare var _: any;
     template: '',
     moduleId: module.id,
     inputs: ["data", "plotbands"],
-    providers: [Filter]
+    providers: [DataFilter]
 })
 export default class TimeSeriesComponent implements OnInit, OnChanges {
 
     private chart: any;
     private chartElem: any;
     private plotbands: any;
-    private doFilter: FilterState = FilterState.FULL;
+    private filterState: FilterState = FilterState.FULL;
     private data: any;
     private zooming = false;
 
-    constructor(private elem: ElementRef, private filter: Filter) { }
+    constructor(private elem: ElementRef, private filter: DataFilter) { }
 
     public ngOnInit() {
         let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
@@ -42,7 +42,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
                     this.chart.xAxis[0].setExtremes(null, null, false, false);
                     this.chart.yAxis[0].setExtremes(null, null, false, false);
                 } else {
-                    this.doFilter = (this.doFilter + 1) % 3;
+                    this.filterState = (this.filterState + 1) % 3;
                 }
                 this.redraw();
             });
@@ -58,7 +58,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     }
 
     public redraw() {
-        let data: any = this.filter.filter(this.data, this.doFilter);
+        let data: any = this.filter.filter(this.data, this.filterState);
 
         this.chart.series[0].setData(data, false, false);
         // this.chart.yAxis[0].setExtremes(null, null, false, false);
@@ -74,25 +74,25 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
 
     // http://www.highcharts.com/studies/drilldown.htm
     public onSelect(event: any) {
-
-        if (event.xAxis) {
-            this.zooming = true;
-            let data: any = this.filter.filter(this.data, this.doFilter);
-
-            let {min, max} = event.xAxis[0];
-            let [minX, maxX] = [min, max];
-
-            data = data.filter((v: number[]) => v[0] >= minX && v[0] <= maxX);
-
-            let maxY = _.max(data, (v: number[]) => v[1])[1];
-            let minY = _.min(data, (v: number[]) => v[1])[1];
-
-            this.chart.xAxis[0].setExtremes(minX, maxX, false, false);
-            this.chart.yAxis[0].setExtremes(minY, maxY, false, false);
-            this.chart.redraw();
-
-            return false;
+        if (!event.xAxis) {
+            return;
         }
+        this.zooming = true;
+        let data: any = this.filter.filter(this.data, this.filterState);
+
+        let {min, max} = event.xAxis[0];
+        let [minX, maxX] = [min, max];
+
+        data = data.filter((v: number[]) => v[0] >= minX && v[0] <= maxX);
+
+        let maxY = _.max(data, (v: number[]) => v[1])[1];
+        let minY = _.min(data, (v: number[]) => v[1])[1];
+
+        this.chart.xAxis[0].setExtremes(minX, maxX, false, false);
+        this.chart.yAxis[0].setExtremes(minY, maxY, false, false);
+        this.chart.redraw();
+
+        return false;
     }
 
     public getDefinition() {
@@ -136,7 +136,6 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
                     return `<em>${t} <em><b>${this.y}cm</b>`;
                 },
                 positioner: function(labelWidth, labelHeight, point) {
-//                    return { x: point.plotX - labelWidth, y: 0 };
                     return { x: 0, y: 0 };
                 },
                 crosshairs: true
@@ -162,5 +161,4 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
             }]
         };
     }
-
 }

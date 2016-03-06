@@ -5,7 +5,7 @@
             <h2 *ngIf="config.subtitle">{{config.subtitle}}</h2>
         </div>
         <div *ngIf="when" class="pull-right last-reading">
-            <em>Last reading {{when | moment}}</em>
+            <lastreading [when]="when"></lastreading>
         </div>
     </div>
 
@@ -17,19 +17,17 @@
     </div>
 
     <div class="row col-md-6 col-md-offset-3 text-center">
-        <div *ngIf="!loaded">
-            <div *ngIf="loadError" class="alert alert-danger" role="alert">
-                <div>
-                    Oh dear. There was a problem with the sensor reading. Will retry shortly.
-                </div>
-                <div *ngIf="when">The last good reading was {{delta}}cm, {{when | moment}} </div>
+        <div *ngIf="!loaded && loadError" class="alert alert-danger" role="alert">
+            <div>
+                Oh dear. There was a problem with the sensor reading. Will retry shortly.
             </div>
-            <div *ngIf="!loadError" class="alert alert-info" role="alert">
-                <loader></loader>
-            </div>
+            <div *ngIf="when">The last good reading was {{delta}}cm, {{when | moment}} </div>
         </div>
-        <div *ngIf="loaded">
-            <div class="alert" role="alert"
+        <div *ngIf="!loaded && !loadError" class="alert alert-info" role="alert">
+            <loader></loader>
+        </div>
+        <div *ngIf="loaded" class="alert" role="alert">
+            <div
                 [class.alert-success]="state === 'VERY_LOW' || state === 'LOW'"
                 [class.alert-info]="state === 'CLOSE'"
                 [class.alert-warning]="state === 'HIGH'"

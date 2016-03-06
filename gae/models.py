@@ -18,3 +18,4 @@ class Data(ndb.Model):
     time = ndb.DateTimeProperty(required=True)
     time_str = ndb.StringProperty(required=True)
     value = ndb.IntegerProperty(required=True)
+    temperature = ndb.FloatProperty()
