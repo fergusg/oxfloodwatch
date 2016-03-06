@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, OnChanges, SimpleChange} from "angular2/core";
 import {Observable} from "rxjs/Observable";
-import DataFilter, {FilterState} from "./data-filter";
+import DataFilter, {FilterState} from "../tools/data-filter";
 
 declare var $: any;
 declare var _: any;

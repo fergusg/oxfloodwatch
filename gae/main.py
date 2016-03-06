@@ -195,7 +195,15 @@ class ListAll(Resource):
         ts = getTimeseries()
         if not ts:
             return []
-        (time_str, current_level, temperature) = ts[0]
+
+        current_level = ts[0][1]
+
+        recent_levels = [x[1] for x in ts[1:4]]
+
+        # Try to detect spikes - if this level is 50cm higher than avg of the prev 3 readings, abort
+        avg_recent = float(sum(recent_levels))/max(len(recent_levels),1)
+        if abs(current_level - avg_recent) > 50:
+            return []
 
         ret = []
 

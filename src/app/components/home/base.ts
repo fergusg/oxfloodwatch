@@ -2,11 +2,12 @@ import {Component, ChangeDetectorRef, ElementRef, OnDestroy, OnInit} from "angul
 import {JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
-import TimeSeriesComponent from "./timeseries";
-import GaugeComponent from "./gauge";
+import TimeSeriesComponent from "./components/timeseries";
+import GaugeComponent from "./components/gauge";
+import LastReading from "./components/lastreading";
+
 import {LoaderAnim, MomentPipe} from "../../util";
-import {DepthPipe} from "./depth-pipe";
-import LastReading from "./lastreading";
+import {DepthPipe} from "./tools/depth-pipe";
 import {defaultConfig} from "../../../config";
 
 declare var $: any;
@@ -145,7 +146,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getHeight(v: number[], normalDistance: number) {
+    private getHeight(normalDistance: number, v: number[]) {
         let [value, temp] = v.slice(1);
         if (_.isFinite(temp)) {
             let newVal = ((value * 58) * (331.3 + 0.606 * temp)) / 20000;
@@ -155,16 +156,18 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
         return Math.round(normalDistance - value);
     }
 
-    private update(ts: any, retry = true) {
-        let conf = this.getLocalConfig();
-        let data = ts.map((v) => [new Date(v[0]).getTime(), this.getHeight(v, conf.normalDistance)]);
+    private update(data: any, retry = true) {
+        let height = this.getHeight.bind(null, this.getLocalConfig().normalDistance);
+
+        data = data.filter((v) => Math.abs(v[1] - 17) > 2);
+        data = data.map((v) => [new Date(v[0]).getTime(), height(v)]);
+        // most recent is first.  But use sort() instead ov reverse() just to be sure
         data.sort((a, b) => a[0] - b[0]);
 
         this.timeseries = data;
 
         let [timestamp, value] = data[data.length - 1];
         this.delta = parseInt(value, 10);
-
         this.when = timestamp;
 
         let levels = this.calcLevels(this.delta);

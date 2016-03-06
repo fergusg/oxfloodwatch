@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, ElementRef} from "angular2/core";
 import {Jsonp} from "angular2/http";
 
-import {BaseComponent} from "./base";
+import {BaseComponent} from "./../base";
 
 const [min, max] = [-10, 40];
 

@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, OnChanges, SimpleChange} from "angular2/core";
 import {Observable} from "rxjs/Observable";
 
-import {limit, normalDist} from "./utils";
+import {normalDist} from "./utils";
 
 declare var $: any;
 
@@ -34,28 +34,10 @@ export default class GaugeComponent implements OnInit, OnChanges {
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
         if (changes["delta"] && changes["delta"].currentValue) {
             this.delta = changes["delta"].currentValue;
-            const [h] = limit(this.delta, this.config.levels.min, this.config.levels.max);
+            const [h] = this.limit(this.delta, this.config.levels.min, this.config.levels.max);
             this.chart.series[0].points[0].update(h);
             setTimeout(this.resizeChart.bind(this), 0);
         }
-    }
-
-    public resizeChart() {
-        let height = document.body.clientWidth < 800 ? 240 : 400;
-        let width = $(this.elem.nativeElement).parent().innerWidth();
-        this.chart.setSize(width, height);
-        this.chart.redraw(false);
-    }
-
-    public twitch() {
-        let point = this.chart.series[0].points[0];
-        Observable
-            .timer(1000, 1000)
-            .subscribe(() => {
-                let [h, limited] = limit(this.delta, this.config.levels.min, this.config.levels.max);
-                h += normalDist(limited ? 1.0 : 2.5);
-                point.update(h);
-            });
     }
 
     public getDefinition() {
@@ -134,15 +116,12 @@ export default class GaugeComponent implements OnInit, OnChanges {
             },
             series: [{
                 name: 'Depth',
-                data: [-10],
+                data: [-1000],
                 dataLabels: {
                     enabled: true,
                     formatter: function() {
                         return Math.floor(self.delta) + " cm";
                     }
-                },
-                tooltip: {
-                    pointFormatter: <any>null
                 }
             }],
             tooltip: {
@@ -150,4 +129,36 @@ export default class GaugeComponent implements OnInit, OnChanges {
             }
         };
     }
+
+    private resizeChart() {
+        let height = document.body.clientWidth < 800 ? 240 : 400;
+        let width = $(this.elem.nativeElement).parent().innerWidth();
+        this.chart.setSize(width, height);
+        this.chart.redraw(false);
+    }
+
+    private twitch() {
+        let point = this.chart.series[0].points[0];
+        Observable
+            .timer(1000, 1000)
+            .subscribe(() => {
+                let [h, limited] = this.limit(this.delta, this.config.levels.min, this.config.levels.max);
+                h += normalDist(limited ? 1.0 : 2.5);
+                point.update(h);
+            });
+    }
+
+    private limit(h: number, min: number, max: number): [number, boolean, boolean, boolean] {
+        let [high, low] = [false, false];
+
+        if (h < min) {
+            h = min - 1;
+            low = true;
+        } else if (h > max) {
+            h = max + 1;
+            high = true;
+        }
+        return [h, high || low, low, high];
+    }
+
 }
