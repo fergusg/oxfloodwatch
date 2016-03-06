@@ -26,8 +26,8 @@
         <div *ngIf="!loaded && !loadError" class="alert alert-info" role="alert">
             <loader></loader>
         </div>
-        <div *ngIf="loaded" class="alert" role="alert">
-            <div
+        <div *ngIf="loaded" >
+            <div class="alert" role="alert"
                 [class.alert-success]="state === 'VERY_LOW' || state === 'LOW'"
                 [class.alert-info]="state === 'CLOSE'"
                 [class.alert-warning]="state === 'HIGH'"
