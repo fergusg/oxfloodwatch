@@ -7,9 +7,9 @@ import GaugeComponent from "./gauge/gauge";
 import LastReading from "./lastreading";
 
 import {LoaderAnim, MomentPipe} from "../../util";
-import {DepthPipe} from "./tools/depth-pipe";
+import {DepthPipe} from "./depth-pipe";
 import {defaultConfig} from "../../../config";
-import DataFilter from "./tools/data-filter";
+import DataFilter from "./data-filter";
 
 declare var $: any;
 declare var _: any;

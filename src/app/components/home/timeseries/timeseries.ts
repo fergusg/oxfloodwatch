@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, OnChanges, SimpleChange} from "angular2/core";
 import {Observable} from "rxjs/Observable";
-import DataFilter, {FilterState} from "../tools/data-filter";
+import DataFilter, {FilterState} from "../data-filter";
 import chartDefinition from "./timeseries-definition";
 
 declare var $: any;
