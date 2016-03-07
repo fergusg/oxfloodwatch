@@ -7,9 +7,22 @@ declare var _: any;
 
 @Component({
     selector: "timeseries",
-    template: '',
+    template: `<div>
+    <div class="state">{{getFilterState()}}</div>
+    <div class="chart"></div>
+    </div>`,
+    styles: [`
+        .state {
+            color: darkgray;
+            position: absolute;
+            right: 0;
+            top: -10px;
+            z-index: 1000;
+            font-size: 11px;
+        }
+    `],
     moduleId: module.id,
-    inputs: ["data", "plotbands"],
+    inputs: ["data", "plotbands", "normalDistance"],
     providers: [DataFilter]
 })
 export default class TimeSeriesComponent implements OnInit, OnChanges {
@@ -20,13 +33,14 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     private filterState: FilterState = FilterState.FULL;
     private data: any;
     private zooming = false;
+    private normalDistance;
 
     constructor(private elem: ElementRef, private filter: DataFilter) { }
 
     public ngOnInit() {
         let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
 
-        this.chartElem = $(this.elem.nativeElement);
+        this.chartElem = $(this.elem.nativeElement).find(".chart");
         let def = this.getDefinition();
         def = Object.assign({}, def, {
             series: [{ zones, data: [] }]
@@ -42,7 +56,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
                     this.chart.xAxis[0].setExtremes(null, null, false, false);
                     this.chart.yAxis[0].setExtremes(null, null, false, false);
                 } else {
-                    this.filterState = (this.filterState + 1) % 3;
+                    this.filterState = (this.filterState + 1) % 4;
                 }
                 this.redraw();
             });
@@ -57,10 +71,38 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         this.redraw();
     }
 
-    public redraw() {
-        let data: any = this.filter.filter(this.data, this.filterState);
+    public getFilterState(): any {
+        switch(this.filterState) {
+            case FilterState.FULL:
+                return "";
+            case FilterState.NONE:
+                return "Raw";
+            case FilterState.PARTIAL:
+                return "Raw, no invalid data";
+            case FilterState.NORMAL:
+                return "Adjusted, with spikes";
+            default:
+                return this.filterState;
+        }
+    }
 
-        this.chart.series[0].setData(data, false, false);
+    public redraw() {
+        let data: any = this.filter.filter(this.data, this.normalDistance, this.filterState);
+
+        data.sort((a, b) => a[0] - b[0]);
+
+        let type = this.chart.series[0].type;
+        if (this.filterState === FilterState.NONE || this.filterState === FilterState.PARTIAL) {
+           if (type !== "line") {
+                this.chart.series[0].update({ type: "line", zones: false }, true);
+           }
+        } else {
+            if (type !== "area") {
+                let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
+                this.chart.series[0].update({ type: "area", zones }, true);
+            }
+        }
+        this.chart.series[0].setData(data, false, true);
         // this.chart.yAxis[0].setExtremes(null, null, false, false);
         setTimeout(this.resizeChart.bind(this), 0);
     }
@@ -69,7 +111,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         let height = document.body.clientWidth < 800 ? 80 : 150;
         let width = $(this.elem.nativeElement).parent().innerWidth();
         this.chart.setSize(width - 25, height);
-        this.chart.redraw(false);
+        this.chart.redraw(true);
     }
 
     // http://www.highcharts.com/studies/drilldown.htm

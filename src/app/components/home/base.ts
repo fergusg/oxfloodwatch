@@ -9,13 +9,15 @@ import LastReading from "./components/lastreading";
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./tools/depth-pipe";
 import {defaultConfig} from "../../../config";
+import DataFilter from "./tools/data-filter";
+
 
 declare var $: any;
 declare var _: any;
 
 @Component({
     selector: "home",
-    providers: [JSONP_PROVIDERS],
+    providers: [JSONP_PROVIDERS, DataFilter],
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
@@ -44,7 +46,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
     constructor(
         private ref: ChangeDetectorRef,
         private elem: ElementRef,
-        private jsonp: Jsonp
+        private jsonp: Jsonp,
+        private filter: DataFilter
     ) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
@@ -146,27 +149,13 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getHeight(normalDistance: number, v: number[]) {
-        let [value, temp] = v.slice(1);
-        if (_.isFinite(temp)) {
-            let newVal = ((value * 58) * (331.3 + 0.606 * temp)) / 20000;
-            // console.log(`Height ${value} -> ${newVal} (T=${temp}C)`);
-            value = newVal;
-        }
-        return Math.round(normalDistance - value);
-    }
-
     private update(data: any, retry = true) {
-        let height = this.getHeight.bind(null, this.getLocalConfig().normalDistance);
-
-        data = data.filter((v) => Math.abs(v[1] - 17) > 2);
-        data = data.map((v) => [new Date(v[0]).getTime(), height(v)]);
-        // most recent is first.  But use sort() instead ov reverse() just to be sure
-        data.sort((a, b) => a[0] - b[0]);
-
+        // most recent is first.  But use sort() instead of reverse() just to be sure
         this.timeseries = data;
 
-        let [timestamp, value] = data[data.length - 1];
+        data = this.filter.filter(data, this.normalDistance);
+        // console.log(JSON.stringify(_.map(data, (d:number[]) => [new Date(d[0]), d[1]])));
+        let [timestamp, value] = data[0];
         this.delta = parseInt(value, 10);
         this.when = timestamp;
 

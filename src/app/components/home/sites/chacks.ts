@@ -2,6 +2,7 @@ import {ChangeDetectorRef, ElementRef} from "angular2/core";
 import {Jsonp} from "angular2/http";
 
 import {BaseComponent} from "./../base";
+import DataFilter from "../tools/data-filter";
 
 const [min, max] = [-20, 50];
 
@@ -18,9 +19,10 @@ export class Chacks extends BaseComponent {
     constructor(
         ref: ChangeDetectorRef,
         elem: ElementRef,
-        jsonp: Jsonp
+        jsonp: Jsonp,
+        filter: DataFilter
     ) {
-        super(ref, elem, jsonp);
+        super(ref, elem, jsonp, filter);
     }
 
     protected getLevels() {

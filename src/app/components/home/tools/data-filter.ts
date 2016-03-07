@@ -2,21 +2,30 @@ declare var _: any;
 
 enum FilterState {
     NONE,
-    NORMAL,
+    PARTIAL,
     FULL,
+    NORMAL,
 }
 
 export default class DataFilter {
-    public filter(data: number[], filtering: FilterState = FilterState.FULL) {
 
+    public filter(data: any[][], normalDistance, filtering: FilterState = FilterState.FULL) {
+
+        data = data.map((v) => [new Date(v[0]).getTime(), v[1]]);
         if (filtering === FilterState.NONE) {
             return data;
         }
 
-        data = _.uniq(data, (v: number[]) => v[0]);
+        data = data.filter((v) => v[1] > 20 && v[1] < 200);
 
-        // filter out silly values
-        data = data.filter((v: any) => Math.abs(v[1]) < 200);
+        if (filtering === FilterState.PARTIAL) {
+            return data;
+        }
+
+        let height = this.getHeight.bind(null, normalDistance);
+        data = data.map((v) => [v[0], height(v)]);
+
+        data = _.uniq(data, (v: number[]) => v[0]);
 
         // find spikes +/- 40cm
         if (filtering === FilterState.NORMAL) {
@@ -49,6 +58,16 @@ export default class DataFilter {
             return true;
         });
         return data;
+    }
+
+    private getHeight(normalDistance: number, v: number[]) {
+        let [value, temp] = v.slice(1);
+        if (_.isFinite(temp)) {
+            let newVal = ((value * 58) * (331.3 + 0.606 * temp)) / 20000;
+            // console.log(`Height ${value} -> ${newVal} (T=${temp}C)`);
+            value = newVal;
+        }
+        return Math.round(normalDistance - value);
     }
 }
 export {FilterState};
