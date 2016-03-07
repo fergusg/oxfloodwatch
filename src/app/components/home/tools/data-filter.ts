@@ -43,12 +43,12 @@ export default class DataFilter {
             // averge of prev & next
             let avg = (prev[1] + next[1]) / 2;
             // diff of prev & next
-            let delta = Math.abs(prev[1] - next[1]);
+            // let delta = Math.abs(prev[1] - next[1]);
             if (
                 // is this point bigger than the average of the neighbouring points
                 (Math.abs(curr[1] - avg) > 20)
                 // are prev and next similar?
-                && (delta < 5)
+                // && (delta < 5)
             ) {
                 // spike is within a timeframe?
                 if (Math.abs(next[0] - prev[0]) < deltaT) {
