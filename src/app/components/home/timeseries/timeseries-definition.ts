@@ -1,6 +1,8 @@
 declare var _: any;
 // http://www.highcharts.com/studies/drilldown.htm
 function onSelect(event: any) {
+    console.log("onSelect");
+
     if (!event.xAxis) {
         return;
     }
@@ -12,11 +14,7 @@ function onSelect(event: any) {
 
     data = data.filter((v: number[]) => v[0] >= minX && v[0] <= maxX);
 
-    let maxY = _.max(data, (v: number[]) => v[1])[1];
-    let minY = _.min(data, (v: number[]) => v[1])[1];
-
     this.chart.xAxis[0].setExtremes(minX, maxX, false, false);
-    this.chart.yAxis[0].setExtremes(minY, maxY, false, false);
     this.chart.redraw();
 
     return false;

@@ -6,7 +6,7 @@ import {Default, Chacks, About} from "./components";
 @Component({
     selector: "app",
     moduleId: module.id,
-    templateUrl: "./app.html",
+    template: "<router-outlet></router-outlet>",
     encapsulation: ViewEncapsulation.None,
     directives: [ROUTER_DIRECTIVES]
 })

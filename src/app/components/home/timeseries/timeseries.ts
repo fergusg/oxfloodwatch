@@ -30,7 +30,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
 
         this.chartElem = $(this.elem.nativeElement).find(".chart");
-        let def = this.getDefinition();
+        let def = chartDefinition(this);
         def = Object.assign({}, def, {
             series: [{ zones, data: [] }]
         });
@@ -52,16 +52,14 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-        if (!(changes["data"] && changes["data"].currentValue)) {
-            return;
+        if (changes["data"] && changes["data"].currentValue) {
+            this.data = changes["data"].currentValue;
+            this.redraw();
         }
-
-        this.data = changes["data"].currentValue;
-        this.redraw();
     }
 
     public getFilterState(): any {
-        switch(this.filterState) {
+        switch (this.filterState) {
             case FilterState.FULL:
                 return "";
             case FilterState.NONE:
@@ -82,9 +80,9 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
 
         let type = this.chart.series[0].type;
         if (this.filterState === FilterState.NONE || this.filterState === FilterState.PARTIAL) {
-           if (type !== "line") {
+            if (type !== "line") {
                 this.chart.series[0].update({ type: "line", zones: false }, true);
-           }
+            }
         } else {
             if (type !== "area") {
                 let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
@@ -101,10 +99,5 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         let width = $(this.elem.nativeElement).parent().innerWidth();
         this.chart.setSize(width - 25, height);
         this.chart.redraw(true);
-    }
-
-
-    public getDefinition() {
-        return chartDefinition(this);
     }
 }
