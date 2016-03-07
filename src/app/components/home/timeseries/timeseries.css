@@ -1,0 +1,8 @@
+.state {
+    color: darkgray;
+    position: absolute;
+    right: 0;
+    top: -10px;
+    z-index: 1000;
+    font-size: 11px;
+}

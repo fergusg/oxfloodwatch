@@ -2,15 +2,14 @@ import {Component, ChangeDetectorRef, ElementRef, OnDestroy, OnInit} from "angul
 import {JSONP_PROVIDERS, Jsonp} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 
-import TimeSeriesComponent from "./components/timeseries";
-import GaugeComponent from "./components/gauge";
-import LastReading from "./components/lastreading";
+import TimeSeriesComponent from "./timeseries/timeseries";
+import GaugeComponent from "./gauge/gauge";
+import LastReading from "./lastreading";
 
 import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./tools/depth-pipe";
 import {defaultConfig} from "../../../config";
 import DataFilter from "./tools/data-filter";
-
 
 declare var $: any;
 declare var _: any;
