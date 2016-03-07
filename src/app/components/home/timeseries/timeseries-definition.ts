@@ -1,28 +1,20 @@
 declare var _: any;
 // http://www.highcharts.com/studies/drilldown.htm
 function onSelect(event: any) {
-    console.log("onSelect");
-
     if (!event.xAxis) {
         return;
     }
     this.zooming = true;
-    let data: any = this.filter.filter(this.data, this.filterState);
 
     let {min, max} = event.xAxis[0];
-    let [minX, maxX] = [min, max];
 
-    data = data.filter((v: number[]) => v[0] >= minX && v[0] <= maxX);
-
-    this.chart.xAxis[0].setExtremes(minX, maxX, false, false);
+    this.chart.xAxis[0].setExtremes(min, max, false, false);
     this.chart.redraw();
 
     return false;
 }
 
-
 function getDefinition(self) {
-
     return {
         chart: {
             type: 'area',
@@ -33,7 +25,6 @@ function getDefinition(self) {
             events: {
                 selection: onSelect.bind(self)
             }
-
         },
         credits: {
             enabled: false

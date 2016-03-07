@@ -22,7 +22,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     private filterState: FilterState = FilterState.FULL;
     private data: any;
     private zooming = false;
-    private normalDistance;
+    private normalDistance = 0;
 
     constructor(private elem: ElementRef, private filter: DataFilter) { }
 
@@ -78,19 +78,13 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
 
         data.sort((a, b) => a[0] - b[0]);
 
-        let type = this.chart.series[0].type;
         if (this.filterState === FilterState.NONE || this.filterState === FilterState.PARTIAL) {
-            if (type !== "line") {
-                this.chart.series[0].update({ type: "line", zones: false }, true);
-            }
+            this.chart.series[0].update({ type: "line", zones: false }, true);
         } else {
-            if (type !== "area") {
-                let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
-                this.chart.series[0].update({ type: "area", zones }, true);
-            }
+            let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
+            this.chart.series[0].update({ type: "area", zones }, true);
         }
         this.chart.series[0].setData(data, false, true);
-        // this.chart.yAxis[0].setExtremes(null, null, false, false);
         setTimeout(this.resizeChart.bind(this), 0);
     }
 
