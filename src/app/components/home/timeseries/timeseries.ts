@@ -80,8 +80,17 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
 
         if (this.filterState === FilterState.NONE || this.filterState === FilterState.PARTIAL) {
             this.chart.series[0].update({ type: "line", zones: false }, true);
+            this.chart.yAxis[0].setExtremes(null, null, false, false);
         } else {
             let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
+            // console.log("zoooom", this.zooming);
+            // if (this.zooming) {
+            //     let max = _.max(_.map(data, (v: number) => v[1]));
+            //     let min = _.min(_.map(data, (v: number) => v[1]));
+            //     this.chart.yAxis[0].setExtremes(min, max, false, false);
+            // } else {
+            //     this.chart.yAxis[0].setExtremes(null, null, false, false);
+            // }
             this.chart.series[0].update({ type: "area", zones }, true);
         }
         this.chart.series[0].setData(data, false, true);

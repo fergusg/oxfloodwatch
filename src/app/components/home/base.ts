@@ -149,11 +149,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
     }
 
     private update(data: any, retry = true) {
-        // most recent is first.  But use sort() instead of reverse() just to be sure
         this.timeseries = data;
 
         data = this.filter.filter(data, this.normalDistance);
-        // console.log(JSON.stringify(_.map(data, (d:number[]) => [new Date(d[0]), d[1]])));
         let [timestamp, value] = data[0];
         this.delta = parseInt(value, 10);
         this.when = timestamp;

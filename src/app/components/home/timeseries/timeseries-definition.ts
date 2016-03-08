@@ -8,8 +8,13 @@ function onSelect(event: any) {
 
     let {min, max} = event.xAxis[0];
 
-    this.chart.xAxis[0].setExtremes(min, max, false, false);
-    this.chart.redraw();
+    let data = _.filter(this.chart.series[0].data, (p: any) => p.x >= min && p.x <= max);
+    let ydata = _.map(data, (v: any) => v.y);
+    let minY = _.min(ydata);
+    let maxY = _.max(ydata);
+
+    this.chart.xAxis[0].setExtremes(min, max);
+    this.chart.yAxis[0].setExtremes(minY, maxY);
 
     return false;
 }
