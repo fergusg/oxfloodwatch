@@ -1,7 +1,17 @@
-TWILIO_ACCOUNT_SID = "...."
-TWILIO_AUTH_TOKEN = "..."
-TWILIO_FROM = "..."
-TEST_MOBILE = "+44...."
+TWILIO_LIVE = {
+    "SID": "....",
+    "AUTH_TOKEN": "...",
+    "FROM": ".....",
+    "TEST_MOBILE": "....."
+}
+TWILIO_DEV = {
+    "SID": "....",
+    "AUTH_TOKEN": "....",
+    "FROM": "+15005550006",
+    "TEST_MOBILE": "..."
+}
+
+
 FLOODWATCH_ID = "....";
 FLOODWATCH_URL = "https://oxfloodnet.thingzone.uk/latest/%s" % (FLOODWATCH_ID)
 

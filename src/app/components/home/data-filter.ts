@@ -28,6 +28,9 @@ export default class DataFilter {
             return data;
         }
 
+        // Must have a temp
+        data = data.filter((v) => _.isFinite(v[2]));
+
         // Map the sensor height to our "relative" height
         data = data.map((v) => {
             let [time, val, temp] = v;
@@ -67,6 +70,22 @@ export default class DataFilter {
         return data;
     }
 
+    /*
+        The rather odd formulation is basically
+
+            d'/c' = t = d/c0
+
+        with d = "uncompensated distance", c0 = c(T_ref), T_ref = 22.3
+        and c' = c(T)
+
+        =>  d' = d * c'/c
+
+        The (331.3 + 0.606 * T) is the speed of sound at temp T (deg C)
+
+        (So 331.3 + 0.606 * 22.3 = 20000/58)
+
+        Pressure and humidity effects are small
+     */
     private getHeight(value: number, temp: number, normalDistance: number) {
         if (_.isFinite(temp)) {
             let newVal = ((value * 58) * (331.3 + 0.606 * temp)) / 20000;

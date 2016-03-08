@@ -10,8 +10,7 @@ from flask.ext.restful import Resource, Api as RestApi
 from functools import wraps
 from twilio.rest import TwilioRestClient
 
-from localsettings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
-from localsettings import TEST_MOBILE, FLOODWATCH_URL, OPENWEATHER_URL, MET_OFFICE_URL
+from localsettings import FLOODWATCH_URL, OPENWEATHER_URL, MET_OFFICE_URL
 from models import Setting, Person, Data
 import footpath
 from extend_jsonp import support_jsonp
@@ -21,11 +20,25 @@ ADMIN = "/admin"
 
 LOCALHOST = os.environ["SERVER_NAME"] in ("localhost")
 
+if LOCALHOST:
+    from localsettings import TWILIO_DEV as TWILIO
+else:
+    from localsettings import TWILIO_LIVE as TWILIO
+
+
 app = Flask(__name__)
 api = RestApi(app)
 support_jsonp(api)
 
-client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+client = TwilioRestClient(TWILIO["SID"], TWILIO["AUTH_TOKEN"])
+
+def safeget(dct, *keys):
+    for key in keys:
+        try:
+            dct = dct[key]
+        except KeyError:
+            return None
+    return dct
 
 def get_current_temp_ow(nocache=False):
     data = memcache.get("temperature")
@@ -47,14 +60,6 @@ def get_current_temp_ow(nocache=False):
 
     return (data, None)
 
-def safeget(dct, *keys):
-    for key in keys:
-        try:
-            dct = dct[key]
-        except KeyError:
-            return None
-    return dct
-
 def get_current_temp(nocache=False):
     data = memcache.get("temperature")
 
@@ -66,21 +71,18 @@ def get_current_temp(nocache=False):
         ret = json.loads(result.content)
 
         # temp in C
-#        temp = ret["SiteRep"]["DV"]["Location"]["Period"][-1]["Rep"][-1]["T"]
+        # ret["SiteRep"]["DV"]["Location"]["Period"][-1]["Rep"][-1]["T"]
         temp = safeget(ret, "SiteRep", "DV", "Location", "Period", -1, "Rep", -1, "T")
 
+        now = int(time.time() * 1000)
         if temp is not None:
             temp = float(temp)
-
-        now = int(time.time() * 1000)
+            memcache.set("temperature", json.dumps(data), time=3600)
         data = {"temperature" : temp, "timestamp" : now}
-        memcache.set("temperature", json.dumps(data), time=3600)
     else:
         data = json.loads(data)
 
     return (data, None)
-
-
 
 def get_current_level():
 
@@ -92,11 +94,10 @@ def get_current_level():
     ret = json.loads(result.content)
     return (int(ret["payload"]["value"]), ret["payload"]["timestamp"], None)
 
-
 def sendMessage(number, message):
     client.messages.create(
         to = number,
-        from_ = TWILIO_FROM,
+        from_ = TWILIO["FROM"],
         body = message
     )
 
@@ -162,7 +163,7 @@ def init():
         name = "Test User",
         setting_id = footpath.id,
         trigger_level = "close",
-        mobile = TEST_MOBILE,
+        mobile = TWILIO["TEST_MOBILE"],
         last_level = "very_low"
     ).put()
 
@@ -328,7 +329,7 @@ class CreateDataStore(Resource):
             name = "Test User",
             setting_id = footpath.id,
             trigger_level = "close",
-            mobile = TEST_MOBILE,
+            mobile = TWILIO["TEST_MOBILE"],
             last_level = "very_low"
         ).put()
 
@@ -337,7 +338,7 @@ class CreateDataStore(Resource):
 @api.resource(ADMIN + '/ping')
 class Ping(Resource):
     def get(self):
-        sendMessage(TEST_MOBILE, "Hello to you too" )
+        sendMessage(TWILIO["TEST_MOBILE"], "Hello to you too" )
         return {"hello": "to you too"}
 
 @api.resource(ADMIN + '/temp')
