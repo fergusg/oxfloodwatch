@@ -31,7 +31,7 @@ export class Chacks extends BaseComponent {
             very_low: -25,
             low: -10,
             close: 0,
-            high: 20,
+            high: 24,
             very_high: 30,
             extreme: 36,
             max: 50
@@ -39,7 +39,8 @@ export class Chacks extends BaseComponent {
     }
 
     public getLocalConfig() {
-        let {min, max} = this.getLevels();
+        let levels = this.getLevels();
+        let {min, max} = levels;
         return {
             normalDistance: 70,
             title: "Trouble at t'Mill",
@@ -47,7 +48,8 @@ export class Chacks extends BaseComponent {
                 max,
                 min
             },
-            messages
+            messages,
+            levels
         };
     };
 }

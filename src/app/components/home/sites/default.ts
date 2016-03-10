@@ -6,8 +6,6 @@ import DataFilter from "../data-filter";
 import DataService from "../data-service";
 
 
-const [min, max] = [-10, 40];
-
 const messages = {
     VERY_LOW: "So low, even the camels are nervous.",
     LOW: "If the river were [depth]cm higher, you might get wet feet.",
@@ -30,18 +28,21 @@ export class Default extends BaseComponent {
 
     protected getLevels() {
         return {
-            min,
+            min : -10,
             very_low: -10,
             low: -5,
             close: 0,
             high: 7,
             very_high: 15,
             extreme: 30,
-            max
+            max: 40
         };
     }
 
     public getLocalConfig() {
+        let levels = this.getLevels();
+        let {min, max} = levels;
+
         return {
             normalDistance: 149,
             title: "Kirtlington to Tackley Footpath",

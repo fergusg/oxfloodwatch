@@ -1,6 +1,6 @@
 id = "chacks"
 name = "Flight's Mill"
-normal = 40
+normal = 70
 
 levels = [
     {
@@ -19,7 +19,7 @@ levels = [
         "desc": "close"
     },
     {
-        "level": 20,
+        "level": 24,
         "name" : "high",
         "desc": "high"
     },
