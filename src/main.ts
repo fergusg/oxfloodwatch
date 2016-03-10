@@ -6,6 +6,7 @@ import "rxjs/add/observable/fromEvent";
 import "rxjs/add/operator/timeout";
 import "rxjs/add/operator/delay";
 import "rxjs/add/operator/do";
+import "rxjs/add/operator/flatMapLatest";
 
 import {provide, enableProdMode} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";
