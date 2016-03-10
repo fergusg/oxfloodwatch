@@ -10,13 +10,14 @@ import {LoaderAnim, MomentPipe} from "../../util";
 import {DepthPipe} from "./depth-pipe";
 import {defaultConfig} from "../../../config";
 import DataFilter from "./data-filter";
+import DataService from "./data-service";
 
 declare var $: any;
 declare var _: any;
 
 @Component({
     selector: "home",
-    providers: [JSONP_PROVIDERS, DataFilter],
+    providers: [JSONP_PROVIDERS, DataFilter, DataService],
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
@@ -46,7 +47,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
         private ref: ChangeDetectorRef,
         private elem: ElementRef,
         private jsonp: Jsonp,
-        private filter: DataFilter
+        private filter: DataFilter,
+        private dataService: DataService
     ) {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
@@ -122,6 +124,11 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
                 .timer(1000, 30000)
                 .subscribe(this.load.bind(this));
         }
+
+        this.dataService.data
+            .subscribe((json : any) => {
+                console.log("DataService", json);
+            });
     }
 
     private load() {

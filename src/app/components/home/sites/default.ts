@@ -3,6 +3,8 @@ import {Jsonp} from "angular2/http";
 
 import {BaseComponent} from "./../base";
 import DataFilter from "../data-filter";
+import DataService from "../data-service";
+
 
 const [min, max] = [-10, 40];
 
@@ -20,9 +22,10 @@ export class Default extends BaseComponent {
         ref: ChangeDetectorRef,
         elem: ElementRef,
         jsonp: Jsonp,
-        filter: DataFilter
+        filter: DataFilter,
+        dataService: DataService
     ) {
-        super(ref, elem, jsonp, filter);
+        super(ref, elem, jsonp, filter, dataService);
     }
 
     protected getLevels() {

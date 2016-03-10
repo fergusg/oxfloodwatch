@@ -10,4 +10,6 @@ const defaultConfig = {
     url
 };
 
-export {defaultConfig};
+console.log("Config", url);
+
+export {defaultConfig, url};
