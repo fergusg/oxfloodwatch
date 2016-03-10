@@ -27,7 +27,7 @@ export class Chacks extends BaseComponent {
 
     protected getLevels() {
         return {
-            min: -20,
+            min: -25,
             very_low: -25,
             low: -10,
             close: 0,
@@ -41,7 +41,7 @@ export class Chacks extends BaseComponent {
     public getLocalConfig() {
         let {min, max} = this.getLevels();
         return {
-            normalDistance: 90,
+            normalDistance: 70,
             title: "Trouble at t'Mill",
             yAxis: {
                 max,
