@@ -44,7 +44,9 @@ def get_current_temp_ow(nocache=False):
     data = memcache.get("temperature")
 
     if not data or nocache:
-        result = urlfetch.fetch(OPENWEATHER_URL)
+        result = urlfetch.fetch(OPENWEATHER_URL, deadline=10)
+        if result is None:
+            return (None, "timeout")
         if result.status_code != 200:
             return (None, result.status_code)
 
@@ -63,8 +65,11 @@ def get_current_temp_ow(nocache=False):
 def get_current_temp(nocache=False):
     data = memcache.get("temperature")
 
-    if not data or nocache:
-        result = urlfetch.fetch(MET_OFFICE_URL)
+    if (data is None) or nocache:
+        result = urlfetch.fetch(MET_OFFICE_URL, deadline=10)
+        if result is None:
+            logging.warn("Timeout for %s" % MET_OFFICE_URL)
+            return (None, "timeout")
         if result.status_code != 200:
             return (None, result.status_code)
 
@@ -77,8 +82,10 @@ def get_current_temp(nocache=False):
         now = int(time.time() * 1000)
         if temp is not None:
             temp = float(temp)
+            data = {"temperature" : temp, "timestamp" : now}
             memcache.set("temperature", json.dumps(data), time=3600)
-        data = {"temperature" : temp, "timestamp" : now}
+        else:
+            data = {"temperature" : None, "timestamp" : now}
     else:
         data = json.loads(data)
 
@@ -130,11 +137,9 @@ def makedata():
     for i in xrange(24*4):
         t = now - timedelta(seconds=i*15*60)
         v = 149 + random.randint(28, 29)
+        temp = random.randint(-10, 20)
         # GAE barfs if tzinfo defined
-        Data(time=t.replace(tzinfo=None), value=v,
-            time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
-        ).put()
-        Data(time=t.replace(tzinfo=None), value=v,
+        Data(time=t.replace(tzinfo=None), value=v, temperature = temp,
             time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
         ).put()
 
@@ -169,6 +174,12 @@ def init():
 
     makedata()
 
+def adjust_height(value, temp):
+    if temp is None:
+        return None
+    v = ((value * 58) * (331.3 + 0.606 * temp)) / 20000
+    return int(round(v))
+
 refresh()
 
 if LOCALHOST:
@@ -195,16 +206,35 @@ class ListAll(Resource):
     def get(self):
         ts = getTimeseries()
         if not ts:
-            return []
+            m = "sendalerts abort - no timeseries"
+            logging.info(m)
+            return m
 
-        current_level = ts[0][1]
+        # Filter temp=null
+        ts = [ t for t in ts if t[2] is not None]
+        if len(ts) == 0:
+            m = "sendalerts abort - no readings"
+            logging.info(m)
+            return m
 
-        recent_levels = [x[1] for x in ts[1:4]]
+        ts = [[t[0], adjust_height(t[1], t[2]), t[2]] for t in ts]
+
+        (current_time, current_level, current_temp) = ts[0]
+
+        if current_temp is None:
+            m = "sendalerts abort - current temp unknown"
+            logging.info(m)
+            return m
 
         # Try to detect spikes - if this level is 50cm higher than avg of the prev 3 readings, abort
-        avg_recent = float(sum(recent_levels))/max(len(recent_levels),1)
+        recent_levels = [float(x[1]) for x in ts[1:4]]
+        n_recent_levels = max(len(recent_levels),1)
+
+        avg_recent = sum(recent_levels)/n_recent_levels
         if abs(current_level - avg_recent) > 50:
-            return []
+            m = "sendalerts abort - spike?"
+            logging.info(m)
+            return m
 
         ret = []
 
