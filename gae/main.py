@@ -13,7 +13,11 @@ from twilio.rest import TwilioRestClient
 from localsettings import FLOODWATCH_URL, OPENWEATHER_URL, MET_OFFICE_URL
 from models import Setting, Person, Data
 import footpath
+import jane
+import chacks
 from extend_jsonp import support_jsonp
+
+print "chacks", json.dumps(chacks.levels)
 
 API = "/api"
 ADMIN = "/admin"
@@ -162,6 +166,20 @@ def init():
         name = footpath.name,
         normal = footpath.normal,
         levels = json.dumps(footpath.levels)
+    ).put()
+
+    Setting(
+        id = jane.id,
+        name = jane.name,
+        normal = jane.normal,
+        levels = json.dumps(jane.levels)
+    ).put()
+
+    Setting(
+        id = chacks.id,
+        name = chacks.name,
+        normal = chacks.normal,
+        levels = json.dumps(chacks.levels)
     ).put()
 
     Person(

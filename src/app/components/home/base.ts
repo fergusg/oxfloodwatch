@@ -1,6 +1,5 @@
-import {Component, ChangeDetectorRef, ElementRef, OnDestroy, OnInit} from "angular2/core";
+import {Component, ChangeDetectorRef, ElementRef, OnInit} from "angular2/core";
 import {JSONP_PROVIDERS, Jsonp} from "angular2/http";
-import {Observable} from "rxjs/Observable";
 
 import TimeSeriesComponent from "./timeseries/timeseries";
 import GaugeComponent from "./gauge/gauge";
@@ -24,7 +23,7 @@ declare var _: any;
     pipes: [MomentPipe, DepthPipe],
     directives: [LoaderAnim, TimeSeriesComponent, GaugeComponent, LastReading]
 })
-export abstract class BaseComponent implements OnInit, OnDestroy {
+export abstract class BaseComponent implements OnInit {
     public delta = 0;
     public above = 0;
     public timeseries: any;
@@ -47,7 +46,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
         private ref: ChangeDetectorRef,
         private elem: ElementRef,
         private jsonp: Jsonp,
-        private filter: DataFilter,
+        private dataFilter: DataFilter,
         private dataService: DataService
     ) {
         this.jigger = location.search.includes("jigger");
@@ -112,53 +111,22 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
         ];
     }
 
-    public ngOnDestroy() {
-        console.log("destroy");
-    }
-
     public ngOnInit() {
-        if (this.jigger) {
-            // this.doJigger();
-        } else {
-            Observable
-                .timer(1000, 30000)
-                .subscribe(this.load.bind(this));
-        }
-
         this.dataService.data
-            .subscribe((json : any) => {
-                console.log("DataService", json);
-            });
+            .subscribe(this.update.bind(this), this.onLoadError.bind(this));
     }
 
-    private load() {
-        this.loaded = false;
-        this.loadError = false;
-
-        let timeout = this.timeout
-            ? Math.floor(Math.random() * 150) + 50
-            : 10000;
-
+    private onLoadError(err: any) {
+        this.loadError = true;
+        this.when = null;
         this.ref.detectChanges();
-
-        this.jsonp.request(this.config.url)
-            .timeout(timeout, new Error("Timed out"))
-            .delay(250)
-            .map((res: any) => res.json())
-            .subscribe(this.update.bind(this), onError.bind(this));
-
-        function onError(err: any) {
-            this.loadError = true;
-            this.when = null;
-            this.ref.detectChanges();
-            console.error(err);
-        }
+        console.error(err);
     }
 
     private update(data: any, retry = true) {
         this.timeseries = data;
 
-        data = this.filter.filter(data, this.normalDistance);
+        data = this.dataFilter.filter(data, this.normalDistance);
         let [timestamp, value] = data[0];
         this.delta = parseInt(value, 10);
         this.when = timestamp;

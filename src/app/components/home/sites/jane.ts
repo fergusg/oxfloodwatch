@@ -5,16 +5,19 @@ import {BaseComponent} from "./../base";
 import DataFilter from "../data-filter";
 import DataService from "../data-service";
 
+
+const [min, max] = [-10, 40];
+
 const messages = {
-    VERY_LOW: "OK",
-    LOW: "[depth]cm above bottom of bridge",
-    CLOSE: "[depth]cm above encroaching front lawn",
-    HIGH: "[depth]cm above gravel",
-    VERY_HIGH: "[depth]cm above front door",
-    EXTREME: "[depth]cm above entrance floor well"
+    VERY_LOW: "So low, even the camels are nervous.",
+    LOW: "If the river were [depth]cm higher, you might get wet feet.",
+    CLOSE: "It's a close call. You probably can get around the edge with care.",
+    HIGH: "Looks like you might get damp.",
+    VERY_HIGH: "Pretty damned deep. Wellies only",
+    EXTREME: "Call Jacques Cousteau"
 };
 
-export class Chacks extends BaseComponent {
+export class Jane extends BaseComponent {
     constructor(
         ref: ChangeDetectorRef,
         elem: ElementRef,
@@ -27,22 +30,22 @@ export class Chacks extends BaseComponent {
 
     protected getLevels() {
         return {
-            min: -20,
-            very_low: -25,
-            low: -10,
+            min,
+            very_low: -10,
+            low: -5,
             close: 0,
-            high: 20,
-            very_high: 30,
-            extreme: 36,
-            max: 50
+            high: 7,
+            very_high: 15,
+            extreme: 30,
+            max
         };
     }
 
     public getLocalConfig() {
-        let {min, max} = this.getLevels();
         return {
-            normalDistance: 90,
-            title: "Trouble at t'Mill",
+            normalDistance: 149,
+            title: "Vyv and Jane's Fields",
+            subtitle: "Is it flooded near Pigeons Lock?",
             yAxis: {
                 max,
                 min
@@ -50,4 +53,5 @@ export class Chacks extends BaseComponent {
             messages
         };
     };
+
 }
