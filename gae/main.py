@@ -5,6 +5,7 @@ from operator import itemgetter
 
 from google.appengine.api import urlfetch, memcache
 from google.appengine.ext import ndb
+from google.appengine.api.urlfetch_errors import DeadlineExceededError
 
 from flask import Flask, g, redirect, request, session, url_for, Response, current_app
 from flask.ext.restful import Resource, Api as RestApi
@@ -37,21 +38,12 @@ def initSettings():
     import footpath
     import jane
     import chacks
-    Settings[footpath.id] = {
-        "name": footpath.name,
-        "normal": footpath.normal,
-        "levels": footpath.levels
-    }
-    Settings[chacks.id] = {
-        "name": chacks.name,
-        "normal": chacks.normal,
-        "levels": chacks.levels
-    }
-    Settings[jane.id] = {
-        "name": jane.name,
-        "normal": jane.normal,
-        "levels": jane.levels
-    }
+    for s in [footpath, jane, chacks]:
+        Settings[s.id] = {
+            "name": s.name,
+            "normal": s.normal,
+            "levels": s.levels
+        }
 
 def safeget(dct, *keys):
     for key in keys:
@@ -65,16 +57,20 @@ def get_current_temp_ow(nocache=False):
     data = memcache.get("temperature")
 
     if not data or nocache:
-        result = urlfetch.fetch(OPENWEATHER_URL, deadline=10)
-        if result is None:
+        try:
+            result = urlfetch.fetch(OPENWEATHER_URL, deadline=10)
+        except DeadlineExceededError:
             return (None, "timeout")
         if result.status_code != 200:
             return (None, result.status_code)
 
         ret = json.loads(result.content)
+        temp = safeget(ret, "main", "temp")
+        if not temp:
+            return (None, "Invalid temp")
 
         # temp in K
-        temp = int(100*(ret["main"]["temp"] - 273.15))/100.0
+        temp = int(100*(temp - 273.15))/100.0
         now = int(time.time() * 1000)
         data = {"temperature" : temp, "timestamp" : now}
         memcache.set("temperature", json.dumps(data), time=3600)
@@ -85,10 +81,12 @@ def get_current_temp_ow(nocache=False):
 
 def get_current_temp(nocache=False):
     data = memcache.get("temperature")
+    now = int(time.time() * 1000)
 
     if (data is None) or nocache:
-        result = urlfetch.fetch(MET_OFFICE_URL, deadline=10)
-        if result is None:
+        try:
+            result = urlfetch.fetch(MET_OFFICE_URL, deadline=10)
+        except DeadlineExceededError:
             logging.warn("Timeout for %s" % MET_OFFICE_URL)
             return (None, "timeout")
         if result.status_code != 200:
@@ -96,11 +94,11 @@ def get_current_temp(nocache=False):
 
         ret = json.loads(result.content)
 
+
         # temp in C
         # ret["SiteRep"]["DV"]["Location"]["Period"][-1]["Rep"][-1]["T"]
         temp = safeget(ret, "SiteRep", "DV", "Location", "Period", -1, "Rep", -1, "T")
 
-        now = int(time.time() * 1000)
         if temp is not None:
             temp = float(temp)
             data = {"temperature" : temp, "timestamp" : now}
@@ -113,9 +111,11 @@ def get_current_temp(nocache=False):
     return (data, None)
 
 def get_current_level():
-
     url = FLOODWATCH_URL
-    result = urlfetch.fetch(url)
+    try:
+        result = urlfetch.fetch(url, deadline=15)
+    except DeadlineExceededError:
+        return (None, "timeout")
     if result.status_code != 200:
         return (None, result.status_code)
 
@@ -157,7 +157,7 @@ def makedata():
     now = datetime.now()
     for i in xrange(24*4):
         t = now - timedelta(seconds=i*15*60)
-        v = 149 + random.randint(28, 29)
+        v = 149 - random.randint(0,50)
         temp = random.randint(-10, 20)
         # GAE barfs if tzinfo defined
         Data(time=t.replace(tzinfo=None), value=v, temperature = temp,
