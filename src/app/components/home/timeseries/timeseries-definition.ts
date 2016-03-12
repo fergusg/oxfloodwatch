@@ -1,4 +1,9 @@
 declare var _: any;
+
+function smallScreen() {
+    return document.body.clientWidth < 800;
+}
+
 // http://www.highcharts.com/studies/drilldown.htm
 function onSelect(event: any) {
     if (!event.xAxis) {
@@ -23,7 +28,7 @@ function getDefinition(self) {
     return {
         chart: {
             type: 'area',
-            height: document.body.clientWidth < 800 ? 80 : 150,
+            height: smallScreen() ? 80 : 150,
             zoomType: 'x',
             panning: true,
             panKey: 'ctrl',
@@ -65,13 +70,14 @@ function getDefinition(self) {
         plotOptions: {
             area: {
                 marker: {
-                    enabled: true,
+                    enabled: !smallScreen(),
                     symbol: 'circle',
-                    radius: 2,
-                    fillColor: "#e68a00",
+                    radius: 1.2,
+                    fillColor: "#5900b3",
                     states: {
                         hover: {
-                            enabled: true
+                            enabled: true,
+                            radius: 5
                         }
                     }
                 }
