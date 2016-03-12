@@ -122,7 +122,7 @@ def remove_duplicates(values):
     return output
 
 def refresh():
-    then = datetime.now() - timedelta(days=7)
+    then = datetime.now() - timedelta(days=3)
     q = Data.query(Data.time > then).order(-Data.time)
     ret = []
     for d in q:
