@@ -73,11 +73,11 @@ function getDefinition(self) {
                     enabled: !smallScreen(),
                     symbol: 'circle',
                     radius: 1.2,
-                    fillColor: "#5900b3",
+                    fillColor: "#989898",
                     states: {
                         hover: {
                             enabled: true,
-                            radius: 5
+                            radius: 4
                         }
                     }
                 }
