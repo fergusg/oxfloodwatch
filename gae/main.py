@@ -11,13 +11,8 @@ from functools import wraps
 from twilio.rest import TwilioRestClient
 
 from localsettings import FLOODWATCH_URL, OPENWEATHER_URL, MET_OFFICE_URL
-from models import Setting, Person, Data
-import footpath
-import jane
-import chacks
+from models import Person, Data
 from extend_jsonp import support_jsonp
-
-print "chacks", json.dumps(chacks.levels)
 
 API = "/api"
 ADMIN = "/admin"
@@ -35,6 +30,27 @@ api = RestApi(app)
 support_jsonp(api)
 
 client = TwilioRestClient(TWILIO["SID"], TWILIO["AUTH_TOKEN"])
+
+Settings = {}
+def initSettings():
+    import footpath
+    import jane
+    import chacks
+    Settings[footpath.id] = {
+        "name": footpath.name,
+        "normal": footpath.normal,
+        "levels": footpath.levels
+    }
+    Settings[chacks.id] = {
+        "name": chacks.name,
+        "normal": chacks.normal,
+        "levels": chacks.levels
+    }
+    Settings[jane.id] = {
+        "name": jane.name,
+        "normal": jane.normal,
+        "levels": jane.levels
+    }
 
 def safeget(dct, *keys):
     for key in keys:
@@ -147,44 +163,52 @@ def makedata():
             time_str=t.strftime("%Y-%m-%dT%H:%M:%SZ")
         ).put()
 
-def getTimeseries():
-    if LOCALHOST:
+def getTimeseries(force=False):
+    # if LOCALHOST:
+    #     return refresh()
+
+    timeseries = memcache.get(key="timeseries")
+
+    if timeseries:
+        return timeseries
+
+    if force:
         return refresh()
 
-    return memcache.get(key="timeseries")
+    return None
 
 def init():
-    ndb.delete_multi(
-        Setting.query().fetch(keys_only=True)
-    )
+    # ndb.delete_multi(
+    #     Setting.query().fetch(keys_only=True)
+    # )
     ndb.delete_multi(
         Person.query().fetch(keys_only=True)
     )
 
-    Setting(
-        id = footpath.id,
-        name = footpath.name,
-        normal = footpath.normal,
-        levels = json.dumps(footpath.levels)
-    ).put()
+    # Setting(
+    #     id = footpath.id,
+    #     name = footpath.name,
+    #     normal = footpath.normal,
+    #     levels = json.dumps(footpath.levels)
+    # ).put()
 
-    Setting(
-        id = jane.id,
-        name = jane.name,
-        normal = jane.normal,
-        levels = json.dumps(jane.levels)
-    ).put()
+    # Setting(
+    #     id = jane.id,
+    #     name = jane.name,
+    #     normal = jane.normal,
+    #     levels = json.dumps(jane.levels)
+    # ).put()
 
-    Setting(
-        id = chacks.id,
-        name = chacks.name,
-        normal = chacks.normal,
-        levels = json.dumps(chacks.levels)
-    ).put()
+    # Setting(
+    #     id = chacks.id,
+    #     name = chacks.name,
+    #     normal = chacks.normal,
+    #     levels = json.dumps(chacks.levels)
+    # ).put()
 
     Person(
         name = "Test User",
-        setting_id = footpath.id,
+        setting_id = "default",
         trigger_level = "close",
         mobile = TWILIO["TEST_MOBILE"],
         last_level = "very_low"
@@ -198,6 +222,8 @@ def adjust_height(value, temp):
     v = ((value * 58) * (331.3 + 0.606 * temp)) / 20000
     return int(round(v))
 
+initSettings()
+
 refresh()
 
 if LOCALHOST:
@@ -209,8 +235,8 @@ if LOCALHOST:
 
 @api.resource(ADMIN + '/sendalerts')
 class ListAll(Resource):
-    def getLevel(self, s, levels, current_level):
-        delta = s.normal - current_level
+    def getLevel(self, normal, levels, current_level):
+        delta = normal - current_level
         level = None
         for f in reversed(levels):
             if (delta > f["level"]):
@@ -257,9 +283,9 @@ class ListAll(Resource):
         ret = []
 
         for p in Person.query():
-            s = Setting.query(Setting.id == p.setting_id).get()
-            levels = json.loads(s.levels)
-            (level, delta) = self.getLevel(s, levels, current_level)
+            s = Settings[p.setting_id]
+            levels = s["levels"]
+            (level, delta) = self.getLevel(s["normal"], levels, current_level)
 #            (level, delta) = ("extreme", 40)
 
             level_names = [f["name"] for f in levels]
@@ -276,7 +302,7 @@ class ListAll(Resource):
             )
 
             msg = "%s: %s norm:%s delta:%s level:%s last:%s trigger:%s level:%s alert:%s" % (
-                p.name, p.mobile, s.normal, delta, level, p.last_level, trigger_idx, level_idx, alert)
+                p.name, p.mobile, s["normal"], delta, level, p.last_level, trigger_idx, level_idx, alert)
             ret.append(msg)
             logging.info(json.dumps(msg))
 
@@ -285,7 +311,7 @@ class ListAll(Resource):
                 p.put()
                 m = "Dear {pname}, the level at {sname} is now {level} ({delta}cm)".format(
                     pname=p.name,
-                    sname=s.name,
+                    sname=s["name"],
                     level=levels[level_idx]["desc"],
                     delta=delta
                 )
@@ -300,6 +326,10 @@ class ListAll(Resource):
 @api.resource(ADMIN + '/update')
 class AdminLatest(Resource):
     def get(self):
+
+        timeseries = getTimeseries(force=True)
+
+
         (current_level, timestamp, err_code) = get_current_level()
 
         if err_code is not None:
@@ -317,7 +347,9 @@ class AdminLatest(Resource):
             temperature=temp
         ).put()
 
-        refresh()
+        timeseries.append([timestamp, current_level, temp])
+
+        memcache.set(key="timeseries", value=timeseries)
 
         return [current_level, timestamp, temp]
 
@@ -382,16 +414,10 @@ class TimeSeries(Resource):
 @api.resource(ADMIN + '/create')
 class CreateDataStore(Resource):
     def get(self):
-        Setting(
-            id = footpath.id,
-            name = footpath.name,
-            normal = footpath.normal,
-            levels = json.dumps(footpath.levels)
-        ).put()
 
         Person(
             name = "Test User",
-            setting_id = footpath.id,
+            setting_id = "default",
             trigger_level = "close",
             mobile = TWILIO["TEST_MOBILE"],
             last_level = "very_low"

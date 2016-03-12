@@ -4,9 +4,7 @@ import {Jsonp} from "angular2/http";
 import {BaseComponent} from "./../base";
 import DataFilter from "../data-filter";
 import DataService from "../data-service";
-import PlotBands from "../plotbands";
-
-
+import PlotBandsService from "../plotbands-service";
 
 const messages = {
     VERY_LOW: "So low, even the camels are nervous.",
@@ -24,9 +22,9 @@ export class Default extends BaseComponent {
         jsonp: Jsonp,
         filter: DataFilter,
         dataService: DataService,
-        plotBands: PlotBands
+        plotBandsService: PlotBandsService
     ) {
-        super(ref, elem, jsonp, filter, dataService, plotBands);
+        super(ref, elem, jsonp, filter, dataService, plotBandsService);
     }
 
     protected getLevels() {

@@ -1,4 +1,4 @@
-export default class PlotBands {
+export default class PlotBandsService {
     public get(levels: any) {
         return [
             {

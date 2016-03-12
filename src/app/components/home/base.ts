@@ -10,14 +10,14 @@ import {DepthPipe} from "./depth-pipe";
 import {defaultConfig} from "../../../config";
 import DataFilter from "./data-filter";
 import DataService from "./data-service";
-import PlotBands from "./plotbands";
+import PlotBandsService from "./plotbands-service";
 
 declare var $: any;
 declare var _: any;
 
 @Component({
     selector: "home",
-    providers: [JSONP_PROVIDERS, DataFilter, DataService, PlotBands],
+    providers: [JSONP_PROVIDERS, DataFilter, DataService, PlotBandsService],
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
@@ -32,8 +32,9 @@ export abstract class BaseComponent implements OnInit {
     public loaded = false;
     public messages: any;
     public state: string;
-    private config: any;
+    public plotbands: any;
 
+    private config: any;
     private firstLoaded = false;
     private when: any;
     private debug = false;
@@ -48,7 +49,7 @@ export abstract class BaseComponent implements OnInit {
         private jsonp: Jsonp,
         private dataFilter: DataFilter,
         private dataService: DataService,
-        private plotBands: PlotBands
+        private plotBandsService: PlotBandsService
     ) {
 
         this.jigger = location.search.includes("jigger");
@@ -57,6 +58,7 @@ export abstract class BaseComponent implements OnInit {
         this.config = this.getConfig();
         this.messages = this.config.messages;
         this.levels = this.getLevels();
+        this.plotbands = this.plotBandsService.get(this.levels);
 
         this.normalDistance = this.config.normalDistance;
     }
@@ -73,13 +75,8 @@ export abstract class BaseComponent implements OnInit {
             },
             this.getLocalConfig()
         );
-        c.yAxis.plotBands = this.getPlotBands();
+        c.yAxis.plotBands = _.cloneDeep(this.plotbands);
         return c;
-    }
-
-    public getPlotBands() {
-        let levels = this.getLevels();
-        return this.plotBands.get(levels);
     }
 
     public ngOnInit() {

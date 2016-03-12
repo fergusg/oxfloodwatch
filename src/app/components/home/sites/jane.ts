@@ -4,7 +4,7 @@ import {Jsonp} from "angular2/http";
 import {BaseComponent} from "./../base";
 import DataFilter from "../data-filter";
 import DataService from "../data-service";
-import PlotBands from "../plotbands";
+import PlotBandsService from "../plotbands-service";
 
 
 const messages = {
@@ -23,9 +23,9 @@ export class Jane extends BaseComponent {
         jsonp: Jsonp,
         filter: DataFilter,
         dataService: DataService,
-        plotBands: PlotBands
+        plotBandsService: PlotBandsService
     ) {
-        super(ref, elem, jsonp, filter, dataService, plotBands);
+        super(ref, elem, jsonp, filter, dataService, plotBandsService);
     }
 
     protected getLevels() {

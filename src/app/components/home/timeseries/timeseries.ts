@@ -27,7 +27,11 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     constructor(private elem: ElementRef, private filter: DataFilter) { }
 
     public ngOnInit() {
+
+        this.plotbands = _.cloneDeep(this.plotbands);
         let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
+
+        console.log("xxxx", JSON.stringify(this.plotbands));
 
         this.chartElem = $(this.elem.nativeElement).find(".chart");
         let def = chartDefinition(this);

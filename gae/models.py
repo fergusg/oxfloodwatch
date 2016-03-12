@@ -8,11 +8,11 @@ class Person(ndb.Model):
     last_level = ndb.StringProperty(required=True)
 
 
-class Setting(ndb.Model):
-    id = ndb.StringProperty(required=True)
-    name = ndb.StringProperty(required=True)
-    normal = ndb.IntegerProperty(required=True)
-    levels = ndb.StringProperty(required=True)
+# class Setting(ndb.Model):
+#     id = ndb.StringProperty(required=True)
+#     name = ndb.StringProperty(required=True)
+#     normal = ndb.IntegerProperty(required=True)
+#     levels = ndb.StringProperty(required=True)
 
 class Data(ndb.Model):
     time = ndb.DateTimeProperty(required=True)
