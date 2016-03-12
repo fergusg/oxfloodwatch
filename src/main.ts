@@ -17,8 +17,16 @@ import {AppCmp} from "./app/app";
 
 if ("<%= ENV %>" === "prod") { enableProdMode(); }
 
+if (window.applicationCache) {
+    const w: any = window;
+    w.applicationCache.addEventListener('updateready', () => {
+        console.log("applicationCache -> reload");
+        w.location.reload();
+    }, false);
+}
+
 bootstrap(AppCmp, [
-  ...ROUTER_PROVIDERS,
-  ...HTTP_PROVIDERS,
-  provide(APP_BASE_HREF, { useValue: "/" })
+    ...ROUTER_PROVIDERS,
+    ...HTTP_PROVIDERS,
+    provide(APP_BASE_HREF, { useValue: "/" })
 ]);
