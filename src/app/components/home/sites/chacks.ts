@@ -4,6 +4,7 @@ import {Jsonp} from "angular2/http";
 import {BaseComponent} from "./../base";
 import DataFilter from "../data-filter";
 import DataService from "../data-service";
+import PlotBands from "../plotbands";
 
 const messages = {
     VERY_LOW: "OK",
@@ -20,9 +21,10 @@ export class Chacks extends BaseComponent {
         elem: ElementRef,
         jsonp: Jsonp,
         filter: DataFilter,
-        dataService: DataService
+        dataService: DataService,
+        plotBands: PlotBands
     ) {
-        super(ref, elem, jsonp, filter, dataService);
+        super(ref, elem, jsonp, filter, dataService, plotBands);
     }
 
     protected getLevels() {
@@ -31,10 +33,10 @@ export class Chacks extends BaseComponent {
             very_low: -25,
             low: -10,
             close: 0,
-            high: 24,
-            very_high: 30,
-            extreme: 36,
-            max: 50
+            high: 60,
+            very_high: 80,
+            extreme: 90,
+            max: 110
         };
     }
 
@@ -42,7 +44,7 @@ export class Chacks extends BaseComponent {
         let levels = this.getLevels();
         let {min, max} = levels;
         return {
-            normalDistance: 70,
+            normalDistance: 90,
             title: "Trouble at t'Mill",
             yAxis: {
                 max,

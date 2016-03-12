@@ -4,8 +4,8 @@ import {Jsonp} from "angular2/http";
 
 let url= "/api/timeseries?callback=JSONP_CALLBACK";
 if (location.hostname === 'localhost') {
-    url = "http://oxfloodwatch.appspot.com" + url;
-    // url = "//localhost:8080" + url;
+    // url = "http://oxfloodwatch.appspot.com" + url;
+    url = "//localhost:8080" + url;
 }
 
 @Injectable()

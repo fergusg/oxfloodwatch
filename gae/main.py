@@ -337,6 +337,22 @@ class Purge(Resource):
 ### PUBLIC API ####################################
 ###################################################
 
+@api.resource(API + '/config/<site>')
+class Config(Resource):
+    def get(self, site):
+        return {
+            "normalDistance" : 90,
+            "levels": {
+                "min": -25,
+                "very_low": -25,
+                "low": -10,
+                "close": 0,
+                "high": 60,
+                "very_high": 80,
+                "extreme": 90,
+                "max": 110
+            }
+        }
 
 @api.resource(API + '/latest')
 class Latest(Resource):

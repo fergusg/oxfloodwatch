@@ -10,13 +10,14 @@ import {DepthPipe} from "./depth-pipe";
 import {defaultConfig} from "../../../config";
 import DataFilter from "./data-filter";
 import DataService from "./data-service";
+import PlotBands from "./plotbands";
 
 declare var $: any;
 declare var _: any;
 
 @Component({
     selector: "home",
-    providers: [JSONP_PROVIDERS, DataFilter, DataService],
+    providers: [JSONP_PROVIDERS, DataFilter, DataService, PlotBands],
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
@@ -39,7 +40,6 @@ export abstract class BaseComponent implements OnInit {
     private jigger = false;
     private timeout = false;
     private levels: any;
-
     private normalDistance: number;
 
     constructor(
@@ -47,8 +47,10 @@ export abstract class BaseComponent implements OnInit {
         private elem: ElementRef,
         private jsonp: Jsonp,
         private dataFilter: DataFilter,
-        private dataService: DataService
+        private dataService: DataService,
+        private plotBands: PlotBands
     ) {
+
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
         this.timeout = location.search.includes("timeout");
@@ -77,38 +79,7 @@ export abstract class BaseComponent implements OnInit {
 
     public getPlotBands() {
         let levels = this.getLevels();
-        return [
-            {
-                from: -1000,
-                to: levels.low,
-                color: '#55BF3B' // green
-            },
-            {
-                from: levels.low,
-                to: levels.close,
-                color: '#00e600' // light green
-            },
-            {
-                from: levels.close,
-                to: levels.high,
-                color: '#DDDF0D' // yellow
-            },
-            {
-                from: levels.high,
-                to: levels.very_high,
-                color: '#ffa366' // light orange
-            },
-            {
-                from: levels.very_high,
-                to: levels.extreme,
-                color: '#ff6600' // orange
-            },
-            {
-                from: levels.extreme,
-                to: 1000,
-                color: '#cc0000' // red
-            }
-        ];
+        return this.plotBands.get(levels);
     }
 
     public ngOnInit() {
