@@ -55,10 +55,11 @@ export abstract class BaseComponent implements OnInit {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
         this.timeout = location.search.includes("timeout");
-        this.config = this.getConfig();
-        this.messages = this.config.messages;
+
         this.levels = this.getLevels();
         this.plotbands = this.plotBandsService.get(this.levels);
+        this.config = this.getConfig();
+        this.messages = this.config.messages;
 
         this.normalDistance = this.config.normalDistance;
     }
@@ -71,7 +72,7 @@ export abstract class BaseComponent implements OnInit {
             {},
             defaultConfig,
             {
-                levels: this.getLevels()
+                levels: this.levels
             },
             this.getLocalConfig()
         );
