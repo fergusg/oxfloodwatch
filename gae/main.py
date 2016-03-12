@@ -1,6 +1,7 @@
 import logging, json, random, os, time
 from dateutil import parser
 from datetime import datetime, timedelta
+from operator import itemgetter
 
 from google.appengine.api import urlfetch, memcache
 from google.appengine.ext import ndb
@@ -146,7 +147,7 @@ def refresh():
 
     ret = remove_duplicates(ret)
 
-    memcache.set(key="timeseries", value=ret)
+    memcache.set(key="timeseries", value=json.dumps(ret))
     return ret
 
 def makedata():
@@ -170,7 +171,7 @@ def getTimeseries(force=False):
     timeseries = memcache.get(key="timeseries")
 
     if timeseries:
-        return timeseries
+        return json.loads(timeseries)
 
     if force:
         return refresh()
@@ -347,9 +348,12 @@ class AdminLatest(Resource):
             temperature=temp
         ).put()
 
-        timeseries.append([timestamp, current_level, temp])
+        timeseries.insert(0, [timestamp, current_level, temp])
 
-        memcache.set(key="timeseries", value=timeseries)
+        timeseries = sorted(timeseries, key=itemgetter(0), reverse=True)
+        timeseries = remove_duplicates(timeseries)
+
+        memcache.set(key="timeseries", value=json.dumps(timeseries))
 
         return [current_level, timestamp, temp]
 
