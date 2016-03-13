@@ -1,5 +1,4 @@
 import {Component, OnInit, Injector} from "angular2/core";
-import {JSONP_PROVIDERS} from "angular2/http";
 
 import TimeSeriesComponent from "./timeseries/timeseries";
 import GaugeComponent from "./gauge/gauge";
@@ -17,7 +16,7 @@ declare var _: any;
 
 @Component({
     selector: "home",
-    providers: [JSONP_PROVIDERS, DataFilter, DataService, PlotBandsService],
+    providers: [DataFilter, DataService, PlotBandsService],
     moduleId: module.id,
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",

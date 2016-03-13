@@ -12,7 +12,7 @@ import "rxjs/add/operator/switchMap";
 import {provide, enableProdMode} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";
 import {ROUTER_PROVIDERS, APP_BASE_HREF} from "angular2/router";
-import {HTTP_PROVIDERS} from "angular2/http";
+import {HTTP_PROVIDERS, JSONP_PROVIDERS} from "angular2/http";
 import {AppCmp} from "./app/app";
 
 if ("<%= ENV %>" === "prod") { enableProdMode(); }
@@ -28,5 +28,6 @@ if (window.applicationCache) {
 bootstrap(AppCmp, [
     ...ROUTER_PROVIDERS,
     ...HTTP_PROVIDERS,
+    ...JSONP_PROVIDERS,
     provide(APP_BASE_HREF, { useValue: "/" })
 ]);
