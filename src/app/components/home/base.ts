@@ -1,4 +1,7 @@
 import {Component, OnInit, Injector} from "angular2/core";
+import {ROUTER_DIRECTIVES} from "angular2/router";
+
+import {Subscription} from "rxjs/Subscription";
 
 import TimeSeriesComponent from "./timeseries/timeseries";
 import GaugeComponent from "./gauge/gauge";
@@ -21,7 +24,7 @@ declare var _: any;
     styleUrls: ["./home.css"],
     templateUrl: "./home.html",
     pipes: [MomentPipe, DepthPipe],
-    directives: [LoaderAnim, TimeSeriesComponent, GaugeComponent, LastReading]
+    directives: [...ROUTER_DIRECTIVES, LoaderAnim, TimeSeriesComponent, GaugeComponent, LastReading]
 })
 export abstract class BaseComponent implements OnInit {
     public delta = 0;
@@ -44,12 +47,13 @@ export abstract class BaseComponent implements OnInit {
     private dataService: DataService;
     private dataFilter: DataFilter;
     private plotBandsService: PlotBandsService;
+    private subscription: Subscription;
 
     constructor(
         injector: Injector
     ) {
 
-        this.dataService =  injector.get(DataService);
+        this.dataService = injector.get(DataService);
         this.dataFilter = injector.get(DataFilter);
         this.plotBandsService = injector.get(PlotBandsService);
 
@@ -82,7 +86,11 @@ export abstract class BaseComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.dataService.data
+        this.subscribe();
+    }
+
+    private subscribe() {
+        this.subscription = this.dataService.data
             .subscribe(this.update.bind(this), this.onLoadError.bind(this));
     }
 
@@ -90,6 +98,8 @@ export abstract class BaseComponent implements OnInit {
         this.loadError = true;
         this.when = null;
         console.error(err);
+        setTimeout(this.subscribe.bind(this), 10000);
+        this.subscription.unsubscribe(); // Does this unsubscribe?
     }
 
     private update(data: any, retry = true) {

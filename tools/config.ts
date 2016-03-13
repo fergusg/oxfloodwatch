@@ -91,8 +91,8 @@ export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependenci
 
 // Declare local files that needs to be injected
 export const APP_ASSETS: InjectableDependency[] = [
-    { src: `${ASSETS_SRC}/main.css`, inject: true, dest: CSS_DEST },
-    { src: `${ASSETS_SRC}/bootstrap.min.css`, inject: true, dest: CSS_DEST }
+    { src: `${ASSETS_SRC}/bootstrap.min.css`, inject: true, dest: CSS_DEST },
+    { src: `${ASSETS_SRC}/main.css`, inject: true, dest: CSS_DEST }
 ];
 
 export const DEV_DEPENDENCIES = DEV_NPM_DEPENDENCIES.concat(APP_ASSETS);

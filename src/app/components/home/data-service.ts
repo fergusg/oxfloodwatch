@@ -14,7 +14,7 @@ export default class DataService {
     constructor(private jsonp: Jsonp) {
         this.dataObservable = Observable
             .timer(1000, 30000)
-            .switchMap((x: number, ix: number): Observable<any> => {
+            .switchMap((): Observable<any> => {
                 console.log("Fetching", url);
                 return this.jsonp.request(url)
                     .timeout(15000, new Error("Timed out"))
