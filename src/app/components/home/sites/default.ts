@@ -1,10 +1,6 @@
-import {ChangeDetectorRef, ElementRef} from "angular2/core";
-import {Jsonp} from "angular2/http";
+import {Injector} from "angular2/core";
 
 import {BaseComponent} from "./../base";
-import DataFilter from "../data-filter";
-import DataService from "../data-service";
-import PlotBandsService from "../plotbands-service";
 
 const messages = {
     VERY_LOW: "So low, even the camels are nervous.",
@@ -17,14 +13,9 @@ const messages = {
 
 export class Default extends BaseComponent {
     constructor(
-        ref: ChangeDetectorRef,
-        elem: ElementRef,
-        jsonp: Jsonp,
-        filter: DataFilter,
-        dataService: DataService,
-        plotBandsService: PlotBandsService
+        injector: Injector
     ) {
-        super(ref, elem, jsonp, filter, dataService, plotBandsService);
+        super(injector);
     }
 
     protected getLevels() {

@@ -1,5 +1,5 @@
-import {Component, ChangeDetectorRef, ElementRef, OnInit} from "angular2/core";
-import {JSONP_PROVIDERS, Jsonp} from "angular2/http";
+import {Component, OnInit, Injector} from "angular2/core";
+import {JSONP_PROVIDERS} from "angular2/http";
 
 import TimeSeriesComponent from "./timeseries/timeseries";
 import GaugeComponent from "./gauge/gauge";
@@ -42,15 +42,17 @@ export abstract class BaseComponent implements OnInit {
     private timeout = false;
     private levels: any;
     private normalDistance: number;
+    private dataService: DataService;
+    private dataFilter: DataFilter;
+    private plotBandsService: PlotBandsService;
 
     constructor(
-        private ref: ChangeDetectorRef,
-        private elem: ElementRef,
-        private jsonp: Jsonp,
-        private dataFilter: DataFilter,
-        private dataService: DataService,
-        private plotBandsService: PlotBandsService
+        injector: Injector
     ) {
+
+        this.dataService =  injector.get(DataService);
+        this.dataFilter = injector.get(DataFilter);
+        this.plotBandsService = injector.get(PlotBandsService);
 
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
@@ -88,7 +90,6 @@ export abstract class BaseComponent implements OnInit {
     private onLoadError(err: any) {
         this.loadError = true;
         this.when = null;
-        this.ref.detectChanges();
         console.error(err);
     }
 
@@ -104,7 +105,6 @@ export abstract class BaseComponent implements OnInit {
         this.state = levels.state;
         this.above = levels.above;
 
-        this.ref.detectChanges();
         this.loaded = true;
         this.firstLoaded = true;
     }

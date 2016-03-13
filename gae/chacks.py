@@ -16,21 +16,21 @@ levels = [
     {
         "level": 0,
         "name" : "close",
-        "desc": "close"
+        "desc": "above river wall"
     },
     {
-        "level": 60,
+        "level": 50,
         "name" : "high",
-        "desc": "high"
+        "desc": "above gravel"
+    },
+    {
+        "level": 70,
+        "name" : "very_high",
+        "desc": "above threshold"
     },
     {
         "level": 80,
-        "name" : "very_high",
-        "desc": "very high"
-    },
-    {
-        "level": 90,
         "name" : "extreme",
-        "desc": "extremely high"
+        "desc": "above hallway"
     }
 ]

@@ -1,30 +1,21 @@
-import {ChangeDetectorRef, ElementRef} from "angular2/core";
-import {Jsonp} from "angular2/http";
+import {Injector} from "angular2/core";
 
 import {BaseComponent} from "./../base";
-import DataFilter from "../data-filter";
-import DataService from "../data-service";
-import PlotBandsService from "../plotbands-service";
 
 const messages = {
     VERY_LOW: "OK",
-    LOW: "[depth]cm above bottom of bridge",
-    CLOSE: "[depth]cm above encroaching front lawn",
+    LOW: "[depth]cm above top of bridge",
+    CLOSE: "[depth]cm above river wall",
     HIGH: "[depth]cm above gravel",
     VERY_HIGH: "[depth]cm above front door",
-    EXTREME: "[depth]cm above entrance floor well"
+    EXTREME: "[depth]cm above hallway"
 };
 
 export class Chacks extends BaseComponent {
     constructor(
-        ref: ChangeDetectorRef,
-        elem: ElementRef,
-        jsonp: Jsonp,
-        filter: DataFilter,
-        dataService: DataService,
-        plotBandsService: PlotBandsService
+        injector: Injector
     ) {
-        super(ref, elem, jsonp, filter, dataService, plotBandsService);
+        super(injector);
     }
 
     protected getLevels() {
@@ -33,10 +24,10 @@ export class Chacks extends BaseComponent {
             very_low: -25,
             low: -10,
             close: 0,
-            high: 60,
-            very_high: 80,
-            extreme: 90,
-            max: 110
+            high: 50,
+            very_high: 70,
+            extreme: 80,
+            max: 100
         };
     }
 
