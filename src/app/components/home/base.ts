@@ -33,7 +33,7 @@ export abstract class BaseComponent implements OnInit {
     public loadError = false;
     public loaded = false;
     public messages: any;
-    public state: string;
+    public state: string;  // used in template
     public plotbands: any;
 
     private config: any;
@@ -97,8 +97,7 @@ export abstract class BaseComponent implements OnInit {
     private onLoadError(err: any) {
         this.loadError = true;
         this.when = null;
-        console.error(err);
-        setTimeout(this.subscribe.bind(this), 10000);
+        setTimeout(this.subscribe.bind(this), 30000);
         this.subscription.unsubscribe(); // Does this unsubscribe?
     }
 
@@ -110,16 +109,15 @@ export abstract class BaseComponent implements OnInit {
         this.delta = parseInt(value, 10);
         this.when = timestamp;
 
-        let levels = this.calcLevels(this.delta);
-        this.state = levels.state;
-        this.above = levels.above;
+        let {state, above} = this.calcLevels(this.delta, this.config.levels);
+        this.state = state;
+        this.above = above;
 
         this.loaded = true;
         this.firstLoaded = true;
     }
 
-    private calcLevels(d) {
-        const levels = this.config.levels;
+    private calcLevels(d, levels) {
         if (d >= levels.extreme) {
             return { state: "EXTREME", above: d - levels.extreme };
         } else if (d >= levels.very_high) {

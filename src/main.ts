@@ -4,10 +4,12 @@ import "rxjs/add/operator/debounceTime";
 import "rxjs/add/observable/fromArray"; // gives us .of()
 import "rxjs/add/observable/timer";
 import "rxjs/add/observable/fromEvent";
+import "rxjs/add/observable/throw";
 import "rxjs/add/operator/timeout";
 import "rxjs/add/operator/delay";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/switchMap";
+import "rxjs/add/operator/catch";
 
 import {provide, enableProdMode} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";
