@@ -37,19 +37,6 @@
         </div>
     </div>
 
-    <div class="row col-md-6 col-md-offset-3">
-        <div>
-            Data from the
-            <a href="https://map.flood.network/">Flood Network</a>
-        </div>
-    </div>
-    <div class="row col-md-6 col-md-offset-3">
-        <div>
-            <em>Disclaimer: This is a work in progress.
-                Use at your own risk. Feedback to
-                <a href="mailto:{{config.feedback}}">{{config.feedback}}</a></em>
-        </div>
-    </div>
     <div class="row col-md-6 col-md-offset-3" *ngIf="debug">
         <pre>{{data | json}}</pre>
     </div>
