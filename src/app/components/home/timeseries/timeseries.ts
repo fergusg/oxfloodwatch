@@ -11,14 +11,14 @@ declare var _: any;
     templateUrl: "./timeseries.html",
     styleUrls: ['./timeseries.css'],
     moduleId: module.id,
-    inputs: ["data", "plotbands", "normalDistance"],
+    inputs: ["data", "plotBands", "normalDistance"],
     providers: [DataFilter]
 })
 export default class TimeSeriesComponent implements OnInit, OnChanges {
 
     private chart: any;
     private chartElem: any;
-    private plotbands: any;
+    private plotBands: any;
     private filterState: FilterState = FilterState.FULL;
     private data: any;
     private zooming = false;
@@ -27,8 +27,8 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     constructor(private elem: ElementRef, private filter: DataFilter) { }
 
     public ngOnInit() {
-        this.plotbands = _.cloneDeep(this.plotbands);
-        let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
+        this.plotBands = _.cloneDeep(this.plotBands);
+        let zones = this.plotBands.map(v => { return { color: v.color, value: v.to }; });
 
         this.chartElem = $(this.elem.nativeElement).find(".chart");
         let def = chartDefinition(this);
@@ -50,6 +50,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
                 }
                 this.redraw();
             });
+        console.log("ngOnInit plotbands", this.plotBands);
     }
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
@@ -57,6 +58,15 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
             this.data = changes["data"].currentValue;
             this.redraw();
         }
+        if (changes["plotbands"]) {
+            let c = changes["plotbands"];
+            if (_.isArray(c.currentValue)) {
+                this.plotBands = c.currentValue;
+            } else if (_.isArray(c.previousValue)) {
+                this.plotBands = c.previousValue;
+            }
+        }
+        this.redraw();
     }
 
     public getFilterState(): any {
@@ -75,6 +85,9 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     }
 
     public redraw() {
+        if (!this.chart) {
+            return;
+        }
         let data: any = this.filter.filter(this.data, this.normalDistance, this.filterState);
 
         data.sort((a, b) => a[0] - b[0]);
@@ -82,8 +95,8 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         if (this.filterState === FilterState.NONE || this.filterState === FilterState.PARTIAL) {
             this.chart.series[0].update({ type: "line", zones: false }, true);
             this.chart.yAxis[0].setExtremes(null, null, false, false);
-        } else {
-            let zones = this.plotbands.map(v => { return { color: v.color, value: v.to }; });
+        } else if (this.plotBands) {
+            let zones = this.plotBands.map(v => { return { color: v.color, value: v.to }; });
 
             this.chart.series[0].update({ type: "area", zones }, true);
         }

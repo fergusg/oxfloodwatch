@@ -34,7 +34,7 @@ export abstract class BaseComponent implements OnInit {
     public loaded = false;
     public messages: any;
     public state: string;  // used in template
-    public plotbands: any;
+    public plotBands: any;
 
     private config: any;
     private firstLoaded = false;
@@ -62,7 +62,7 @@ export abstract class BaseComponent implements OnInit {
         this.timeout = location.search.includes("timeout");
 
         this.levels = this.getLevels();
-        this.plotbands = this.plotBandsService.get(this.levels);
+        this.plotBands = this.plotBandsService.get(this.levels);
         this.config = this.getConfig();
         this.messages = this.config.messages;
 
@@ -81,7 +81,7 @@ export abstract class BaseComponent implements OnInit {
             },
             this.getLocalConfig()
         );
-        c.yAxis.plotBands = _.cloneDeep(this.plotbands);
+        c.yAxis.plotBands = _.cloneDeep(this.plotBands);
         return c;
     }
 
