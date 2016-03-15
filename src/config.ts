@@ -1,5 +1,5 @@
 const defaultConfig = {
-     feedback: "floodwatch@gooses.co.uk"
+     feedback: "oxfloodwatch@gooses.co.uk"
 };
 
 export {defaultConfig};
