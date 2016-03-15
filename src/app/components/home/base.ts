@@ -32,7 +32,6 @@ export abstract class BaseComponent implements OnInit {
     public timeseries: any;
     public loadError = false;
     public loaded = false;
-    public messages: any;
     public state: string;  // used in template
     public plotBands: any;
 
@@ -64,7 +63,6 @@ export abstract class BaseComponent implements OnInit {
         this.levels = this.getLevels();
         this.plotBands = this.plotBandsService.get(this.levels);
         this.config = this.getConfig();
-        this.messages = this.config.messages;
 
         this.normalDistance = this.config.normalDistance;
     }
@@ -72,21 +70,20 @@ export abstract class BaseComponent implements OnInit {
     public abstract getLocalConfig();
     protected abstract getLevels();
 
-    public getConfig() {
+    public ngOnInit() {
+        this.subscribe();
+    }
+
+    private getConfig() {
         let c = Object.assign(
-            {},
-            defaultConfig,
             {
-                levels: this.levels
+                levels: this.levels,
+                feedback: defaultConfig.feedback
             },
             this.getLocalConfig()
         );
         c.yAxis.plotBands = _.cloneDeep(this.plotBands);
         return c;
-    }
-
-    public ngOnInit() {
-        this.subscribe();
     }
 
     private subscribe() {
@@ -109,7 +106,7 @@ export abstract class BaseComponent implements OnInit {
         this.delta = parseInt(value, 10);
         this.when = timestamp;
 
-        let {state, above} = this.calcLevels(this.delta, this.config.levels);
+        let {state, above} = this.calcLevels(this.delta, this.levels);
         this.state = state;
         this.above = above;
 
