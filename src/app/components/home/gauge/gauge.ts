@@ -53,7 +53,7 @@ export default class GaugeComponent implements OnInit, OnChanges {
     }
 
     private resizeChart() {
-        let height = document.body.clientWidth < 800 ? 240 : 400;
+        let height = document.body.clientWidth < 800 ? 300 : 500;
         let width = $(this.elem.nativeElement).parent().innerWidth();
         this.chart.setSize(width, height);
         this.chart.redraw(false);

@@ -20,8 +20,8 @@ export class Chacks extends BaseComponent {
 
     protected getLevels() {
         return {
-            min: -25,
-            very_low: -25,
+            min: -20,
+            very_low: -20,
             low: -10,
             close: 0,
             high: 50,
