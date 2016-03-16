@@ -10,7 +10,7 @@
     </div>
 
     <div class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'">
-        <gauge [delta]="delta" [levels]="levels" [plotBands]="plotBands"></gauge>
+        <gauge [delta]="delta" [range]="[levels?.min, levels?.max]" [plotBands]="plotBands"></gauge>
     </div>
     <div class="row col-md-6 col-md-offset-3 text-center" [style.display]="firstLoaded? 'block' : 'none'">
         <timeseries [data]="timeseries" [plotBands]="plotBands" [normalDistance]="normalDistance"></timeseries>
@@ -32,7 +32,7 @@
                 [class.alert-info]="state === 'CLOSE'"
                 [class.alert-warning]="state === 'HIGH'"
                 [class.alert-danger]="state === 'VERY_HIGH' || state === 'EXTREME'">
-                {{config.messages[state] | depth:above}}
+                {{messages[state] | depth:above}}
             </div>
         </div>
     </div>

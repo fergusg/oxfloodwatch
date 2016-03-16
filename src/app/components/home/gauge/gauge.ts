@@ -11,47 +11,60 @@ declare var _: any;
     selector: "gauge",
     template: '',
     moduleId: module.id,
-    inputs: ["levels", "delta", "plotBands"]
+    inputs: ["range", "delta", "plotBands"]
 })
 export default class GaugeComponent implements OnInit, OnChanges {
 
     private chart: any;
     private chartElem: any;
     private delta: number;
-    private levels: any;
+    private range: any;
     private plotBands: any;
 
-    constructor(private elem: ElementRef) { }
+    constructor(private elem: ElementRef) {
+        this.chartElem = $(this.elem.nativeElement);
+    }
 
     public ngOnInit() {
-        this.chartElem = $(this.elem.nativeElement);
-        this.plotBands =  _.cloneDeep(this.plotBands);
-        let def = this.getDefinition();
+        //
+    }
 
-        def.yAxis = Object.assign({}, def.yAxis, {
-            plotBands: this.plotBands,
-            min: this.levels.min,
-            max: this.levels.max
-        });
-
-        this.chartElem.highcharts(def);
-        this.chart = this.chartElem.highcharts();
-        this.twitch();
+    public getMinMax() {
+        return [
+            this.range ? this.range[0] : -100,
+            this.range ? this.range[1] : 100
+        ];
     }
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-        console.log("changes", changes);
-        if (changes["delta"] && changes["delta"].currentValue) {
+        console.log("changes.1", changes["delta"]);
+        if (changes["delta"] && _.isFinite(changes["delta"].currentValue)) {
             this.delta = changes["delta"].currentValue;
-            const [h] = limit(this.delta, this.levels.min, this.levels.max);
-            this.chart.series[0].points[0].update(h);
-            setTimeout(this.resizeChart.bind(this), 0);
         }
-        if (changes["levels"] && changes["levels"].currentValue) {
-            console.log("changes.levels", changes["levels"].currentValue);
+        if (changes["range"] && changes["range"].currentValue) {
+            this.range = changes["range"].currentValue;
         }
         if (changes["plotBands"] && changes["plotBands"].currentValue) {
-            console.log("changes.plotBands", changes["plotBands"].currentValue);
+            this.plotBands =  _.cloneDeep(changes["plotBands"].currentValue);
+        }
+        if (_.isFinite(this.delta) && this.range && this.plotBands) {
+            console.log("changes", this.delta, this.range, this.plotBands);
+            let [min, max] = this.getMinMax();
+            if (!this.chart) {
+                let def = this.getDefinition();
+
+                def.yAxis = Object.assign({}, def.yAxis, {
+                    plotBands: this.plotBands,
+                    min, max
+                });
+
+                this.chartElem.highcharts(def);
+                this.chart = this.chartElem.highcharts();
+                this.twitch();
+            }
+            const [h] = limit(this.delta, min, max);
+            this.chart.series[0].points[0].update(h);
+            setTimeout(this.resizeChart.bind(this), 0);
         }
     }
 
@@ -71,7 +84,8 @@ export default class GaugeComponent implements OnInit, OnChanges {
         Observable
             .timer(1000, 1000)
             .subscribe(() => {
-                let [h, limited] = limit(this.delta, this.levels.min, this.levels.max);
+                let [min, max] = this.getMinMax();
+                let [h, limited] = limit(this.delta, min, max);
                 h += normalDist(limited ? 1.0 : 2.5);
                 point.update(h);
             });

@@ -27,15 +27,16 @@ declare var _: any;
     directives: [...ROUTER_DIRECTIVES, LoaderAnim, TimeSeriesComponent, GaugeComponent, LastReading]
 })
 export abstract class BaseComponent implements OnInit {
-    public delta = 0;
+    public delta = -1;
     public above = 0;
     public timeseries: any;
     public loadError = false;
     public loaded = false;
     public state: string;  // used in template
     public plotBands: any;
+    public messages = [];
 
-    private config: any;
+    private config: any = {};
     private firstLoaded = false;
     private when: any;
     private debug = false;
@@ -60,11 +61,14 @@ export abstract class BaseComponent implements OnInit {
         this.debug = location.search.includes("debug");
         this.timeout = location.search.includes("timeout");
 
-        this.levels = this.getLevels();
-        this.plotBands = this.plotBandsService.get(this.levels);
-        this.config = this.getConfig();
+        // setTimeout(() => {
+            this.levels = this.getLevels();
+            this.plotBands = this.plotBandsService.get(this.levels);
+            this.config = this.getConfig();
+            this.normalDistance = this.config.normalDistance;
+            this.messages = this.config.messages;
+        // }, 2000);
 
-        this.normalDistance = this.config.normalDistance;
     }
 
     public abstract getLocalConfig();
@@ -100,6 +104,9 @@ export abstract class BaseComponent implements OnInit {
 
     private update(data: any, retry = true) {
         this.timeseries = data;
+        if (!_.isFinite(this.normalDistance)) {
+            return;
+        }
 
         data = this.dataFilter.filter(data, this.normalDistance);
         let [timestamp, value] = data[0];
@@ -114,7 +121,10 @@ export abstract class BaseComponent implements OnInit {
         this.firstLoaded = true;
     }
 
-    private calcLevels(d, levels) {
+    private calcLevels(d, levels): any {
+        if (!levels) {
+            return { state: "", above: 0};
+        }
         if (d >= levels.extreme) {
             return { state: "EXTREME", above: d - levels.extreme };
         } else if (d >= levels.very_high) {
