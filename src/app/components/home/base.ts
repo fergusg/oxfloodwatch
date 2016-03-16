@@ -27,17 +27,17 @@ declare var _: any;
     directives: [...ROUTER_DIRECTIVES, LoaderAnim, TimeSeriesComponent, GaugeComponent, LastReading]
 })
 export abstract class BaseComponent implements OnInit {
-    public delta = -1;
+    public delta: number;
     public above = 0;
     public timeseries: any;
     public loadError = false;
-    public loaded = false;
+    public loaded = true;
     public state: string;  // used in template
     public plotBands: any;
     public messages = [];
 
     private config: any = {};
-    private firstLoaded = false;
+    private firstLoaded = true;
     private when: any;
     private debug = false;
     private jigger = false;

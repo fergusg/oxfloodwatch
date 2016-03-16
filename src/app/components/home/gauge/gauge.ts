@@ -37,9 +37,11 @@ export default class GaugeComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-        console.log("changes.1", changes["delta"]);
         if (changes["delta"] && _.isFinite(changes["delta"].currentValue)) {
-            this.delta = changes["delta"].currentValue;
+            let d = changes["delta"].currentValue;
+            if (_.isFinite(d)) {
+                this.delta = d;
+            }
         }
         if (changes["range"] && changes["range"].currentValue) {
             this.range = changes["range"].currentValue;
@@ -47,8 +49,8 @@ export default class GaugeComponent implements OnInit, OnChanges {
         if (changes["plotBands"] && changes["plotBands"].currentValue) {
             this.plotBands =  _.cloneDeep(changes["plotBands"].currentValue);
         }
-        if (_.isFinite(this.delta) && this.range && this.plotBands) {
-            console.log("changes", this.delta, this.range, this.plotBands);
+        let ok = !!(this.delta && this.range && this.plotBands);
+        if (ok) {
             let [min, max] = this.getMinMax();
             if (!this.chart) {
                 let def = this.getDefinition();
