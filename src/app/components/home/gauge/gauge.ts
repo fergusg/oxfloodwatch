@@ -40,11 +40,18 @@ export default class GaugeComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+        console.log("changes", changes);
         if (changes["delta"] && changes["delta"].currentValue) {
             this.delta = changes["delta"].currentValue;
             const [h] = limit(this.delta, this.levels.min, this.levels.max);
             this.chart.series[0].points[0].update(h);
             setTimeout(this.resizeChart.bind(this), 0);
+        }
+        if (changes["levels"] && changes["levels"].currentValue) {
+            console.log("changes.levels", changes["levels"].currentValue);
+        }
+        if (changes["plotBands"] && changes["plotBands"].currentValue) {
+            console.log("changes.plotBands", changes["plotBands"].currentValue);
         }
     }
 

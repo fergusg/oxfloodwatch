@@ -20,20 +20,17 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     private chartElem: any;
     private plotBands: any;
     private filterState: FilterState = FilterState.FULL;
-    private data: any;
+    private data: any[] = [];
     private zooming = false;
     private normalDistance = 0;
 
-    constructor(private elem: ElementRef, private filter: DataFilter) { }
+    constructor(private elem: ElementRef, private dataFilter: DataFilter) { }
 
     public ngOnInit() {
-        this.plotBands = _.cloneDeep(this.plotBands);
-        let zones = this.plotBands.map(v => { return { color: v.color, value: v.to }; });
-
         this.chartElem = $(this.elem.nativeElement).find(".chart");
         let def = chartDefinition(this);
         def = Object.assign({}, def, {
-            series: [{ zones, data: [] }]
+            series: [{ data: [] }]
         });
 
         this.chartElem.highcharts(def);
@@ -50,21 +47,19 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
                 }
                 this.redraw();
             });
-        console.log("ngOnInit plotbands", this.plotBands);
     }
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
         if (changes["data"] && changes["data"].currentValue) {
             this.data = changes["data"].currentValue;
-            this.redraw();
         }
-        if (changes["plotbands"]) {
-            let c = changes["plotbands"];
-            if (_.isArray(c.currentValue)) {
-                this.plotBands = c.currentValue;
-            } else if (_.isArray(c.previousValue)) {
-                this.plotBands = c.previousValue;
-            }
+        if (changes["normalDistance"] && changes["normalDistance"].currentValue) {
+            this.normalDistance = changes["normalDistance"].currentValue;
+        }
+        if (changes["plotbands"] && _.isArray(changes["plotbands"].currentValue)) {
+            this.plotBands = _.cloneDeep(changes["plotbands"].currentValue);
+            let zones = this.plotBands.map(v => { return { color: v.color, value: v.to }; });
+            this.chart.series[0].update({zones});
         }
         this.redraw();
     }
@@ -88,7 +83,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         if (!this.chart) {
             return;
         }
-        let data: any = this.filter.filter(this.data, this.normalDistance, this.filterState);
+        let data: any = this.dataFilter.filter(this.data, this.normalDistance, this.filterState);
 
         data.sort((a, b) => a[0] - b[0]);
 
