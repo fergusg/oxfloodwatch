@@ -59,7 +59,7 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         if (changes["plotbands"] && _.isArray(changes["plotbands"].currentValue)) {
             this.plotBands = _.cloneDeep(changes["plotbands"].currentValue);
             let zones = this.plotBands.map(v => { return { color: v.color, value: v.to }; });
-            this.chart.series[0].update({zones});
+            this.chart.series[0].update({ zones });
         }
         this.redraw();
     }
@@ -83,6 +83,10 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
         if (!this.chart) {
             return;
         }
+        if (!_.isFinite(this.normalDistance)) {
+            return;
+        }
+
         let data: any = this.dataFilter.filter(this.data, this.normalDistance, this.filterState);
 
         data.sort((a, b) => a[0] - b[0]);
