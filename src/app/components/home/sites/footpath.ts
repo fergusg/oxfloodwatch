@@ -11,23 +11,23 @@ const messages = {
     EXTREME: "Call Jacques Cousteau"
 };
 
-export class Jane extends BaseComponent {
+export class Footpath extends BaseComponent {
     constructor(
         injector: Injector
     ) {
         super(injector);
     }
 
-    protected getName(): string {
-        return "jane";
-    }
-
     protected getTitle() {
-        return "Vyv and Jane's Fields";
+        return "Kirtlington to Tackley Footpath";
     }
 
     protected getSubTitle() {
         return "Is it flooded near Pigeons Lock?";
+    }
+
+    protected getName(): string {
+        return "default";
     }
 
     protected getMessages() {

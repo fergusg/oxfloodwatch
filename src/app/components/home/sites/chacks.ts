@@ -22,31 +22,12 @@ export class Chacks extends BaseComponent {
         return "chacks";
     }
 
-    protected getLevels() {
-        return {
-            min: -20,
-            very_low: -20,
-            low: -10,
-            close: 0,
-            high: 50,
-            very_high: 70,
-            extreme: 80,
-            max: 100
-        };
+    protected getMessages() {
+        return messages;
     }
 
-    public getLocalConfig() {
-        let levels = this.getLevels();
-        let {min, max} = levels;
-        return {
-            normalDistance: 90,
-            title: "Trouble at t'Mill",
-            yAxis: {
-                max,
-                min
-            },
-            messages,
-            levels
-        };
-    };
+    protected getTitle() {
+        return "Trouble at t'Mill";
+    }
+
 }

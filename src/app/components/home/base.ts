@@ -36,8 +36,9 @@ export abstract class BaseComponent implements OnInit {
     public state: string;  // used in template
     public plotBands: any;
     public messages = [];
+    public title = "title";
+    public subtitle = "subtitle";
 
-    private config: any = {};
     private firstLoaded = true;
     private when: any;
     private debug = false;
@@ -63,11 +64,17 @@ export abstract class BaseComponent implements OnInit {
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
         this.timeout = location.search.includes("timeout");
+
+        this.title = this.getTitle();
+        this.subtitle = this.getSubTitle();
     }
 
-    public abstract getLocalConfig();
-    // protected abstract getLevels();
+    protected abstract getMessages();
     protected abstract getName(): string;
+    protected abstract getTitle();
+    protected getSubTitle() {
+        return null;
+    }
 
     public ngOnInit() {
         this.jsonp.request(`${defaultConfig.baseUrl}/api/config/${this.getName()}?callback=JSONP_CALLBACK`)
@@ -75,28 +82,10 @@ export abstract class BaseComponent implements OnInit {
             .subscribe((data: any) => {
                 this.levels = data.levels;
                 this.normalDistance = data.normalDistance;
-
-                // this.levels = this.getLevels();
                 this.plotBands = this.plotBandsService.get(this.levels);
-                this.config = this.getConfig();
-                // this.normalDistance = this.config.normalDistance;
-                this.messages = this.config.messages;
+                this.messages = this.getMessages();
                 this.subscribe();
             });
-
-
-    }
-
-    private getConfig() {
-        let c = Object.assign(
-            {
-                levels: this.levels,
-                feedback: defaultConfig.feedback
-            },
-            this.getLocalConfig()
-        );
-        c.yAxis.plotBands = _.cloneDeep(this.plotBands);
-        return c;
     }
 
     private subscribe() {

@@ -1,8 +1,8 @@
 <div class="container-fluid">
     <div class="row col-md-6 col-md-offset-3">
         <div class="page-header">
-            <h1><a [routerLink]="['/Index']">{{config.title}}</a></h1>
-            <h2 *ngIf="config.subtitle">{{config.subtitle}}</h2>
+            <h1><a [routerLink]="['/Index']">{{title}}</a></h1>
+            <h2 *ngIf="subtitle">{{subtitle}}</h2>
         </div>
         <div *ngIf="when" class="pull-right last-reading">
             <lastreading [when]="when"></lastreading>

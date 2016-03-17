@@ -1,7 +1,7 @@
 import {Component, ViewEncapsulation} from "angular2/core";
 import {RouteConfig, Redirect, Route, ROUTER_DIRECTIVES} from "angular2/router";
 
-import {Default, Chacks, About, Jane, IndexComponent} from "./components";
+import {Footpath, Chacks, About, Jane, IndexComponent} from "./components";
 
 @Component({
     selector: "app",
@@ -12,7 +12,7 @@ import {Default, Chacks, About, Jane, IndexComponent} from "./components";
 })
 @RouteConfig([
     new Route({ path: "/", component: IndexComponent, name: "Index" }),
-    new Route({ path: "/sites/pigeonslock", component: Default, name: "Default" }),
+    new Route({ path: "/sites/pigeonslock", component: Footpath, name: "Footpath" }),
     new Route({ path: "/sites/chacks", component: Chacks, name: "Chacks" }),
     new Route({ path: "/sites/jane", component: Jane, name: "Jane" }),
     new Route({ path: "/pages/about", component: About, name: "About" }),
