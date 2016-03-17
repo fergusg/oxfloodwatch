@@ -1,5 +1,6 @@
 import {Component, OnInit, Injector} from "angular2/core";
 import {ROUTER_DIRECTIVES} from "angular2/router";
+import {Jsonp} from "angular2/http";
 
 import {Subscription} from "rxjs/Subscription";
 
@@ -48,6 +49,7 @@ export abstract class BaseComponent implements OnInit {
     private dataFilter: DataFilter;
     private plotBandsService: PlotBandsService;
     private subscription: Subscription;
+    private jsonp: Jsonp;
 
     constructor(
         injector: Injector
@@ -56,26 +58,33 @@ export abstract class BaseComponent implements OnInit {
         this.dataService = injector.get(DataService);
         this.dataFilter = injector.get(DataFilter);
         this.plotBandsService = injector.get(PlotBandsService);
+        this.jsonp = injector.get(Jsonp);
 
         this.jigger = location.search.includes("jigger");
         this.debug = location.search.includes("debug");
         this.timeout = location.search.includes("timeout");
-
-        // setTimeout(() => {
-            this.levels = this.getLevels();
-            this.plotBands = this.plotBandsService.get(this.levels);
-            this.config = this.getConfig();
-            this.normalDistance = this.config.normalDistance;
-            this.messages = this.config.messages;
-        // }, 2000);
-
     }
 
     public abstract getLocalConfig();
-    protected abstract getLevels();
+    // protected abstract getLevels();
+    protected abstract getName(): string;
 
     public ngOnInit() {
-        this.subscribe();
+        this.jsonp.request(`${defaultConfig.baseUrl}/api/config/${this.getName()}?callback=JSONP_CALLBACK`)
+            .map((res: any) => res.json())
+            .subscribe((data: any) => {
+                this.levels = data.levels;
+                this.normalDistance = data.normalDistance;
+
+                // this.levels = this.getLevels();
+                this.plotBands = this.plotBandsService.get(this.levels);
+                this.config = this.getConfig();
+                // this.normalDistance = this.config.normalDistance;
+                this.messages = this.config.messages;
+                this.subscribe();
+            });
+
+
     }
 
     private getConfig() {
@@ -123,7 +132,7 @@ export abstract class BaseComponent implements OnInit {
 
     private calcLevels(d, levels): any {
         if (!levels) {
-            return { state: "", above: 0};
+            return { state: "", above: 0 };
         }
         if (d >= levels.extreme) {
             return { state: "EXTREME", above: d - levels.extreme };

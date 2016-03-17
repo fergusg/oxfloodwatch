@@ -2,21 +2,14 @@ import {Observable} from "rxjs/Observable";
 import {Injectable} from "angular2/core";
 import {Jsonp} from "angular2/http";
 
+import {defaultConfig} from "../../../config";
+
+
 @Injectable()
 export default class DataService {
     private dataObservable: Observable<any>;
     constructor(private jsonp: Jsonp) {
-        let base = "";
-        if (location.hostname === 'localhost') {
-            if (parseInt(location.port, 10) === 5555) {
-                base = "http://oxfloodwatch.appspot.com";
-            } else {
-                // via devserver
-                // url = "http://oxfloodwatch.appspot.com";
-                base = "//localhost:8080";
-            }
-        }
-        let url = `${base}/api/timeseries?callback=JSONP_CALLBACK`;
+        let url = `${defaultConfig.baseUrl}/api/timeseries?callback=JSONP_CALLBACK`;
 
         this.dataObservable = Observable
             .timer(1000, 30000)

@@ -1,10 +1,11 @@
 id = "chacks"
-name = "Flight's Mill"
+name = "Flights' Mill"
 normal = 90
+max = 110
 
 levels = [
     {
-        "level": -25,
+        "level": -20,
         "name" : "very_low",
         "desc": "very low"
     },

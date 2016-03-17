@@ -18,6 +18,10 @@ export class Default extends BaseComponent {
         super(injector);
     }
 
+    protected getName(): string {
+        return "default";
+    }
+
     protected getLevels() {
         return {
             min : -10,

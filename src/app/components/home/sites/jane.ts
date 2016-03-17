@@ -18,6 +18,10 @@ export class Jane extends BaseComponent {
         super(injector);
     }
 
+    protected getName(): string {
+        return "jane";
+    }
+
     protected getLevels() {
         return {
             min: -10,

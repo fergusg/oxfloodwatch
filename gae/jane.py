@@ -1,6 +1,7 @@
 id = "jane"
 name = "Jane and Vyv's fields"
 normal = 149
+max = 40
 
 levels = [
     {

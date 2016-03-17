@@ -1,6 +1,7 @@
 id = "default"
 name = "Pigeon's Lock Footpath"
 normal = 149
+max = 40
 
 levels = [
     {

@@ -376,17 +376,19 @@ class Purge(Resource):
 @api.resource(API + '/config/<site>')
 class Config(Resource):
     def get(self, site):
+        s = Settings[site]
+        l = [ t["level"] for t in s["levels"] ]
         return {
-            "normalDistance" : 90,
+            "normalDistance" : s["normal"],
             "levels": {
-                "min": -25,
-                "very_low": -25,
-                "low": -10,
-                "close": 0,
-                "high": 60,
-                "very_high": 80,
-                "extreme": 90,
-                "max": 110
+                "min": s.get("min", l[0]),
+                "very_low": l[0],
+                "low": l[1],
+                "close": l[2],
+                "high": l[3],
+                "very_high": l[4],
+                "extreme": l[5],
+                "max": s.get("max", l[5]+10)
             }
         }
 

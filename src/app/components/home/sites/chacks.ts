@@ -18,6 +18,10 @@ export class Chacks extends BaseComponent {
         super(injector);
     }
 
+    protected getName(): string {
+        return "chacks";
+    }
+
     protected getLevels() {
         return {
             min: -20,
