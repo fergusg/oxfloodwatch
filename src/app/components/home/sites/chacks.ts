@@ -3,7 +3,7 @@ import {Injector} from "angular2/core";
 import {BaseComponent} from "./../base";
 
 const messages = {
-    VERY_LOW: "OK",
+    VERY_LOW: "Chill out",
     LOW: "[depth]cm above top of bridge",
     CLOSE: "[depth]cm above river wall",
     HIGH: "[depth]cm above gravel",

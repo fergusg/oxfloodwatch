@@ -4,7 +4,7 @@ import {BaseComponent} from "./../base";
 
 const messages = {
     VERY_LOW: "So low, even the camels are nervous.",
-    LOW: "If the river were [depth]cm higher, you might get wet feet.",
+    LOW: "If the river were a bit higher, you might get wet feet.",
     CLOSE: "It's a close call. You probably can get around the edge with care.",
     HIGH: "Looks like you might get damp.",
     VERY_HIGH: "Pretty damned deep. Wellies only",
