@@ -39,7 +39,7 @@ export abstract class BaseComponent implements OnInit {
     public title = "title";
     public subtitle = "subtitle";
 
-    private firstLoaded = true;
+    private firstLoaded = false;
     private when: any;
     private debug = false;
     private jigger = false;
