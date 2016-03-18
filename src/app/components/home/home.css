@@ -23,3 +23,22 @@
     background-size: cover;
 }
 
+.gauge {
+    height: 400px;
+}
+
+@media (max-width: 768px) {
+    .gauge {
+        height: 300px;
+    }
+}
+
+.timeseries {
+    height: 150px;
+}
+
+@media (max-width: 768px) {
+    .timeseries {
+        height: 80px;
+    }
+}

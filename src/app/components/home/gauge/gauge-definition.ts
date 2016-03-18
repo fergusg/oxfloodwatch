@@ -1,3 +1,5 @@
+declare var $: any;
+
 function getDefinition(self) {
 
         return {
@@ -9,7 +11,8 @@ function getDefinition(self) {
                 plotShadow: false,
                 marginTop: 0,
                 spacingTop: 0,
-                height: document.body.clientWidth < 800 ? 240 : 400
+                width: $(self.elem.nativeElement).parent().innerWidth(),
+                height: $(self.elem.nativeElement).parent().innerHeight()
             },
             credits: {
                 enabled: false
@@ -56,14 +59,14 @@ function getDefinition(self) {
             },
 
             yAxis: {
-                minorTickColor: '#bbbbbb00',
+                minorTickColor: '#bbbbbb88',
 
                 tickPixelInterval: 30,
                 tickWidth: 2,
                 tickPosition: 'inside',
                 tickLength: 11,
-                tickColor: '#aaaaaa00',
-                tickInterval: 5,
+                tickColor: '#aaaaaa88',
+                tickInterval: 10,
                 labels: {
                     step: 1
                 },
@@ -76,6 +79,8 @@ function getDefinition(self) {
                 name: 'Depth',
                 data: [-1000],
                 dataLabels: {
+                    y: 60,
+                    backgroundColor: 'white',
                     enabled: true,
                     formatter: function() {
                         return Math.floor(self.delta) + " cm";

@@ -1,7 +1,8 @@
 declare var _: any;
+declare var $: any;
 
 function smallScreen() {
-    return document.body.clientWidth < 800;
+    return document.body.clientWidth < 768;
 }
 
 // http://www.highcharts.com/studies/drilldown.htm
@@ -28,13 +29,15 @@ function getDefinition(self) {
     return {
         chart: {
             type: 'area',
-            height: smallScreen() ? 80 : 150,
             zoomType: 'x',
             panning: true,
             panKey: 'ctrl',
             events: {
                 selection: onSelect.bind(self)
-            }
+            },
+            width: $(self.elem.nativeElement).parent().innerWidth(),
+            height: $(self.elem.nativeElement).parent().innerHeight()
+
         },
         credits: {
             enabled: false
