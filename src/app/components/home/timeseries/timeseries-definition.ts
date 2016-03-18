@@ -34,9 +34,9 @@ function getDefinition(self) {
             panKey: 'ctrl',
             events: {
                 selection: onSelect.bind(self)
-            },
-            width: $(self.elem.nativeElement).parent().innerWidth(),
-            height: $(self.elem.nativeElement).parent().innerHeight()
+            }
+            // width: $(self.elem.nativeElement).parent().innerWidth(),
+            // height: $(self.elem.nativeElement).parent().innerHeight()
 
         },
         credits: {

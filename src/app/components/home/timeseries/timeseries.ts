@@ -104,9 +104,10 @@ export default class TimeSeriesComponent implements OnInit, OnChanges {
     }
 
     public resizeChart() {
-        // let height = document.body.clientWidth < 800 ? 80 : 150;
-        // let width = $(this.elem.nativeElement).parent().innerWidth();
-        // this.chart.setSize(width - 25, height);
+        let width = $(this.elem.nativeElement).parent().innerWidth() - 25;
+        let height = $(this.elem.nativeElement).parent().innerHeight();
+
+        this.chart.setSize(width, height);
         this.chart.redraw(true);
     }
 }
