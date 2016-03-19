@@ -35,10 +35,9 @@ client = TwilioRestClient(TWILIO["SID"], TWILIO["AUTH_TOKEN"])
 
 Settings = {}
 def initSettings():
-    import footpath
-    import jane
-    import chacks
-    for s in [footpath, jane, chacks]:
+    import sites
+    for name in sites.__all__:
+        s = __import__("sites.%s" % name, fromlist=[''])
         Settings[s.id] = {
             "name": s.name,
             "normal": s.normal,
@@ -179,33 +178,9 @@ def getTimeseries(force=False):
     return None
 
 def init():
-    # ndb.delete_multi(
-    #     Setting.query().fetch(keys_only=True)
-    # )
     ndb.delete_multi(
         Person.query().fetch(keys_only=True)
     )
-
-    # Setting(
-    #     id = footpath.id,
-    #     name = footpath.name,
-    #     normal = footpath.normal,
-    #     levels = json.dumps(footpath.levels)
-    # ).put()
-
-    # Setting(
-    #     id = jane.id,
-    #     name = jane.name,
-    #     normal = jane.normal,
-    #     levels = json.dumps(jane.levels)
-    # ).put()
-
-    # Setting(
-    #     id = chacks.id,
-    #     name = chacks.name,
-    #     normal = chacks.normal,
-    #     levels = json.dumps(chacks.levels)
-    # ).put()
 
     Person(
         name = "Test User",
@@ -327,9 +302,7 @@ class ListAll(Resource):
 @api.resource(ADMIN + '/update')
 class AdminLatest(Resource):
     def get(self):
-
         timeseries = getTimeseries(force=True)
-
 
         (current_level, timestamp, err_code) = get_current_level()
 
@@ -420,7 +393,6 @@ class TimeSeries(Resource):
 @api.resource(ADMIN + '/create')
 class CreateDataStore(Resource):
     def get(self):
-
         Person(
             name = "Test User",
             setting_id = "default",
