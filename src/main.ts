@@ -10,6 +10,7 @@ import "rxjs/add/operator/delay";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/switchMap";
 import "rxjs/add/operator/catch";
+import "rxjs/add/operator/publish";
 
 import {provide, enableProdMode} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";
