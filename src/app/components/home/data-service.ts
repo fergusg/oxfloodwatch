@@ -8,6 +8,7 @@ import {defaultConfig} from "../../../config";
 @Injectable()
 export default class DataService {
     private dataObservable: Observable<any>;
+    private published: any;//Observable<any>;
     constructor(private jsonp: Jsonp) {
         let url = `${defaultConfig.baseUrl}/api/timeseries?callback=JSONP_CALLBACK`;
 
@@ -24,9 +25,13 @@ export default class DataService {
                 console.error(err);
                 return Observable.throw(err);
             });
+
+        this.published = this.dataObservable.publish();
+        this.published.connect();
+
     }
 
     public get data(): Observable<any> {
-        return this.dataObservable;
+        return this.published;
     }
 }
