@@ -115,9 +115,9 @@ def get_current_level():
     try:
         result = urlfetch.fetch(url, deadline=15)
     except DeadlineExceededError:
-        return (None, "timeout")
+        return (None, None, "timeout")
     if result.status_code != 200:
-        return (None, result.status_code)
+        return (None, None, result.status_code)
 
     ret = json.loads(result.content)
     return (int(ret["payload"]["value"]), ret["payload"]["timestamp"], None)

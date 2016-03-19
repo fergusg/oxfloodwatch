@@ -4,15 +4,13 @@ import {Jsonp} from "angular2/http";
 
 import {defaultConfig} from "../../../config";
 
-
 @Injectable()
 export default class DataService {
-    private dataObservable: Observable<any>;
-    private published: any;//Observable<any>;
+    private publisher: Observable<any>;
     constructor(private jsonp: Jsonp) {
         let url = `${defaultConfig.baseUrl}/api/timeseries?callback=JSONP_CALLBACK`;
 
-        this.dataObservable = Observable
+        this.publisher = Observable
             .timer(1000, 30000)
             .switchMap((): Observable<any> => {
                 console.log("Fetching", url);
@@ -24,14 +22,10 @@ export default class DataService {
             .catch(function(err) {
                 console.error(err);
                 return Observable.throw(err);
-            });
-
-        this.published = this.dataObservable.publish();
-        this.published.connect();
-
+            }).publish().refCount();
     }
 
     public get data(): Observable<any> {
-        return this.published;
+        return this.publisher;
     }
 }
