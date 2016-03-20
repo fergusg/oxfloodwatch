@@ -14,7 +14,7 @@ let redirectPaths: string[][] = [
     ["/pigeonslock", "/Footpath"]
 ];
 
-let redirects = _.map(redirectPaths, (r) => {
+let redirects = _.map(redirectPaths, (r : string[]) => {
     let [path, to] = r;
     return new Redirect({ path, redirectTo: [to] });
 });

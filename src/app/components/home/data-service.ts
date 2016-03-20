@@ -11,7 +11,7 @@ export default class DataService {
         let url = `${defaultConfig.baseUrl}/api/timeseries?callback=JSONP_CALLBACK`;
 
         this.publisher = Observable
-            .timer(1000, 30000)
+            .timer(10, 30000)
             .switchMap((): Observable<any> => {
                 console.log("Fetching", url);
                 let ret = this.jsonp.request(url)
