@@ -4,7 +4,7 @@ import {Component} from "angular2/core";
 import {RouteConfig, Redirect, Route, ROUTER_DIRECTIVES} from "angular2/router";
 
 import {About, IndexComponent} from "./components";
-import * as Sites from "./sites";
+import * as Sites from "./components/home/sites/index";
 
 let redirectPaths: string[][] = [
     ["/about", "/About"],
