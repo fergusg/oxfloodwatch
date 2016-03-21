@@ -18,6 +18,10 @@ export class Footpath extends BaseComponent {
         super(injector);
     }
 
+    public static getRouteAliases(): string[] {
+        return ["/pigeonslock", "/sites/pigeonslock", "/path"];
+    }
+
     protected getTitle() {
         return "Kirtlington to Tackley Footpath";
     }

@@ -67,17 +67,12 @@ handlers:
   upload: static/index.html
   secure: always
 
-- url: /chacks
+- url: /([a-z]+)
   static_files: static/index.html
   upload: static/index.html
   secure: always
 
-- url: /sites/(.*)
-  static_files: static/index.html
-  upload: static/index.html
-  secure: always
-
-- url: /pages/(.*)
+- url: /(sites|pages)/(.*)
   static_files: static/index.html
   upload: static/index.html
   secure: always

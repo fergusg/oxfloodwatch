@@ -18,6 +18,10 @@ export class Chacks extends BaseComponent {
         super(injector);
     }
 
+    public static getRouteAliases(): string[] {
+        return ["/chacks", "/flightsmill"];
+    }
+
     protected getName(): string {
         return "chacks";
     }
@@ -29,5 +33,8 @@ export class Chacks extends BaseComponent {
     protected getTitle() {
         return "Trouble at t'Mill";
     }
+
+
+
 
 }

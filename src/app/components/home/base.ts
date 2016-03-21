@@ -69,6 +69,10 @@ export abstract class BaseComponent implements OnInit {
         this.subtitle = this.getSubTitle();
     }
 
+    public static getRouteAliases(): string[] {
+        return [];
+    }
+
     protected abstract getMessages();
     protected abstract getName(): string;
     protected abstract getTitle();

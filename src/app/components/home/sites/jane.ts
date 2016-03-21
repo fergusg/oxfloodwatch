@@ -18,6 +18,10 @@ export class Jane extends BaseComponent {
         super(injector);
     }
 
+    public static getRouteAliases(): string[] {
+        return ["/jane"];
+    }
+
     protected getName(): string {
         return "jane";
     }

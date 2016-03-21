@@ -3,21 +3,40 @@ declare var _: any;
 import {Component, ViewEncapsulation} from "angular2/core";
 import {RouteConfig, Redirect, Route, ROUTER_DIRECTIVES} from "angular2/router";
 
-import {Footpath, Chacks, About, Jane, IndexComponent} from "./components";
+import {About, IndexComponent} from "./components";
+import * as Sites from "./sites";
+
 
 let redirectPaths: string[][] = [
     ["/about", "/About"],
     ["/help", "/About"],
-    ["/chacks", "/Chacks"],
-    ["/flightsmill", "/Chacks"],
-    ["/jane", "/Jane"],
-    ["/pigeonslock", "/Footpath"]
+    ["/contact", "/About"]
 ];
 
 let redirects = _.map(redirectPaths, (r : string[]) => {
     let [path, to] = r;
     return new Redirect({ path, redirectTo: [to] });
 });
+
+let routes =     [
+        new Route({ path: "/", component: IndexComponent, name: "Index", useAsDefault: true }),
+        new Route({ path: "/pages/about", component: About, name: "About" }),
+        ...redirects
+    ];
+
+for (let name of Object.keys(Sites)) {
+    let path = `/sites/${name.toLowerCase()}`;
+    let component = Sites[name];
+    routes.push(new Route({path, component, name}));
+    for (let path of Sites[name].getRouteAliases()) {
+        routes.push(new Redirect({ path, redirectTo: [name] }));
+    }
+}
+
+// Fallback
+routes.push(
+    new Redirect({path: '/**', redirectTo: ['/Index']})
+);
 
 @Component({
     selector: "app",
@@ -26,14 +45,5 @@ let redirects = _.map(redirectPaths, (r : string[]) => {
     encapsulation: ViewEncapsulation.None,
     directives: [ROUTER_DIRECTIVES]
 })
-@RouteConfig(
-    [
-        new Route({ path: "/", component: IndexComponent, name: "Index", useAsDefault: true }),
-        new Route({ path: "/sites/pigeonslock", component: Footpath, name: "Footpath" }),
-        new Route({ path: "/sites/chacks", component: Chacks, name: "Chacks" }),
-        new Route({ path: "/sites/jane", component: Jane, name: "Jane" }),
-        new Route({ path: "/pages/about", component: About, name: "About" }),
-        ...redirects
-    ]
-)
+@RouteConfig(routes)
 export class AppCmp { }
