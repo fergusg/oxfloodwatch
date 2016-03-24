@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, OnChanges, SimpleChange} from "angular2/core";
+import {Component, ElementRef, OnChanges, SimpleChange} from "angular2/core";
 import {Observable} from "rxjs/Observable";
 
 import {normalDist, limit} from "./utils";
@@ -13,7 +13,7 @@ declare var _: any;
     moduleId: module.id,
     inputs: ["range", "delta", "plotBands"]
 })
-export default class GaugeComponent implements OnInit, OnChanges {
+export default class GaugeComponent implements OnChanges {
 
     private chart: any;
     private chartElem: any;
@@ -23,10 +23,6 @@ export default class GaugeComponent implements OnInit, OnChanges {
 
     constructor(private elem: ElementRef) {
         this.chartElem = $(this.elem.nativeElement);
-    }
-
-    public ngOnInit() {
-        //
     }
 
     public getMinMax() {
@@ -75,10 +71,6 @@ export default class GaugeComponent implements OnInit, OnChanges {
     }
 
     private resizeChart() {
-        // let height = document.body.clientWidth < 800 ? 300 : 500;
-        // let width = $(this.elem.nativeElement).parent().innerWidth();
-        // let height = $(this.elem.nativeElement).parent().innerHeight();
-        // this.chart.setSize(width, height);
         this.chart.redraw(false);
     }
 

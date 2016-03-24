@@ -14,10 +14,9 @@ export default class DataService {
             .timer(10, 30000)
             .switchMap((): Observable<any> => {
                 console.log("Fetching", url);
-                let ret = this.jsonp.request(url)
+                return this.jsonp.request(url)
                     .timeout(15000, new Error("Timed out"))
                     .map((res: any) => res.json());
-                return ret;
             })
             .catch(function(err) {
                 console.error(err);

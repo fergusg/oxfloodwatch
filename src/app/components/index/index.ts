@@ -1,5 +1,5 @@
 import {Component} from "angular2/core";
-import {ROUTER_DIRECTIVES} from "angular2/router";
+import {RouterLink} from "angular2/router";
 import * as Sites from "../home/sites/index";
 
 declare var _: any;
@@ -8,13 +8,8 @@ declare var _: any;
     selector: "index",
     moduleId: module.id,
     templateUrl: "./index.html",
-    directives: [...ROUTER_DIRECTIVES]
+    directives: [RouterLink]
 })
-export class IndexComponent  {
-    public sites: any = [];
-    constructor() {
-        for (let name of Object.keys(Sites)) {
-            this.sites.push(name);
-        }
-    }
+export class IndexComponent {
+    public sites: string[] = _.map(Sites, s => s.name);
 }
