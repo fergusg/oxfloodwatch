@@ -128,23 +128,23 @@ def sendMessage(number, message):
         body = message
     )
 
-def remove_duplicates(values):
+def remove_duplicates(values, idx=0):
     output = []
     seen = set()
     for value in values:
-        if value[0] not in seen:
+        if value[idx] not in seen:
             output.append(value)
-            seen.add(value[0])
+            seen.add(value[idx])
     return output
 
 def refresh():
     then = datetime.now() - timedelta(days=3)
-    q = Data.query(Data.time > then).order(-Data.time)
     ret = []
-    for d in q:
+    for d in Data.query(Data.time > then):
         ret.append([d.time_str, d.value, d.temperature])
-
     ret = remove_duplicates(ret)
+
+    ret = sorted(ret, key = lambda v: v[0], reverse=True)
 
     memcache.set(key="timeseries", value=json.dumps(ret))
     return ret

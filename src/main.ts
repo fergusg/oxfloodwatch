@@ -16,6 +16,9 @@ import {provide, enableProdMode} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";
 import {ROUTER_PROVIDERS, APP_BASE_HREF} from "angular2/router";
 import {HTTP_PROVIDERS, JSONP_PROVIDERS} from "angular2/http";
+
+import {Angulartics2} from 'angulartics2/index';
+
 import {AppCmp} from "./app/app";
 
 if ("<%= ENV %>" === "prod") { enableProdMode(); }
@@ -32,5 +35,6 @@ bootstrap(AppCmp, [
     ...ROUTER_PROVIDERS,
     ...HTTP_PROVIDERS,
     ...JSONP_PROVIDERS,
+    Angulartics2,
     provide(APP_BASE_HREF, { useValue: "/" })
 ]);

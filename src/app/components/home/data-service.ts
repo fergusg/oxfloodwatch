@@ -18,9 +18,9 @@ export default class DataService {
                     .timeout(15000, new Error("Timed out"))
                     .map((res: any) => res.json());
             })
-            .catch(function(err) {
+            .catch((err) => {
                 console.error(err);
-                return Observable.throw(err);
+                return this.publisher;
             }).publish().refCount();
     }
 

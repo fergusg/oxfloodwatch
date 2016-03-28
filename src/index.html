@@ -29,6 +29,19 @@
     <meta name="theme-color" content="#ffffff">
     <!-- inject:css -->
     <!-- endinject -->
+    <script>
+        window._gaq = null;
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        if (location.hostname === 'localhost' || location.hostname === "127.0.0.1") {
+            ga('create', 'UA-75660439-1', 'none');
+        } else {
+            ga('create', 'UA-75660439-1', 'auto');
+        }
+        // ga('send', 'pageview');
+    </script>
 </head>
 
 <body>
@@ -82,5 +95,6 @@
                 });
             </script>
         <% } %>
+
 </body>
 </html>

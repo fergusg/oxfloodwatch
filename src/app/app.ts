@@ -3,6 +3,8 @@ declare var _: any;
 import {Component} from "angular2/core";
 import {RouteConfig, Redirect, Route, ROUTER_DIRECTIVES} from "angular2/router";
 
+import {Angulartics2GoogleAnalytics} from 'angulartics2/src/providers/angulartics2-google-analytics';
+
 import {About, IndexComponent} from "./components";
 import * as Sites from "./components/home/sites/index";
 
@@ -42,7 +44,12 @@ routes.push(
     selector: "app",
     moduleId: module.id,
     template: "<router-outlet></router-outlet>",
+    providers: [Angulartics2GoogleAnalytics],
     directives: [ROUTER_DIRECTIVES]
 })
 @RouteConfig(routes)
-export class AppCmp { }
+export class AppCmp {
+    constructor(analytics: Angulartics2GoogleAnalytics) {
+        //
+    }
+}
