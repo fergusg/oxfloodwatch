@@ -125,21 +125,16 @@ export abstract class BaseComponent implements OnInit {
 
     private calcLevels(d, levels): any {
         if (!levels) {
-            return { state: "", above: 0 };
-        }
-        if (d >= levels.extreme) {
-            return { state: "EXTREME", above: d - levels.extreme };
-        } else if (d >= levels.very_high) {
-            return { state: "VERY_HIGH", above: d - levels.very_high };
-        } else if (d >= levels.high) {
-            return { state: "HIGH", above: d - levels.high };
-        } else if (d >= levels.close) {
-            return { state: "CLOSE", above: d - levels.close };
-        } else if (d >= levels.low) {
-            return { state: "LOW", above: d - levels.low };
-        } else {
             return { state: "VERY_LOW", above: null };
         }
+        for (let q of ['extreme', 'very_high', 'high', 'close', 'low']) {
+            let above = d - levels[q];
+            if (above > 0) {
+                let state = q.toUpperCase();
+                return { state, above };
+            }
+        }
+        return { state: "VERY_LOW", above: null };
     }
 
     // private doJigger() {
