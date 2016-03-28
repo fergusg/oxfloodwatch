@@ -45,7 +45,7 @@ export default class GaugeComponent implements OnChanges {
         if (changes["plotBands"] && changes["plotBands"].currentValue) {
             this.plotBands =  _.cloneDeep(changes["plotBands"].currentValue);
         }
-        let ok = !!(this.delta && this.range && this.plotBands);
+        let ok = !!(_.isNumber(this.delta) && this.range && this.plotBands);
         if (ok) {
             let [min, max] = this.getMinMax();
             if (!this.chart) {

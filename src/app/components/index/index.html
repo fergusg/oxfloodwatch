@@ -6,15 +6,11 @@
     </div>
     <div class="row col-md-6 col-md-offset-3">
         <p *ngFor="#site of sites">
-            <a [routerLink]="[site]">
-                <button type="button" class="btn btn-primary btn-lg btn-block">{{site}}</button>
-            </a>
-        </p>
-    </div>
-    <div class="row col-md-6 col-md-offset-3">
-        <p>
-            <a [routerLink]="['About']">
-                <button type="button" class="btn btn-default btn-lg btn-block">About this site</button>
+            <a [routerLink]="[site.link]">
+                <button type="button"
+                    [class.btn-primary]="!site.type"
+                    [class.btn-default]="site.type"
+                class="btn btn-lg btn-block">{{site.text || site.link}}</button>
             </a>
         </p>
     </div>
