@@ -73,7 +73,8 @@ export const DEV_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencie
     { src: 'moment/min/moment.min.js', inject: 'libs', dest: JS_DEST },
     { src: 'lodash/index.js', inject: 'libs', dest: JS_DEST },
     { src: 'highcharts/highcharts.js', inject: 'libs', dest: JS_DEST },
-    { src: 'highcharts/highcharts-more.js', inject: 'libs', dest: JS_DEST }
+    { src: 'highcharts/highcharts-more.js', inject: 'libs', dest: JS_DEST },
+    { src: 'bootstrap/dist/js/bootstrap.js', inject: 'libs', dest: JS_DEST }
 ]);
 
 export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencies([
@@ -86,7 +87,8 @@ export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependenci
     { src: 'highcharts/highcharts.js', inject: 'libs' },
     { src: 'highcharts/highcharts-more.js', inject: 'libs' },
     { src: 'moment/min/moment.min.js', inject: 'libs' },
-    { src: 'lodash/index.js', inject: 'libs'}
+    { src: 'lodash/index.js', inject: 'libs'},
+    { src: 'bootstrap/dist/js/bootstrap.js', inject: 'libs' }
 ]);
 
 // Declare local files that needs to be injected
