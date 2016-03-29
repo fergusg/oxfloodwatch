@@ -35,7 +35,7 @@ class Gallery {
 
     ngOnInit() {
         $(this.elem.nativeElement).find(".carousel").carousel({
-            interval: 4000
+            interval: 3000
         });
     }
 }
