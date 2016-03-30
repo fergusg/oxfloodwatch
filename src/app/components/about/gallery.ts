@@ -26,8 +26,9 @@ class Gallery {
         this.id = "gallery-" + Math.random().toString(36).slice(2);
         this.images = _.map(
             [
-                ["dry", "Normal"],
-                ["wet", "Wet"]
+                ["dry", "Normal (10cm below)"],
+                ["wet", "Wet (20cm)"],
+                ["flood", "Flood (50cm)"]
             ],
             (d => { return { src: `${d[0]}.jpg`, descr: d[1] }; })
         );
