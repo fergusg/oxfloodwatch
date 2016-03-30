@@ -1,3 +1,6 @@
+declare var jQuery: any;
+const applicationCache = window.applicationCache;
+
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/observable/fromArray"; // gives us .of()
@@ -11,6 +14,8 @@ import "rxjs/add/operator/switchMap";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/publish";
 
+import "./app/util/jquery.toaster";
+
 import {provide, enableProdMode} from "angular2/core";
 import {bootstrap} from "angular2/platform/browser";
 import {ROUTER_PROVIDERS, APP_BASE_HREF} from "angular2/router";
@@ -22,11 +27,14 @@ import {AppCmp} from "./app/app";
 
 if ("<%= ENV %>" === "prod") { enableProdMode(); }
 
-if (window.applicationCache) {
-    const w: any = window;
-    w.applicationCache.addEventListener('updateready', () => {
+if (applicationCache) {
+    applicationCache.addEventListener('updateready', () => {
         console.log("applicationCache -> reload");
-        w.location.reload();
+        jQuery.toaster({
+            title: 'Update available',
+            message: 'Reload for latest version'
+        });
+        // window.location.reload();
     }, false);
 }
 
