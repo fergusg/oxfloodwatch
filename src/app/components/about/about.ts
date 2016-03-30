@@ -15,14 +15,15 @@ class About {
     public feedback = defaultConfig.feedback;
 
     public ngOnInit() {
-        jQuery.toaster({
-            priority : 'success',
-            title: 'Updated available',
-            message: 'Reload for latest version',
-            settings: {
-                timeout: 5000
-            }
-        });
+        if (window.location.hostname === "localhost") {
+            jQuery.toaster({
+                title: 'Updated available',
+                message: 'Reload for latest version',
+                settings: {
+                    timeout: 3000
+                }
+            });
+        }
     }
 }
 
