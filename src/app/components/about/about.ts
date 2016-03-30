@@ -9,7 +9,8 @@ declare var jQuery: any;
     selector: "about",
     templateUrl: "./about.html",
     moduleId: module.id,
-    directives: [...ROUTER_DIRECTIVES, Gallery]
+    directives: [...ROUTER_DIRECTIVES, Gallery],
+    styleUrls: ["./about.css"]
 })
 class About {
     public feedback = defaultConfig.feedback;

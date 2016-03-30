@@ -70,12 +70,8 @@ declare var jQuery: any;
         },
 
         toast: {
-            template:
-            `<div class="alert alert-%priority% alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">Close</span>
-                    </button>
+            template: `
+                <div class="alert alert-%priority%" role="alert">
                     <span class="title"></span><br><span class="message"></span>
                 </div>`,
 
