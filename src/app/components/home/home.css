@@ -1,21 +1,3 @@
-@media(max-width: 768px) {
-    h1 {
-        font-size: 20px;
-    }
-    h2 {
-        font-size: 18px;
-    }
-    h3 {
-        font-size: 12px;
-    }
-    .page-header {
-        margin-top: 10px;
-    }
-    .last-reading {
-        font-size: 12px;
-    }
-}
-
 .loading {
     background-image: url("assets/img/loader.gif");
     background-position: center;
@@ -27,18 +9,18 @@
     height: 400px;
 }
 
-@media (max-width: 768px) {
-    .gauge {
-        height: 250px;
-    }
-}
-
 .timeseries {
     height: 150px;
 }
 
-@media (max-width: 768px) {
+@media(max-width: 768px) {
+    .last-reading {
+        font-size: 12px;
+    }
     .timeseries {
         height: 80px;
+    }
+    .gauge {
+        height: 250px;
     }
 }

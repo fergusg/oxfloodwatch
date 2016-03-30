@@ -1,5 +1,14 @@
-/* Sample asset */
-
-a:hover {
-    text-decoration: none;
+@media(max-width: 768px) {
+    h1 {
+        font-size: 20px;
+    }
+    h2 {
+        font-size: 18px;
+    }
+    h3 {
+        font-size: 12px;
+    }
+    .page-header {
+        margin-top: 10px;
+    }
 }

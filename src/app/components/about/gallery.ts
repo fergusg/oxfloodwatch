@@ -15,6 +15,12 @@ declare var _: any;
                 margin-bottom: 10px;
                 margin-top: 10px;
             }
+            .carousel-caption {
+                font-size: 20px;
+            }
+            img {
+                width: 100%;
+            }
         `
     ]
 })
