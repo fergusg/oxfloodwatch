@@ -14,7 +14,6 @@ declare var _: any;
     inputs: ["range", "delta", "plotBands"]
 })
 export default class GaugeComponent implements OnChanges {
-
     private chart: any;
     private chartElem: any;
     private delta: number;
@@ -26,10 +25,7 @@ export default class GaugeComponent implements OnChanges {
     }
 
     public getMinMax() {
-        return [
-            this.range ? this.range[0] : -100,
-            this.range ? this.range[1] : 100
-        ];
+        return this.range || [-100, 100];
     }
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
@@ -43,7 +39,7 @@ export default class GaugeComponent implements OnChanges {
             this.range = changes["range"].currentValue;
         }
         if (changes["plotBands"] && changes["plotBands"].currentValue) {
-            this.plotBands =  _.cloneDeep(changes["plotBands"].currentValue);
+            this.plotBands = _.cloneDeep(changes["plotBands"].currentValue);
         }
         let ok = !!(_.isNumber(this.delta) && this.range && this.plotBands);
         if (ok) {
@@ -81,7 +77,7 @@ export default class GaugeComponent implements OnChanges {
             .subscribe(() => {
                 let [min, max] = this.getMinMax();
                 let [h, limited] = limit(this.delta, min, max);
-                h += normalDist(limited ? 1.0 : 2.5);
+                h += normalDist(limited ? 0.5 : 1.5);
                 point.update(h);
             });
     }

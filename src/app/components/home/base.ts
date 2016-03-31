@@ -40,7 +40,7 @@ export abstract class BaseComponent implements OnInit {
     public subtitle = "subtitle";
 
     private firstLoaded = false;
-    private when: any;
+    private last: any;
     private debug = false;
     private jigger = false;
     private timeout = false;
@@ -99,7 +99,7 @@ export abstract class BaseComponent implements OnInit {
 
     private onLoadError(err: any) {
         this.loadError = true;
-        this.when = null;
+        this.last = null;
         setTimeout(this.subscribe.bind(this), 30000);
         this.subscription.unsubscribe(); // Does this unsubscribe?
     }
@@ -113,7 +113,7 @@ export abstract class BaseComponent implements OnInit {
         data = this.dataFilter.filter(data, this.normalDistance);
         let [timestamp, value] = data[0];
         this.delta = parseInt(value, 10);
-        this.when = timestamp;
+        this.last = timestamp;
 
         let {state, above} = this.calcLevels(this.delta, this.levels);
         this.state = state;
