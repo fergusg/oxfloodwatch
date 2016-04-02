@@ -10,7 +10,6 @@ declare var _: any;
 @Component({
     selector: "gauge",
     template: '',
-    moduleId: module.id,
     inputs: ["range", "delta", "plotBands"]
 })
 export default class GaugeComponent implements OnChanges {
