@@ -6,7 +6,9 @@ import * as chalk from 'chalk';
 // --------------
 // Configuration.
 
-export const APP_TITLE = 'Pigeons Lock Footpath';
+import {APP_TITLE, APP_DESCR, GA_ID} from "../src/config";
+
+export {APP_TITLE, APP_DESCR, GA_ID};
 
 const ENVIRONMENTS = {
     DEVELOPMENT: 'dev',
@@ -37,7 +39,7 @@ export const DOCS_DEST = 'docs';
 export const APP_DEST = `dist/${ENV}`;
 export const CSS_DEST = `${APP_DEST}/css`;
 export const JS_DEST = `${APP_DEST}/js`;
-export const APP_ROOT = ENV === 'dev' ? `${APP_BASE}${APP_DEST}/` : `${APP_BASE}`;
+export const APP_ROOT = (ENV === 'dev' ? `${APP_BASE}${APP_DEST}/` : `${APP_BASE}`);
 export const VERSION = appVersion();
 
 export const CSS_PROD_BUNDLE = 'all.css';
@@ -65,10 +67,12 @@ export const DEV_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencie
     { src: 'es6-shim/es6-shim.js', inject: 'shims', dest: JS_DEST },
     { src: 'systemjs/dist/system.src.js', inject: 'shims', dest: JS_DEST },
     { src: 'angular2/bundles/angular2-polyfills.js', inject: 'shims', dest: JS_DEST },
+    //
     { src: 'rxjs/bundles/Rx.js', inject: 'libs', dest: JS_DEST },
     { src: 'angular2/bundles/angular2.js', inject: 'libs', dest: JS_DEST },
     { src: 'angular2/bundles/router.js', inject: 'libs', dest: JS_DEST },
     { src: 'angular2/bundles/http.js', inject: 'libs', dest: JS_DEST },
+    //
     { src: 'jquery/dist/jquery.min.js', inject: 'libs', dest: JS_DEST },
     { src: 'moment/min/moment.min.js', inject: 'libs', dest: JS_DEST },
     { src: 'lodash/index.js', inject: 'libs', dest: JS_DEST },
@@ -77,12 +81,14 @@ export const DEV_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencie
     { src: 'bootstrap/dist/js/bootstrap.js', inject: 'libs', dest: JS_DEST }
 ]);
 
+// Don't need anything that is imported/required
 export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencies([
     { src: 'systemjs/dist/system-polyfills.src.js', inject: 'shims' },
     { src: 'reflect-metadata/Reflect.js', inject: 'shims' },
     { src: 'es6-shim/es6-shim.min.js', inject: 'shims' },
     { src: 'systemjs/dist/system.js', inject: 'shims' },
     { src: 'angular2/bundles/angular2-polyfills.min.js', inject: 'libs' },
+    //
     { src: 'jquery/dist/jquery.min.js', inject: 'libs' },
     { src: 'highcharts/highcharts.js', inject: 'libs' },
     { src: 'highcharts/highcharts-more.js', inject: 'libs' },
