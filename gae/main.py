@@ -164,16 +164,13 @@ def makedata():
         ).put()
 
 def getTimeseries(force=False):
-    # if LOCALHOST:
-    #     return refresh()
+    if force:
+        return refresh()
 
     timeseries = memcache.get(key="timeseries")
 
     if timeseries:
         return json.loads(timeseries)
-
-    if force:
-        return refresh()
 
     return None
 
