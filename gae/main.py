@@ -299,7 +299,7 @@ class ListAll(Resource):
 @api.resource(ADMIN + '/update')
 class AdminLatest(Resource):
     def get(self):
-        timeseries = getTimeseries(force=True)
+        timeseries = getTimeseries()
 
         (current_level, timestamp, err_code) = get_current_level()
 
@@ -336,6 +336,7 @@ class Purge(Resource):
         ndb.delete_multi(
             Data.query(Data.time < then).fetch(keys_only=True)
         )
+        refresh()
         return {}
 
 
