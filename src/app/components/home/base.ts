@@ -116,6 +116,7 @@ export abstract class BaseComponent implements OnInit {
         this.last = timestamp;
 
         let {state, above} = this.calcLevels(this.delta, this.levels);
+
         this.state = state;
         this.above = above;
 
@@ -129,6 +130,7 @@ export abstract class BaseComponent implements OnInit {
         }
         for (let q of ['extreme', 'very_high', 'high', 'close', 'low']) {
             let above = d - levels[q];
+            console.log("xxxx calcLevels", q, levels[q], above);
             if (above > 0) {
                 let state = q.toUpperCase();
                 return { state, above };
