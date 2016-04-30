@@ -3,7 +3,7 @@ const applicationCache = window.applicationCache;
 
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
-import "rxjs/add/observable/fromArray"; // gives us .of()
+import "rxjs/add/observable/of"; // gives us .of()
 import "rxjs/add/observable/timer";
 import "rxjs/add/observable/fromEvent";
 import "rxjs/add/observable/throw";
@@ -22,7 +22,7 @@ import {APP_BASE_HREF} from "angular2/platform/common";
 import {ROUTER_PROVIDERS} from "angular2/router";
 import {HTTP_PROVIDERS, JSONP_PROVIDERS} from "angular2/http";
 
-import {Angulartics2} from 'angulartics2/index';
+// import {Angulartics2} from 'angulartics2/index';
 
 import {AppCmp} from "./app/app";
 
@@ -43,6 +43,6 @@ bootstrap(AppCmp, [
     ...ROUTER_PROVIDERS,
     ...HTTP_PROVIDERS,
     ...JSONP_PROVIDERS,
-    Angulartics2,
+    // Angulartics2,
     provide(APP_BASE_HREF, { useValue: "/" })
 ]);
