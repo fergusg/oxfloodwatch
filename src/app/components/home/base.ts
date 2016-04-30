@@ -130,7 +130,6 @@ export abstract class BaseComponent implements OnInit {
         }
         for (let q of ['extreme', 'very_high', 'high', 'close', 'low']) {
             let above = d - levels[q];
-            console.log("xxxx calcLevels", q, levels[q], above);
             if (above > 0) {
                 let state = q.toUpperCase();
                 return { state, above };
