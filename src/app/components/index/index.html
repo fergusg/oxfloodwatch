@@ -5,7 +5,7 @@
         </div>
     </div>
     <div class="row col-md-6 col-md-offset-3">
-        <p *ngFor="#site of sites">
+        <p *ngFor="let site of sites">
             <a [routerLink]="[site.link]">
                 <button type="button"
                     [class.btn-primary]="!site.type"
