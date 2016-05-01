@@ -86,7 +86,7 @@
   },
   "dependencies": {
     "angular2": "2.0.0-beta.17",
-    "angulartics2": "^1.0.9",
+    "angulartics2": "^1.0.10",
     "bootstrap": "^3.3.6",
     "es6-module-loader": "^0.17.8",
     "es6-shim": "^0.35.0",

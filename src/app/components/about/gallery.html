@@ -1,6 +1,6 @@
 <div id="{{id}}" class="carousel slide">
     <div class="carousel-inner" role="listbox">
-        <div class="item" [class.active]="i===0" *ngFor="#img of images; #i=index">
+        <div class="item" [class.active]="i===0" *ngFor="let img of images; let i=index">
             <img src="/assets/img/gallery/{{img.src}}" alt="{{img.descr}}">
             <div class="carousel-caption">{{img.descr}}</div>
         </div>
