@@ -23,7 +23,7 @@ export class Chacks extends BaseComponent {
     }
 
     protected getName(): string {
-        return "chacks";
+        return "Chacks";
     }
 
     protected getMessages() {
@@ -33,8 +33,5 @@ export class Chacks extends BaseComponent {
     protected getTitle() {
         return "Trouble at t'Mill";
     }
-
-
-
 
 }

@@ -5,7 +5,7 @@ const feedback = "oxfloodwatch@gooses.co.uk";
 // (window.)location is not defined in node
 if (typeof location !== "undefined") {
     let h = location.hostname;
-    if (h === 'localhost' || h === "127.0.0.1") {
+    if (/^192|127|localhost/.test(h)) {
         if (parseInt(location.port, 10) === 5555) {
             baseUrl = "//oxfloodwatch.appspot.com";
         } else {

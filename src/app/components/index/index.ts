@@ -19,9 +19,9 @@ interface PageLink {
 export class IndexComponent {
     public sites: PageLink[];
     constructor() {
-         this.sites = _.map(Sites, s => {
-             return {link: s.name};
-         });
-         this.sites.push({link: "About", text: "About this site", type: "default"});
+        this.sites = _.map(Sites, s => {
+            return { link: s.name };
+        });
+        this.sites.push({ link: "About", text: "About this site", type: "default" });
     }
 }

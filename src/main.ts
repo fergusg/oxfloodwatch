@@ -16,7 +16,7 @@ import {bootstrap} from "angular2/platform/browser";
 import {ROUTER_PROVIDERS} from "angular2/router";
 import {HTTP_PROVIDERS, JSONP_PROVIDERS} from "angular2/http";
 
-import {Angulartics2} from 'angulartics2/index';
+// import {Angulartics2} from 'angulartics2/index';
 
 import {AppCmp} from "./app/app";
 
@@ -36,5 +36,5 @@ bootstrap(AppCmp, [
     ...ROUTER_PROVIDERS,
     ...HTTP_PROVIDERS,
     ...JSONP_PROVIDERS,
-    Angulartics2
+    // Angulartics2
 ]);
