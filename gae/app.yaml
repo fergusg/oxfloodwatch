@@ -85,3 +85,8 @@ handlers:
   static_files: static/favicon.\1
   upload: static/favicon\.(.*)
 
+libraries:
+- name: jinja2
+  version: latest
+- name: markupsafe
+  version: latest
