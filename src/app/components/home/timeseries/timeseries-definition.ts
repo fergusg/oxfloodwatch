@@ -1,5 +1,13 @@
 declare var _: any;
 declare var $: any;
+declare var Highcharts: any;
+
+Highcharts.setOptions({
+    global: {
+        useUTC: false
+    }
+});
+
 
 function smallScreen() {
     return document.body.clientWidth < 768;
@@ -35,9 +43,6 @@ function getDefinition(self) {
             events: {
                 selection: onSelect.bind(self)
             }
-            // width: $(self.elem.nativeElement).parent().innerWidth(),
-            // height: $(self.elem.nativeElement).parent().innerHeight()
-
         },
         credits: {
             enabled: false
@@ -58,14 +63,14 @@ function getDefinition(self) {
         },
         tooltip: {
             headerFormat: "",
-            pointFormatter: function() {
+            pointFormatter: function () {
                 let d = new Date(this.x);
                 var t = ("0" + d.getHours()).slice(-2) +
                     ":" + ("0" + d.getMinutes()).slice(-2);
 
                 return `<em>${t} <em><b>${this.y}cm</b>`;
             },
-            positioner: function(labelWidth, labelHeight, point) {
+            positioner: function (labelWidth, labelHeight, point) {
                 return { x: 0, y: 0 };
             },
             crosshairs: true
