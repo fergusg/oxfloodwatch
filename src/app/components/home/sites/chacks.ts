@@ -23,7 +23,7 @@ export class Chacks extends BaseComponent {
     }
 
     protected getName(): string {
-        return "Chacks";
+        return "chacks";
     }
 
     protected getMessages() {
