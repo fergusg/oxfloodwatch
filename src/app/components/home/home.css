@@ -5,9 +5,6 @@
     background-size: cover;
 }
 
-.gauge {
-    height: 400px;
-}
 
 .timeseries {
     height: 150px;
@@ -20,7 +17,7 @@
     .timeseries {
         height: 80px;
     }
-    .gauge {
+    /*.gauge {
         height: 250px;
-    }
+    }*/
 }

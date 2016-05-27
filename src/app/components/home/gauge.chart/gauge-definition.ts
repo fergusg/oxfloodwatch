@@ -10,9 +10,9 @@ function getDefinition(self) {
                 plotBorderWidth: 0,
                 plotShadow: false,
                 marginTop: 0,
-                spacingTop: 0,
-                width: $(self.elem.nativeElement).parent().innerWidth(),
-                height: $(self.elem.nativeElement).parent().innerHeight()
+                spacingTop: 0
+                // width: $(self.elem.nativeElement).parent().innerWidth()
+                // height: $(self.elem.nativeElement).parent().innerHeight()
             },
             credits: {
                 enabled: false
