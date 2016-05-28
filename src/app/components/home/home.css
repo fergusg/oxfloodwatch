@@ -7,7 +7,7 @@
 
 
 .timeseries {
-    height: 150px;
+    height: 300px;
 }
 
 @media(max-width: 768px) {
@@ -15,7 +15,7 @@
         font-size: 12px;
     }
     .timeseries {
-        height: 80px;
+        height: 150px;
     }
     /*.gauge {
         height: 250px;

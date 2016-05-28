@@ -14,10 +14,8 @@ export default class GaugeComponent implements OnChanges {
     private delta: number;
     private deltaInches: string;
 
-
     constructor(private elem: ElementRef) {
     }
-
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
         if (changes["delta"] && _.isFinite(changes["delta"].currentValue)) {
