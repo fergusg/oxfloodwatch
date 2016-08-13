@@ -300,11 +300,15 @@ class ListAll(Resource):
 class AdminLatest(Resource):
     def get(self):
         timeseries = getTimeseries()
+        if not timeseries:
+            logging.error("AdminLatest Error - no timeseries")
+            return ""
 
         (current_level, timestamp, err_code) = get_current_level()
 
         if err_code is not None:
-            raise {"error": err_code}
+            raise Exception("AdminLatest Error: code={0}".format(err_code))
+
 
         (t_data, err) = get_current_temp()
         if err:
