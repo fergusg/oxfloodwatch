@@ -301,8 +301,10 @@ class AdminLatest(Resource):
     def get(self):
         timeseries = getTimeseries()
         if not timeseries:
-            logging.error("AdminLatest Error - no timeseries")
-            return ""
+            timeseries = getTimeseries(force=True)
+            if not timeseries:
+                logging.error("AdminLatest Error - no timeseries")
+                return ""
 
         (current_level, timestamp, err_code) = get_current_level()
 
