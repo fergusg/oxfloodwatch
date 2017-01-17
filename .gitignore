@@ -47,3 +47,4 @@ docs
 lib
 test
 tmp
+src/config.ts
