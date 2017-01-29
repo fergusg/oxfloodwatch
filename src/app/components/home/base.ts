@@ -1,4 +1,4 @@
-import {Component, OnInit, Injector} from "angular2/core";
+import {Component, OnInit, OnDestroy, Injector} from "angular2/core";
 import {ROUTER_DIRECTIVES} from "angular2/router";
 import {Jsonp} from "angular2/http";
 
@@ -27,7 +27,7 @@ declare var _: any;
     pipes: [MomentPipe, DepthPipe],
     directives: [...ROUTER_DIRECTIVES, LoaderAnim, TimeSeriesComponent, GaugeComponent, LastReading]
 })
-export abstract class BaseComponent implements OnInit {
+export abstract class BaseComponent implements OnInit, OnDestroy {
     public delta: number;
     public above = 0;
     public timeseries: any;
@@ -92,6 +92,10 @@ export abstract class BaseComponent implements OnInit {
             });
     }
 
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
     private subscribe() {
         this.subscription = this.dataService.data
             .subscribe(this.update.bind(this), this.onLoadError.bind(this));
@@ -101,7 +105,7 @@ export abstract class BaseComponent implements OnInit {
         this.loadError = true;
         this.last = null;
         setTimeout(this.subscribe.bind(this), 30000);
-        this.subscription.unsubscribe(); // Does this unsubscribe?
+        this.subscription.unsubscribe();
     }
 
     private update(data: any, retry = true) {
@@ -111,6 +115,11 @@ export abstract class BaseComponent implements OnInit {
         }
 
         data = this.dataFilter.filter(data, this.normalDistance);
+        if (!(data && data.length)) {
+            this.loadError = true;
+            console.error("No data");
+            return;
+        }
         let [timestamp, value] = data[0];
         this.delta = parseInt(value, 10);
         this.last = timestamp;
