@@ -6,7 +6,11 @@ declare var moment: any;
 @Component({
     selector: "lastreading",
     template: `
-        <div><span *ngIf="reading">Lasting reading was {{reading}}</span>&nbsp;</div>
+        <div>
+            <span *ngIf="last">Lasting reading was {{reading}}</span>
+            <span *ngIf="!last">Lasting reading unavailable</span>
+            &nbsp;
+        </div>
     `,
     inputs: ["last"]
 })
