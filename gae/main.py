@@ -302,7 +302,7 @@ class AdminLatest(Resource):
         timeseries = getTimeseries()
         if not timeseries:
             timeseries = getTimeseries(force=True)
-            if not timeseries:
+            if timeseries == None:
                 logging.error("AdminLatest Error - no timeseries")
                 return ""
 
