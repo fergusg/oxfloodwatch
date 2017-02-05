@@ -267,12 +267,11 @@ class ListAll(Resource):
             last_level_idx = level_names.index(p.last_level)
 
             alert = (
-                p.last_level != level and
-                (
-                    (level_idx >= trigger_idx) or
-                    (level_idx < trigger_idx and last_level_idx >= trigger_idx)
-                )
+                (level_idx >= trigger_idx) or
+                (level_idx < trigger_idx and last_level_idx >= trigger_idx)
             )
+
+            alert = alert and ((level >= p.trigger_level + 2) or (level <= p.trigger_level - 2))
 
             msg = "%s: %s norm:%s delta:%s level:%s last:%s trigger:%s level:%s alert:%s" % (
                 p.name, p.mobile, s["normal"], delta, level, p.last_level, trigger_idx, level_idx, alert)
