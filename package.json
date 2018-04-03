@@ -45,6 +45,7 @@
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.2.4",
+    "jshint": "^2.9.5",
     "merge-stream": "^1.0.0",
     "open": "0.0.5",
     "protractor": "^3.0.0",

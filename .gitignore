@@ -48,3 +48,4 @@ lib
 test
 tmp
 src/config.ts
+live_users.txt

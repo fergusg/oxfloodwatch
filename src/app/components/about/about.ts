@@ -1,7 +1,7 @@
-import {Component} from "angular2/core";
-import {ROUTER_DIRECTIVES} from "angular2/router";
-import {defaultConfig} from "../../../config";
-import {Gallery} from "./gallery";
+import { Component } from "angular2/core";
+import { ROUTER_DIRECTIVES } from "angular2/router";
+import { defaultConfig } from "../../../config";
+import { Gallery } from "./gallery";
 
 declare var jQuery: any;
 
@@ -17,8 +17,8 @@ class About {
     public ngOnInit() {
         if (window.location.hostname === "localhost") {
             jQuery.toaster({
-                title: 'Updated available',
-                message: 'Reload for latest version',
+                title: "Updated available",
+                message: "Reload for latest version",
                 settings: {
                     timeout: 3000
                 }
@@ -27,4 +27,4 @@ class About {
     }
 }
 
-export {About};
+export { About };
