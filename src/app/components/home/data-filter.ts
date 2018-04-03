@@ -8,31 +8,33 @@ enum FilterState {
 }
 
 export default class DataFilter {
-
-    public filter(data: any[][], normalDistance, filtering: FilterState = FilterState.FULL) {
-
+    public filter(
+        data: any[][],
+        normalDistance,
+        filtering: FilterState = FilterState.FULL
+    ) {
         // remove duplicates
         data = _.uniq(data, (v: number[]) => v[0]);
 
         // convert timestring to epoch ms (HighCharts likes this)
-        data = data.map((v) => [new Date(v[0]).getTime(), v[1], v[2]]);
+        data = data.map(v => [new Date(v[0]).getTime(), v[1], v[2]]);
 
         if (filtering === FilterState.NONE) {
             return data;
         }
 
         // Remove "silly values"
-        data = data.filter((v) => v[1] > 20 && v[1] < 200);
+        data = data.filter(v => v[1] > 20 && v[1] < 200);
 
         if (filtering === FilterState.PARTIAL) {
             return data;
         }
 
         // Must have a temp
-        data = data.filter((v) => _.isFinite(v[2]));
+        data = data.filter(v => _.isFinite(v[2]));
 
         // Map the sensor height to our "relative" height
-        data = data.map((v) => {
+        data = data.map(v => {
             let [time, val, temp] = v;
             return [time, this.getHeight(val, temp, normalDistance), temp];
         });
@@ -57,11 +59,11 @@ export default class DataFilter {
             let delta = Math.abs(prev[1] - next[1]);
             if (
                 // is this point bigger than the average of the neighbouring points
-                (Math.abs(curr[1] - avg) > 20)
+                Math.abs(curr[1] - avg) > 20 &&
                 // are prev and next similar?
-                && (delta < Infinity)
+                delta < Infinity &&
                 // spike is within a timeframe?
-                && (Math.abs(next[0] - prev[0]) < deltaT)
+                Math.abs(next[0] - prev[0]) < deltaT
             ) {
                 return false;
             }
@@ -88,11 +90,11 @@ export default class DataFilter {
      */
     private getHeight(value: number, temp: number, normalDistance: number) {
         if (_.isFinite(temp)) {
-            let newVal = ((value * 58) * (331.3 + 0.606 * temp)) / 20000;
+            let newVal = value * 58 * (331.3 + 0.606 * temp) / 20000;
             // console.log(`Height ${value} -> ${newVal} (T=${temp}C)`);
             value = newVal;
         }
         return Math.round(normalDistance - value);
     }
 }
-export {FilterState};
+export { FilterState };

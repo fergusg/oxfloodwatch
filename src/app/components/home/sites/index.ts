@@ -1,5 +1,5 @@
-import {Footpath} from "./footpath";
-import {Chacks} from "./chacks";
-import {Jane} from "./jane";
+import { Footpath } from "./footpath";
+import { Chacks } from "./chacks";
+import { Jane } from "./jane";
 
-export {Footpath, Chacks, Jane};
+export { Footpath, Chacks, Jane };

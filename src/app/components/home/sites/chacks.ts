@@ -1,6 +1,6 @@
-import {Injector} from "angular2/core";
+import { Injector } from "angular2/core";
 
-import {BaseComponent} from "./../base";
+import { BaseComponent } from "./../base";
 
 const messages = {
     VERY_LOW: "Chill out",
@@ -12,9 +12,7 @@ const messages = {
 };
 
 export class Chacks extends BaseComponent {
-    constructor(
-        injector: Injector
-    ) {
+    constructor(injector: Injector) {
         super(injector);
     }
 
@@ -33,5 +31,4 @@ export class Chacks extends BaseComponent {
     protected getTitle() {
         return "Trouble at t'Mill";
     }
-
 }

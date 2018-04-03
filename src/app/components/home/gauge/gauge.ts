@@ -1,7 +1,7 @@
-import {Component, ElementRef, OnChanges, SimpleChange} from "angular2/core";
-import {Observable} from "rxjs/Observable";
+import { Component, ElementRef, OnChanges, SimpleChange } from "angular2/core";
+import { Observable } from "rxjs/Observable";
 
-import {normalDist, limit} from "./utils";
+import { normalDist, limit } from "./utils";
 import chartDefintion from "./gauge-definition";
 
 declare var $: any;
@@ -10,7 +10,7 @@ declare var _: any;
 @Component({
     selector: "gauge",
     moduleId: module.id,
-    template: '',
+    template: "",
     styleUrls: ["./gauge.css"],
     inputs: ["range", "delta", "plotBands"]
 })
@@ -50,7 +50,8 @@ export default class GaugeComponent implements OnChanges {
 
                 def.yAxis = Object.assign({}, def.yAxis, {
                     plotBands: this.plotBands,
-                    min, max
+                    min,
+                    max
                 });
 
                 this.chartElem.highcharts(def);
@@ -73,13 +74,11 @@ export default class GaugeComponent implements OnChanges {
 
     private twitch() {
         let point = this.chart.series[0].points[0];
-        Observable
-            .timer(1000, 1000)
-            .subscribe(() => {
-                let [min, max] = this.getMinMax();
-                let [h, limited] = limit(this.delta, min, max);
-                h += normalDist(limited ? 0.5 : 1.5);
-                point.update(h);
-            });
+        Observable.timer(1000, 1000).subscribe(() => {
+            let [min, max] = this.getMinMax();
+            let [h, limited] = limit(this.delta, min, max);
+            h += normalDist(limited ? 0.5 : 1.5);
+            point.update(h);
+        });
     }
 }

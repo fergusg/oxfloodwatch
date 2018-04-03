@@ -11,30 +11,31 @@ import "rxjs/add/operator/publish";
 
 import "./app/util/jquery.toaster";
 
-import {enableProdMode} from "angular2/core";
-import {bootstrap} from "angular2/platform/browser";
-import {ROUTER_PROVIDERS} from "angular2/router";
-import {HTTP_PROVIDERS, JSONP_PROVIDERS} from "angular2/http";
+import { enableProdMode } from "angular2/core";
+import { bootstrap } from "angular2/platform/browser";
+import { ROUTER_PROVIDERS } from "angular2/router";
+import { HTTP_PROVIDERS, JSONP_PROVIDERS } from "angular2/http";
 
-// import {Angulartics2} from 'angulartics2/index';
+import { AppCmp } from "./app/app";
 
-import {AppCmp} from "./app/app";
+let env = "<%= ENV %>";
 
-if ("<%= ENV %>" === "prod") { enableProdMode(); }
-
-if (applicationCache) {
-    applicationCache.addEventListener('updateready', () => {
-        console.log("applicationCache -> reload");
-        jQuery.toaster({
-            title: 'Update available',
-            message: 'Reload for latest version'
-        });
-    }, false);
+if (env === "prod") {
+    enableProdMode();
 }
 
-bootstrap(AppCmp, [
-    ...ROUTER_PROVIDERS,
-    ...HTTP_PROVIDERS,
-    ...JSONP_PROVIDERS,
-    // Angulartics2
-]);
+if (applicationCache) {
+    applicationCache.addEventListener(
+        "updateready",
+        () => {
+            console.log("applicationCache -> reload");
+            jQuery.toaster({
+                title: "Update available",
+                message: "Reload for latest version"
+            });
+        },
+        false
+    );
+}
+
+bootstrap(AppCmp, [...ROUTER_PROVIDERS, ...HTTP_PROVIDERS, ...JSONP_PROVIDERS]);

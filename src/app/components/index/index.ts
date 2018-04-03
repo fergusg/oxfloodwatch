@@ -1,5 +1,5 @@
-import {Component} from "angular2/core";
-import {RouterLink} from "angular2/router";
+import { Component } from "angular2/core";
+import { RouterLink } from "angular2/router";
 import * as Sites from "../home/sites/index";
 
 declare var _: any;
@@ -22,6 +22,10 @@ export class IndexComponent {
         this.sites = _.map(Sites, s => {
             return { link: s.name };
         });
-        this.sites.push({ link: "About", text: "About this site", type: "default" });
+        this.sites.push({
+            link: "About",
+            text: "About this site",
+            type: "default"
+        });
     }
 }

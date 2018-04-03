@@ -1,6 +1,6 @@
-import {Injector} from "angular2/core";
+import { Injector } from "angular2/core";
 
-import {BaseComponent} from "./../base";
+import { BaseComponent } from "./../base";
 
 const messages = {
     VERY_LOW: "So low, even the camels are nervous.",
@@ -12,9 +12,7 @@ const messages = {
 };
 
 export class Footpath extends BaseComponent {
-    constructor(
-        injector: Injector
-    ) {
+    constructor(injector: Injector) {
         super(injector);
     }
 
@@ -37,5 +35,4 @@ export class Footpath extends BaseComponent {
     protected getMessages() {
         return messages;
     }
-
 }

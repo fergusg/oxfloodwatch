@@ -8,7 +8,6 @@ Highcharts.setOptions({
     }
 });
 
-
 function smallScreen() {
     return document.body.clientWidth < 768;
 }
@@ -20,9 +19,12 @@ function onSelect(event: any) {
     }
     this.zooming = true;
 
-    let {min, max} = event.xAxis[0];
+    let { min, max } = event.xAxis[0];
 
-    let data = _.filter(this.chart.series[0].data, (p: any) => p.x >= min && p.x <= max);
+    let data = _.filter(
+        this.chart.series[0].data,
+        (p: any) => p.x >= min && p.x <= max
+    );
     let ydata = _.map(data, (v: any) => v.y);
     let minY = _.min(ydata);
     let maxY = _.max(ydata);
@@ -36,10 +38,10 @@ function onSelect(event: any) {
 function getDefinition(self) {
     return {
         chart: {
-            type: 'area',
-            zoomType: 'x',
+            type: "area",
+            zoomType: "x",
             panning: true,
-            panKey: 'ctrl',
+            panKey: "ctrl",
             events: {
                 selection: onSelect.bind(self)
             }
@@ -50,7 +52,7 @@ function getDefinition(self) {
         title: "My Chart",
         subtitle: false,
         xAxis: {
-            type: 'datetime'
+            type: "datetime"
         },
         legend: {
             enabled: false
@@ -63,14 +65,16 @@ function getDefinition(self) {
         },
         tooltip: {
             headerFormat: "",
-            pointFormatter: function () {
+            pointFormatter: function() {
                 let d = new Date(this.x);
-                var t = ("0" + d.getHours()).slice(-2) +
-                    ":" + ("0" + d.getMinutes()).slice(-2);
+                var t =
+                    ("0" + d.getHours()).slice(-2) +
+                    ":" +
+                    ("0" + d.getMinutes()).slice(-2);
 
                 return `<em>${t} <em><b>${this.y}cm</b>`;
             },
-            positioner: function (labelWidth, labelHeight, point) {
+            positioner: function(labelWidth, labelHeight, point) {
                 return { x: 0, y: 0 };
             },
             crosshairs: true
@@ -79,7 +83,7 @@ function getDefinition(self) {
             area: {
                 marker: {
                     enabled: !smallScreen(),
-                    symbol: 'circle',
+                    symbol: "circle",
                     radius: 1.2,
                     fillColor: "#989898",
                     states: {
@@ -91,10 +95,12 @@ function getDefinition(self) {
                 }
             }
         },
-        series: [{
-            name: 'Levels',
-            data: []
-        }]
+        series: [
+            {
+                name: "Levels",
+                data: []
+            }
+        ]
     };
 }
 

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnChanges, SimpleChange} from "angular2/core";
+import { Component, ElementRef, OnChanges, SimpleChange } from "angular2/core";
 
 declare var $: any;
 declare var _: any;
@@ -14,8 +14,7 @@ export default class GaugeComponent implements OnChanges {
     private delta: number;
     private deltaInches: string;
 
-    constructor(private elem: ElementRef) {
-    }
+    constructor(private elem: ElementRef) {}
 
     public ngOnChanges(changes: { [propName: string]: SimpleChange }) {
         if (changes["delta"] && _.isFinite(changes["delta"].currentValue)) {
@@ -26,5 +25,4 @@ export default class GaugeComponent implements OnChanges {
             }
         }
     }
-
 }

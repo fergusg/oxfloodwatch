@@ -1,5 +1,5 @@
-import {Component, OnInit} from "angular2/core";
-import {Observable} from "rxjs/Observable";
+import { Component, OnInit } from "angular2/core";
+import { Observable } from "rxjs/Observable";
 
 declare var moment: any;
 
@@ -19,8 +19,8 @@ export default class LastReading implements OnInit {
     private reading: string;
 
     public ngOnInit() {
-        Observable
-            .timer(1000, 2000)
-            .subscribe(() => this.reading = moment(this.last).fromNow());
+        Observable.timer(1000, 2000).subscribe(
+            () => (this.reading = moment(this.last).fromNow())
+        );
     }
 }
