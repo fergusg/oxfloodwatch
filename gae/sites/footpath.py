@@ -5,32 +5,32 @@ max = 40
 
 levels = [
     {
-        "level": -10,
+        "level": 5,
         "name" : "very_low",
         "desc": "very low"
     },
     {
-        "level": -5,
+        "level": 10,
         "name" : "low",
         "desc": "low"
     },
     {
-        "level": 0,
+        "level": 15,
         "name" : "close",
         "desc": "close"
     },
     {
-        "level": 7,
+        "level": 22,
         "name" : "high",
         "desc": "high"
     },
     {
-        "level": 15,
+        "level": 30,
         "name" : "very_high",
         "desc": "very high"
     },
     {
-        "level": 30,
+        "level": 45,
         "name" : "extreme",
         "desc": "extremely high"
     }

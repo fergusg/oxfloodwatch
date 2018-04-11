@@ -266,17 +266,30 @@ class ListAll(Resource):
             level_idx = level_names.index(level)
             last_level_idx = level_names.index(p.last_level)
 
-            alert = (
-                (level_idx >= trigger_idx) or
-                (level_idx < trigger_idx and last_level_idx >= trigger_idx)
-            )
+            alert = last_level_idx != level_idx
 
-            alert = alert and ((level >= p.trigger_level + 2) or (level <= p.trigger_level - 2))
+            # alert = alert and ((level > p.trigger_level) or (level < p.trigger_level))
 
-            msg = "%s: %s norm:%s delta:%s level:%s last:%s trigger:%s level:%s alert:%s" % (
-                p.name, p.mobile, s["normal"], delta, level, p.last_level, trigger_idx, level_idx, alert)
+            msg = {
+                "name": p.name,
+                "phone": p.mobile,
+                "enabled": getattr(p, "enabled", False),
+                "normal_level": s["normal"],
+                "delta": delta,
+                "level": level,
+                "level_idx": level_idx,
+                "last_level": p.last_level,
+                "last_level_idx": last_level_idx,
+                "trigger_idx": trigger_idx,
+                "alert": alert
+            }
+
+            alert = False
+
+            # msg = "%s: %s enabled:%s norm:%s delta:%s level:(%s, %s) last:(%s, %s) trigger:%s alert:%s" % (
+            #     p.name, p.mobile, s["normal"], delta, level, level_idx, p.last_level, last_level_idx, trigger_idx, alert)
             ret.append(msg)
-            logging.info(json.dumps(msg))
+            logging.info(json.dumps(msg, indent=4))
 
             if alert:
                 p.last_level = level
@@ -293,7 +306,7 @@ class ListAll(Resource):
                 except Exception as e:
                     logging.error(e)
 
-        return ret
+        return json.dumps(ret, indent=4)
 
 @api.resource(ADMIN + '/update')
 class AdminLatest(Resource):

@@ -6,13 +6,8 @@ class Person(ndb.Model):
     trigger_level = ndb.StringProperty(required=True)
     mobile = ndb.StringProperty(required=True)
     last_level = ndb.StringProperty(required=True)
+    enabled = ndb.BooleanProperty(required=True)
 
-
-# class Setting(ndb.Model):
-#     id = ndb.StringProperty(required=True)
-#     name = ndb.StringProperty(required=True)
-#     normal = ndb.IntegerProperty(required=True)
-#     levels = ndb.StringProperty(required=True)
 
 class Data(ndb.Model):
     time = ndb.DateTimeProperty(required=True)

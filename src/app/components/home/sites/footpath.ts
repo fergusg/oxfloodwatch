@@ -25,7 +25,10 @@ export class Footpath extends BaseComponent {
     }
 
     protected getSubTitle() {
-        return "Is it flooded near Pigeons Lock?";
+        return [
+            "Is it flooded near Pigeons Lock?",
+            // "(Update Jan 2018. The levels are not currently accurate after recent clearing of downstream vegetation.)"
+        ].join(" ");
     }
 
     protected getName(): string {
